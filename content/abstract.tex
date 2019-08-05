@@ -1,0 +1,52 @@
+% !TEX root = ../thesis.tex
+
+\makeatletter
+\def\input@path{{../}}
+\makeatother
+\documentclass[../thesis.tex]{subfiles}
+
+\begin{document}
+
+\chapter*{ABSTRACT}%
+%\parindent \z@ \centering 
+\normalfont
+%{\large\textbf{\abstractname}} \\
+\vspace{1.0cm}
+\begin{singlespacing}%
+%\vskip 20\p@
+\addcontentsline{toc}{chapter}{ABSTRACT}
+
+Bin picking task combined with flexible manipulation planner on an object is a main task to be tackled to achieve the needs for fully automated industry, which has becomes increasingly useful to perform various industrial automation field, especially in the logistic and manufacturing industry.
+These tasks are often need to be performed efficiently and quickly to increase the industry's demand.
+To achieve those industrial needs, the system often needs to perform the task in a cluttered and dynamic environment.
+
+In this project, we proposed an object agnostic robotic bin picking system to estimate a suction-based picking point of an object in a cluttered environment in real-time using deep learning semantic segmentation with surface normals standard deviation as baseline algorithm. 
+To get faster planning and execution time, we proposed a grasp point estimation approach that does not need to know any information on the objects model by removing this step entirely and use an assumption to grasp first then recognize later.
+The system built tried to tackle the challenges in picking point estimation for household object, but it can be easily extended for any kind of objects provided the datasets to be used for training.
+
+\bigskip
+\noindent
+\textbf{Keywords : grasp point estimation, bin picking, RGBD image, deep learning, semantic segmentation, ROS}
+\end{singlespacing}
+
+\chapter*{\emph{INTISARI}}%
+%\parindent \z@ \centering 
+\normalfont
+%{\large\textbf{\abstractname}} \\
+\vspace{1.0cm}
+\begin{singlespacing}%
+%\vskip 20\p@
+\addcontentsline{toc}{chapter}{\emph{INTISARI}}
+
+\emph{
+Semakin berkembangnya industri yang menginginkan hasil paling maksimal dengan usaha seminimal mungkin, menyebabakan kebutuhan sistem otomasi untuk penanganan dan manipulasi objek menjadi semakin penting.
+Namun permasalahan umum yang masih banyak dihadapi dalam pengembangan sistem otomasi tersebut adalah ketidakmampuan sistem untuk beradaptasi terhadap perubahan lingkungan dan barang yang ditangani.
+Sehingga tugas yang diberikan pada sistem hanya terbatas pada tugas yang bersifat repetitif.
+}
+
+\bigskip
+\noindent
+
+\textbf{\emph{Kata kunci : estimasi titik angkat}, bin picking, \emph{gambar} RGBD, deep learning, semantic segmentation, ROS}
+\end{singlespacing}
+\end{document}

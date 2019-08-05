@@ -1,0 +1,137 @@
+%Template pembuatan naskah skripsi.
+\documentclass[english]{jtetiskripsi}
+
+%Untuk prefiks pada daftar gambar dan tabel
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{program}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{varwidth}
+\usepackage{verbatim}
+\usepackage[titles]{tocloft}
+\usepackage{enumitem}
+\usepackage{breqn}
+\usepackage[htt]{hyphenat}
+\usepackage{tabularx,booktabs}
+\newcommand*\justify{%
+  \fontdimen2\font=0.4em% interword space
+  \fontdimen3\font=0.2em% interword stretch
+  \fontdimen4\font=0.1em% interword shrink
+  \fontdimen7\font=0.1em% extra space
+  \hyphenchar\font=`\-% allowing hyphenation
+}
+%\renewcommand\cftfigpresnum{Gambar\  }
+%\renewcommand\cfttabpresnum{Tabel\   }
+\renewcommand\cftfigpresnum{Figure\  }
+\renewcommand\cfttabpresnum{Table\   }
+
+%\hyphenation{thatshouldnot}
+
+% for algorithm
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\newcommand{\vars}{\texttt}
+\newcommand{\func}{\textrm}
+\let\oldReturn\Return
+\renewcommand{\Return}{\State\oldReturn}
+
+%Untuk hyperlink dan table of content
+\usepackage{hyperref}
+\newlength{\mylenf}
+\settowidth{\mylenf}{\cftfigpresnum}
+\setlength{\cftfignumwidth}{\dimexpr\mylenf+2em}
+\setlength{\cfttabnumwidth}{\dimexpr\mylenf+2em}
+
+%Untuk Bold Face pada Keterangan Gambar
+\usepackage[labelfont=bf]{caption}
+
+%Untuk caption dan subcaption
+\usepackage{caption}
+\usepackage{subcaption}
+
+%for subfiles
+\usepackage{subfiles}
+\graphicspath{{assets/}{../assets/}}
+
+\usepackage{mathptmx} 
+\usepackage[T2A,T1]{fontenc}
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+%-----------------------------------------------------------------
+%Disini awal masukan untuk data proposal skripsi
+%-----------------------------------------------------------------
+\titleind{Object Agnostic Suction-based Grasp Point Estimation in Cluttered Environment for Robotic Manipulator}
+%\titleind{Estimasi Titik Angkat Tanpa Pengetahuan Objek untuk Robot Manipulator}
+
+\fullname{TRI WAHYU UTOMO}
+
+\idnum{15/380134/TK/43318}
+
+\approvaldate{30 Agustus 2019}
+
+\degree{Bachelor of Engineering}
+\gelar{Sarjana}
+\major{Electrical Engineering}
+\prodi{Teknik Elektro}
+\jurusan{Teknik Elektro dan Teknologi Informasi}
+\dept{Electrical Engineering and Information Technology}
+
+
+\yearsubmit{2019}
+
+\firstsupervisor{Dr.Eng. Igi Ardiyanto, S.T., M.Eng.}
+\firstnip{111 1987 01 2015 03101}
+
+\secondsupervisor{Adha Imam Cahyadi, S.T., M.Eng., D.Eng.}
+\secondnip{1979 1102 2008 12 1 001}
+
+\begin{document}
+% \selectlanguage{english}
+
+
+\cover
+
+\approvalpage
+
+\preface
+\subfile{content/preface}
+
+\tableofcontents
+\addcontentsline{toc}{chapter}{CONTENTS}
+\listoftables
+\addcontentsline{toc}{chapter}{LIST OF TABLES}
+\listoffigures
+\addcontentsline{toc}{chapter}{LIST OF FIGURES}
+
+%\subfile{nomenclature}
+
+\subfile{content/abstract}
+
+%% use subfile instead of include, since it can be compiled independently
+
+\chapter{PENDAHULUAN}
+\pagenumbering{arabic} %% do this since jteticlass cant handle abstract subfiles well
+\subfile{content/chapter1}
+
+\chapter{TINJAUAN PUSTAKA DAN DASAR TEORI}
+\subfile{content/chapter2}
+
+\chapter{PERANCANGAN SISTEM}
+\subfile{content/chapter3}
+
+\chapter{HASIL DAN  PEMBAHASAN}
+\subfile{content/chapter4}
+
+\chapter{KESIMPULAN DAN SARAN}
+\subfile{content/chapter5}
+
+\clearpage
+\addcontentsline{toc}{chapter}{REFERENCES}
+\bibliography{reference}
+
+\end{document}

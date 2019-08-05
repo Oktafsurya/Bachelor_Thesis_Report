@@ -1,0 +1,30 @@
+% !TEX root = ../thesis.tex
+\makeatletter
+\def\input@path{{../}}
+\makeatother
+\documentclass[../thesis.tex]{subfiles}
+\begin{document}
+
+\section{Conclusions}
+
+A kinodynamic motion planning for omnidirectional mobile robot is presented in this work. Trajectory tracking strategy using Proportional-Integral (PI) control is also discussed. This work was divided into two main parts. The first part is about motion planning strategy, using kinodynamic-RRT* with double integrator model to generate translational trajectory considering the dynamic of the model and minimum-time trajectory generator to generate rotational trajectory with acceleration and velocity constraint. The second part is about trajectory tracking strategy to control he robot to follows the planned trajectory.  
+
+The motion planning strategy found the trajectory considering that the obstacles are moving. The movement of the obstacle are assumed to have constant velocity. The system finds a collision free trajectory by growing the tree and connects the nodes of states considering the dynamics of the model. The connection between the states are solved using fixed-final-state free-final-time optimal controller. The collision checking is computed in 3D time-space, taking account into the obstacles movement. The rotational trajectory is computed separately from the translational trajectory, then the resulting trajectories are combined and passed to the trajectory tracker to control the robot's movement.
+
+We used trajectory tracking controller to follows the planned trajectory of the robot. The tracking controller is a closed-loop PI control to track the reference trajectory. To address the dynamic environment, we also proposed the computation in an online fashion, without knowing the exact movement of the obstacles at the beginning of computation. This was done by iteratively solving trajectory with an updated information of the obstacles for each iteration, while the trajectory tracker is concurrently control the robot's movement.
+
+We performed numerical simulations to verify the fixed-final-state free-final-time controller, the kinodynamic-RRT* algorithm, and the rotational trajectory generator. Then we implemented the overall strategy using Robot Operating System (ROS) framework. The strategy is then applied to the robot's model in Gazebo physical simulator. We also visualize the tree of the kinodynamic-RRT*, the dynamic obstacles, and the solution trajectory using RViz. Simulation result shows that the strategy is able to move the robot's to the desired goal without colliding with obstacles.
+
+\section{Future Works}
+
+There are several other problems that emerge during this work that should be tackled in the future research, that are :
+
+\begin{enumerate}
+\item In this work, the translational trajectory and the rotational trajectory are computed separately, resulting an out-of-sync velocity in robot's body frame. So, it could be improved by taking the robot's motion in body frame into account.
+\item The trajectory tracking controller only considers the current reference pose to compute the control input, while the subsequent pose is already known. Hence, we suggest future works should take this subsequent reference pose into account, e.g. using Model Predictive Controller.
+\item While this work only tested in simulation, where the information of the robot's and obstacles' states are already available, a robot localization system and also obstacles' detection and tracking may be developed to implements this work in real robot.
+\item The proposed motion planning strategy assuming that the robot's and obstacles' states are perfectly known and accurate, while in real world this may be partially known and uncertain. So, we suggest to take this uncertainty into account while solving the trajectory, e.g. motion planning under uncertainty.
+\item To increase the quality of solution trajectory as well as computation efficiency it is recommended to develop and implement heuristic for the sampling procedure.
+\end{enumerate}
+
+\end{document}

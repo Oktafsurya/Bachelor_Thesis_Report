@@ -1,0 +1,63 @@
+% !TEX root = ../thesis.tex
+\makeatletter
+\def\input@path{{../}}
+\makeatother
+\documentclass[../thesis.tex]{subfiles}
+\newcolumntype{c}{>{\centering\arraybackslash}X} % centered version of "X" type
+\setlength{\extrarowheight}{1pt}
+\begin{document}
+
+\section{Latar Belakang}
+Teknologi \textit{Artificial Intelligence} (AI) mengalami perkembangan yang sangat pesat beberapa tahun terakhir. Teknologi ini telah diterapkan di berbagai bidang kehidupan untuk memudahkan pekerjaan manusia seperti pada bidang robotika, pemrosesan citra dll. 
+Salah satu cabang AI yang saat ini banyak digunakan untuk penelitian maupun keperluan lain adalah \textit{Deep Learning}. \textit{Deep Learning} menawarkan performa yang optimal, handal dan dapat mengakomodasi pemrosesan data dalam jumlah yang sangat besar (\textit{big data}). 
+\textit{Deep Learning} telah mengalahkan berbagai teknik \textit{machine learning} yang ada saat ini dalam hal pengenalan gambar \cite{Krizhevsky2002ImageNet}, pengenalan suara \cite{Hinton2012Speech}, pemahaman bahasa \cite{Collobert2011NLP} dan deteksi objek.
+
+Salah satu permasalahan besar di Indonesia adalah dalam hal lalu lintas terutama kemacetan. Kemacetan yang berlarut akan membawa kerugian bagi banyak pihak. Tak heran, saat ini informasi terkait arus lalu lintas yang akurat dan \textit{real time} sangat dibutuhkan untuk wisatawan atau travelers, sektor bisnis, dan lembaga pemerintah \cite{Zhang2008DynaCAS}. Sayangnya, beberapa solusi sistem yang telah diterapkan mengalami kegagalan dikarenakan masih menggunakan teknologi konvensional sehingga kemampuan untuk menganalisa data lalu lintas yang kuantitasnya sangat besar masih kurang. 
+Untuk itu diperlukan suatu inovasi sistem yang lebih modern.
+
+Melihat fakta bahwasannya data lalu lintas merupakan data dari waktu ke waktu yang memiliki suatu pola tertentu serta melihat potensi yang dimilki oleh \textit{deep learning}, tidak menutup kemungkinan bahwa dapat dibuat sebuah sistem lalu lintas cerdas berbasis deep learning dengan memanfaatkan peran kamera CCTV di jalan raya secara \textit{real time}. Saat ini kamera CCTV di jalan hanya berperan sebatas alat untuk memonitor kondisi lalu lintas. 
+Menggunakan teknologi deep learning, kamera CCTV dapat difungsikan lebih jauh lagi misalnya untuk mengklasifikasikan jenis kendaraan, menghitung jumlah kendaraan, serta memberikan prediksi arus lalu lintas untuk jam atau hari tertentu. Sehingga berdasarkan hasil analisa tersebut dapat disusun suatu strategi optimalisasi lalu lintas yang lebih efektif, efisien dan dapat mengurangi kemacetan. 
+Tentu saja hal ini akan sangat membantu dan membawa dampak yang besar. Dengan berkurangnya tingkat kemacetan karena arus lalu lintas dapat diprediksi sebelumnya, membuat orang-orang dapat menghewat waktunya lebih banyak, tidak terbuang sia-sia di jalanan karena kemacetan panjang, dan dapat melakukan berbagai hal yang lebih produktif. 
+Selain itu distribusi barang dan jasa bisa menjadi lebih cepat dimana hal ini sangat berpengaruh terhadap perekonomian negara. 
+
+% \begin{table*}
+% \caption{CIFAR-10 Confusion Matrix}
+% \label{my-label}
+% \begin{tabularx}{\textwidth}{@{}l*{10}{c}c@{}}
+% \toprule
+% labels     & airplane & car & bird & cat & deer & dog & frog & horse \\ 
+% \midrule
+% airplane   & 915      & 4   & 17   & 19  & 3    & 1   & 0    & 2    \%  \\ 
+% automobile & 8        & 934 & 3    & 4   & 0    & 0   & 3    & 0    \%  \\ 
+% bird       & 60       & 1   & 813  & 37  & 19   & 23  & 30   & 10   \%  \\ 
+% cat        & 18       & 1   & 34   & 746 & 25   & 113 & 37   & 18   \%  \\ 
+% deer       & 24       & 1   & 38   & 33  & 809  & 19  & 44   & 29   \%  \\ 
+% \addlinespace
+% dog        & 4        & 0   & 37   & 106 & 23   & 792 & 9    & 26   \%  \\ 
+% frog       & 2        & 5   & 19   & 35  & 1    & 20  & 912  & 2    \%  \\ 
+% horse      & 14       & 0   & 26   & 20  & 18   & 28  & 4    & 886  \%  \\ 
+% ship       & 35       & 10  & 3    & 2   & 0    & 2   & 1    & 0    \%  \\ 
+% truck      & 23       & 37  & 4    & 10  & 1    & 2   & 2    & 0    \%  \\ 
+% \bottomrule
+% \end{tabularx}
+% \end{table*}
+
+\section{Problem Statement}
+
+In this bachelor thesis, kinodynamic-RRT* method will be used to overcome kinodynamic motion planning problem for omnidirectional mobile robot in dynamic environment with moving obstacles in robot soccer context. The method is used because it's ability to find collision-free trajectory while considering kinodynamic constraints and it's generality that are able to incorporate the motion of the obstacles explicitly. The problem of kinodynamic motion planning for omnidirectional mobile robot can be separated into two important points :
+
+\begin{enumerate}
+\item How to generate collision-free trajectory form robot's initial state to the desired state in a dynamic environment with moving obstacles while considering kinodynamic constraints of the robot?
+\item How to control the robot to follows the generated trajectory?
+\item How to resolve the problem of changing environment when the robot has not reached its goal?
+\end{enumerate}
+
+\section{Research Objectives}
+
+The objectives of this research are focused on several points :
+\begin{enumerate}
+\item Generating a collision-free trajectory, that satisfying kinodynamic constraints, from initial robot state to the desired robot state in an environment that includes moving obstacles .
+\item Implement trajectory tracking control to track the generated trajectory.
+\item Develop software solution to perform online replanning to address changing environment.
+\end{enumerate}
+\end{document}
