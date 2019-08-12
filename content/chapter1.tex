@@ -20,22 +20,75 @@ Menggunakan teknologi deep learning, kamera CCTV dapat difungsikan lebih jauh la
 Tentu saja hal ini akan sangat membantu dan membawa dampak yang besar. Dengan berkurangnya tingkat kemacetan karena arus lalu lintas dapat diprediksi sebelumnya, membuat orang-orang dapat menghewat waktunya lebih banyak, tidak terbuang sia-sia di jalanan karena kemacetan panjang, dan dapat melakukan berbagai hal yang lebih produktif. 
 Selain itu distribusi barang dan jasa bisa menjadi lebih cepat dimana hal ini sangat berpengaruh terhadap perekonomian negara. 
 
-\section{Problem Statement}
+\section{Rumusan Masalah}
 
-In this bachelor thesis, kinodynamic-RRT* method will be used to overcome kinodynamic motion planning problem for omnidirectional mobile robot in dynamic environment with moving obstacles in robot soccer context. The method is used because it's ability to find collision-free trajectory while considering kinodynamic constraints and it's generality that are able to incorporate the motion of the obstacles explicitly. The problem of kinodynamic motion planning for omnidirectional mobile robot can be separated into two important points :
-
+Pada tugas akhir ini, akan dirancang sebuah sistem prediksi arus lalu lintas menggunakan kamera CCTV jalan dan berbasis \textit{deep learning} dengan \textit{Long Short-Term Memory} (LSTM). Masalah yang akan dijawab pada tugas akhir ini antara lain:
 \begin{enumerate}
-\item How to generate collision-free trajectory form robot's initial state to the desired state in a dynamic environment with moving obstacles while considering kinodynamic constraints of the robot?
-\item How to control the robot to follows the generated trajectory?
-\item How to resolve the problem of changing environment when the robot has not reached its goal?
+\item Bagaimana membangun sebuah objek detektor yang dapat mendeteksi jenis kendaraan, melakukan \textit{tracking} dan perhitungan jumlah kendaraan secara \textit{real-time} menggunkan kamera CCTV?
+\item Bagaimana membangun jaringan \textit{Long-Short Term Memory} untuk dapat melakukan prediksi arus lalu lintas secara akurat?
+\item Bagaimana membangun sebuah dashboard untuk menampilkan hasil deteksi dan perhitungan jumlah kendaraan serta hasil prediksi arus lalu lintas?
 \end{enumerate}
 
-\section{Research Objectives}
-
-The objectives of this research are focused on several points :
+\section{Batasan Tugas Akhir}
+Batasan masalah pada penelitian ini adalah:
 \begin{enumerate}
-\item Generating a collision-free trajectory, that satisfying kinodynamic constraints, from initial robot state to the desired robot state in an environment that includes moving obstacles .
-\item Implement trajectory tracking control to track the generated trajectory.
-\item Develop software solution to perform online replanning to address changing environment.
+    \item Model yang dihasilkan dari penelitian baik model objek detektor maupun model LSTM hanya difokuskan pada waktu siang hari yaitu antara pukul 07.00 sampai dengan pukul 17.45.
+    \item Perhitungan jumlah kendaraan pada penelitian ini hanya dilakukan di jalan Fatmawati kota Semarang.
 \end{enumerate}
+
+\section{Tujuan Tugas Akhir}
+Tujuan dari penelitian ini adalah:
+\begin{enumerate}
+    \item Merancang sistem objek detektor yang dapat mendeteksi jenis kendaraan, melakukan \textit{tracking} dan perhitungan jumlah kendaraan secara \textit{real-time} menggunkan kamera CCTV.
+    \item Merancang sistem LSTM yang dapat melakukan prediksi arus lalu lintas dengan akurat.
+    \item Menguji pengaruh ukuran data input, data output, jumlah lapisan LSTM, dan jumlah neuron tiap lapisan terhadap performa prediksi model LSTM.
+    \item Merancang dashboard untuk memvisualisasikan data hasil deteksi dan perhitungan jumlah kendaraan serta hasil prediksi arus lalu lintas.
+\end{enumerate}
+
+\section{Manfaat Tugas Akhir}
+Manfaat dari penelitian ini adalah:
+\begin{enumerate}
+\item Dapat digunakan oleh petugas yang berwenang untuk mendata jumlah kendaraan yang melalui suatu jalan sesuai jenis kendaraan tersebut.
+\item Hasil prediksi arus lalu lintas yang diberikan dapat diintegrasikan pada sistem smart city untuk menyusun suatu strategi optimalisasi lalu lintas yang lebih efektif dan efisien serta dapat mengurangi tingkat kemacetan.
+\item Memberikan informasi kepada masyarakat mengenai kondisi arus lalu lintas.
+\item Meningkatkan nilai fungsi kamera CCTV di jalan raya.
+\end{enumerate}
+
+\section{Sistematika Penulisan}
+%sistematika penulisan dalam naskah skripsi ini adalah sebagai berikut:
+\begin{flushleft}
+    \textbf{BAB I: PENDAHULUAN} 
+\end{flushleft}
+\par
+Pada Bab I akan dijelaskan latar belakang dan permasalahan yang mendasari mengapa
+penelitian ini perlu dilakukan. Selain itu juga dijelaskan mengenai rumusan masalah, batasan,
+tujuan dan manfaat penelitian ini.
+
+\begin{flushleft}
+    \textbf{BAB II: TINJAUAN PUSTAKA DAN DASAR TEORI} 
+\end{flushleft}
+\par
+Pada Bab II akan dijelaskan mengenai penelitian terdahulu yang relevan serta dasar teori
+yang mendukung penelitian ini.
+
+\begin{flushleft}
+    \textbf{BAB III: PERANCANGAN SISTEM} 
+\end{flushleft}
+\par
+Pada Bab III akan dijelaskan metode dan pendekatan yang digunakan pada penelitian ini. 
+
+\begin{flushleft}
+    \textbf{BAB IV: HASIL DAN PEMBAHASAN} 
+\end{flushleft}
+\par
+Pada Bab IV akan dijelaskan mengenai hasil penelitian dan pembahasan untuk hasil tersebut.
+
+\begin{flushleft}
+    \textbf{BAB V: KESIMPULAN DAN SARAN} 
+\end{flushleft}
+\par
+Bab ini berisi tentang kesimpulan penelitian secara keseluruhan dan saran untuk
+penelitian-penelitian selanjutnya.
+
+
 \end{document}
