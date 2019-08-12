@@ -5,7 +5,8 @@
 \documentclass[../thesis.tex]{subfiles}
 \begin{document}   
 
-In this chapter, we discuss related works and preliminary subjects. First, we address related works on motion planning in robot soccer domain. Finally, we discuss preliminary subject including robot and environment modeling, software development environment, kinodynamic-RRT*, numerical root finding, collision checking, and minimum-time trajectory generator.
+Pada bab ini kita akan membahas mengenai tinjauan pustaka dan dasar teori. Pertama kita akan meninjau beberapa penelitian seputar deteksi objek menggunakan YOLO, dan prediksi arus lalu lintas yang menggunakan LSTM.
+Kemudian, akan dibahas mengenai beberapa teori yang akan digunakan untuk membangun beberapa model pada penelitian ini.
 
 \section{\textit{Deep Learning}}
 Pada [5] dan [6] \textit{deep learning} didefinisikan sebagai proses belajar merepresentasikan suatu fitur. Proses ini memanfaatkan \textit{machine learning} untuk menemukan tidak hanya pemetaan fitur tehadap output namun juga mempelajari proses representasi itu sendiri.
@@ -404,7 +405,7 @@ Fitur lain dari PyTorch antara lain:
 	\item \textbf{\textit{Pythonic in nature}} : Library ini terintegrasikan dengan package \textit{data science} Python. Dengan demikian PyTorch dapat memanfaatkan semua layanan dan fungsi yang ditawarkan oleh Python.
 	\item \textbf{Graph komputasi} : PyTorch menawarkan komputasi graph yang dinamis sehingga graph dapat diubah-ubah saat runtime. Hal ini sangat berguna ketika kita tidak mengetahui seberapa banyak memori yang diperlukan untuk membuat model \textit{neural network}.
 \end{enumerate}
-\end{document}
+
 
 \subsection{Keras}
 Keras merupakan high-level neural network API (Application Programming Interface), yang ditulis dengan bahasa pemrograman Python dan mampu berjalan di atas TensorFlow, CNTK, atau
@@ -456,3 +457,9 @@ Dash merupakan library yang \textit{open source}, dirilis dibawah lisensi MIT [w
 	\label{Dash}
 \end{figure}
 
+\subsection{LabelImg}
+LabelImg adalah alat untuk anotasi dan pelabelan \textit{bounding box} pada gambar. Alat ini ditulis dalam bahasa Python dan menggunakan Qt untuk antarmuka grafisnya. LabelImg mendukung 2 tipe anotasi yaitu PASCAL VOC dan YOLO. 
+Anotasi untuk PASCAL disimpan dalam format XML, seperti format yang digunakan oleh ImageNet. Sedangkan anotasi YOLO akan disimpan dalam bentuk .txt [link github labelimg]
+
+\end{document}
+%\end{document}

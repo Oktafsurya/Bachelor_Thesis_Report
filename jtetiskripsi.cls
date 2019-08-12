@@ -260,24 +260,27 @@
       \begin{singlespace}
       \fontsize{14pt}{16pt}\selectfont\MakeUppercase{\normalfont\bfseries\@titleind}\par\nobreak
       \vspace{1.5cm}
-      %\MakeUppercase{\normalfont\bfseries Skripsi}\\
-      \MakeUppercase{\normalfont\bfseries Bachelor thesis}\\
+      \MakeUppercase{\normalfont\bfseries Skripsi}\\
+      %\MakeUppercase{\normalfont\bfseries Bachelor thesis}\\
       \vspace{1.0cm}
        \vfill
        \includegraphics[width=0.5\textwidth]{assets/logougm.png}
        \vfill
        {\normalfont
-        %\bfseries Disusun oleh:\\
-        \bfseries Written by:\\
+        \bfseries Disusun oleh:\\
+        %\bfseries Written by:\\
         \MakeUppercase{\normalfont\bfseries\underline \@fullname}\\
         \MakeUppercase{\normalfont\bfseries \@idnum}}\\
        \vspace{1.5cm}
        {\normalfont 
          %\MakeUppercase{\normalfont\bfseries Jurusan \@dept}\\
-         \MakeUppercase{\normalfont\bfseries \@major} \MakeUppercase{\normalfont\bfseries Major}\\
-         \MakeUppercase{\normalfont\bfseries Department of \@dept}\\
-         \MakeUppercase{\normalfont\bfseries\@faculty}\\
-         \MakeUppercase{\normalfont\bfseries\@university}
+         %\MakeUppercase{\normalfont\bfseries \@major} \MakeUppercase{\normalfont\bfseries Major}\\
+         \MakeUppercase{\normalfont\bfseries Program Studi \@prodi} \\
+         %\MakeUppercase{\normalfont\bfseries Department of \@dept}\\
+         \MakeUppercase{\normalfont\bfseries Departemen \@jurusan}\\
+         %\MakeUppercase{\normalfont\bfseries\@faculty}\\
+         \MakeUppercase{\normalfont\bfseries\@fakultas} \MakeUppercase{\normalfont\bfseries\@university}\\
+         %\MakeUppercase{\normalfont\bfseries\@university}
          \MakeUppercase{\normalfont\bfseries\@city}\\
          \vspace{0.5cm}
          {\normalfont\bfseries\@yearsubmit}}\\
