@@ -8,7 +8,25 @@
 Pada bab ini kita akan membahas mengenai tinjauan pustaka dan dasar teori. Pertama kita akan meninjau beberapa penelitian seputar deteksi objek menggunakan YOLO, dan prediksi arus lalu lintas yang menggunakan LSTM.
 Kemudian, akan dibahas mengenai beberapa teori yang akan digunakan untuk membangun beberapa model pada penelitian ini.
 
-\section{\textit{Deep Learning}}
+\section{Tinjauan Pustka}
+\subsection{Deteksi, \textit{tracking} dan perhitungan jumlah kendaraan}
+Berbagai macam pendekatan telah dilakukan untuk mengembangkan sistem yang dapat mendeteksi, menghitung dan mengklasifikasikan jenis kendaraan sehingga dapat digunakan untuk pengawasan lalu lintas dalam sistem transportasi cerdas.
+
+Lei, M. melakukan penelitian seputar perhitungan jumlah kendaraan berbasis video. Dalam penelitian tersebut, digunakan metode \textit{Adaptive background estimation} dan \textit{Gaussian shadow elimination}. Seperti kebanyakan metode pengolahan citra konvensional, kelemahan utama terletak pada pengaruh pencahayaan. Dalam penelitian tersebut akurasi perhitungan
+sangat bergantung pada kemampuan untuk menghilangkan efek bayangan karena pengaruh pencahayaan. Selain itu sistem yang dikembangkan oleh [Lei, M.] belum mampu mengklasifikasikan kendaraan dengan bagus.
+Pada [Counting_based_Video_Classification pdf], juga dilakukan penelitian untuk klasifikasi dan perhitungan jumlah kendaraan berbasis video dengan membandingan performa metode pengolahan citra biasa dengan metode \textit{machine learning} sederhana. Dalam penelitian [counting_based pdf], perhitungan jumlah kendaraan dilakukan dengan mensubtraksi background menggunakan \textit{Gaussian Mixture Model} (GMM) sedangkan untuk klasfikasi menggunakan \textit{Contour Comparison} (CC) dan kombinasi antara \textit{Bag of Features}
+(BoF) dengan \textit{Support Vector Machine} (SVM). Hasil penelitian menunjukan bahwa CC memiliki akurasi klasifikasi lebih tinggi daripada BoF \& SVM dengan selisih tidak terlalu jauh. 
+Meskipun demikian, hal ini menunjuka bahwa metode klasifikasi dan perhitungan jumlah kendaraan berbasis algoritma \textit{learning} memiliki prospek yang menjanjikan.
+Salah satu penelitian dalam bidang deteksi, \textit{tracking} dan perhitungan jumlah kendaraan yang berbasis \textit{deep learning} adalah penelitian[CNN_delhi]. Pada penelitian ini digunakan model YOLO yang telah dilatih ulang untuk melakukan deteksi dan klasifikasi. Dataset yang digunakan berasal dari data Delhi-NCR. Hasil penelitian ini menunjukan bahwa menggunakan model \textit{deep learning} untuk klasifikasi dan deteksi memberikan akurasi yang tinggi.  
+
+\subsection{Prediksi arus lalu lintas}
+Informasi arus lalu lintas yang akurat sangat penting untuk manajemen dan pengembangan sistem transportasi cerdas. Termasuk salah satunya adalah prediksi arus lalu lintas. Oleh karenanya, berbagai penelitian telah dilakukan untuk memberikan hasil prediksi arus lalu lintas yang akurat.
+Penelitian yang dilakukan oleh [LSTM_2] menggunakan model encoder-decoder \textit{Long-Short Term Memory} (LSTM). Data yang digunakan berasal dari Caltrans Performance Measurement System (PeMS). Model yang telah dibuat dibandingkan dengan beberapa model lain seperti Random Walk (RW), Support Vector Regression (SVR) dan Wavelet Neural Network (WNN). 
+Penelitian serupa dilakukan oleh [LSTM_1]. Penelitian tersebut juga menggunakan LSTM untuk melakukan prediksi arus lalu lintas kapal di jalur air pedalaman sungai Yangtze Wuhan, China secara \textit{short-term} dan \textit{long-term}. Data yang digunakan berasal dari Changjiang Maritime Safety Administration. Penelitian ini juga membandingkan performa LSTM dengan beberapa model lain yaitu GRU, DBNs, Linear Regression (LR) dan ARIMA.
+Kedua penelitian [lstm1] dan [lstm2] memberikan hasil yang menunjukkan bahwa model LSTM memberikan hasil yang lebih baik untuk prediksi secara \textit{short-term} maupun \textit{long-term}
+
+\section{Dasar Teori}
+\subsection{\textit{Deep Learning}}
 Pada [5] dan [6] \textit{deep learning} didefinisikan sebagai proses belajar merepresentasikan suatu fitur. Proses ini memanfaatkan \textit{machine learning} untuk menemukan tidak hanya pemetaan fitur tehadap output namun juga mempelajari proses representasi itu sendiri.
 Untuk dapat mempelajari fitur terbaik yang merepresentasikan suatu data, \textit{deep learning} belajar secara berturut-turut dan berkesinambungan melalui layer-layer yang dimilikinya, dimana semakin dalam suatu layer maka fitur yang direpresentasikan semakin detail dan bermakna.
 (dari DTChang CODL)
@@ -35,7 +53,7 @@ dapat mendeteksi seluruh bagian dari objek dengan cara menemukan koleksi kontur 
 \textit{Deep learning} telah mencapai tingkat akurasi yang mendekati manusia dalam berbagai jenis klasifikasi dan tugas prediksi termasuk
 gambar, teks, ucapan, dan data video. (dari DTChang CODL)
 
-\section{Long-Short Term Memory (LSTM)}
+\subsection{Long-Short Term Memory (LSTM)}
 LSTM merupakan jenis \textit{recurrent neural network} yang dikhususkan untuk memproses suatu data sekuensial misalnya $x^{(1)}, x^{(2)}, ...,x^{(T)}$ (dari LSTM_2). 
 Berdasarkan gambar \ref{arsi_lstm}, LSTM terdiri atas lapisan input, lapisan output dan lapisan tersembunyi atau \textit{hidden layer}. Lapisan yang berdekatan saling terhubung penuh, sementara tidak ada koneksi di antara node dalam lapisan yang sama.
 \textit{Hidden layer} terdiri dari satu set subnet yang terhubung berulang, yang dikenal sebagai blok memori. Tidak seperti lapisan tanh tunggal dalam jaringan RNNs standar, setiap blok memori berisi satu atau lebih sel memori serta tiga gerbang multiplikatif
@@ -64,7 +82,7 @@ Jika matriks bobot terlalu kecil maka sinyal gradien akan menjadi terlalu kecil 
 LSTM diciptakan untuk mengatasi masalah \textit{vanishing gradient} dan \textit{exploding gradient} melalui sel memori serta tiga gerbang yang dimilikinya. Secara sigkat, perbedaan mendasar antara RNN dan LSTM dalam proses belajar adalah  RNN menghitung \textit{hidden state} baru dari awal berdasarkan \textit{hidden state} dan input sebelumnya ,sedangkan LSTM menghitung \textit{hidden state} baru dengan memilih apa yang akan ditambahkan ke state saat ini.
 
 
-\subsection{Prediksi menggunakan LSTM}
+\subsubsection{Prediksi menggunakan LSTM}
 Sebagai contoh dalam kasus prediksi arus lalu lintas, misalnya runtun nilai input adalah $X = (x_{1},x_{2},...,x_{T})$ , hidden vektor yang terhitung adalah $H = (h_{1},h_{2},...,h_{T})$ dan runtun yang akan diprediksi adalah $Y = (y_{1},y_{2},...,y_{T})$. 
 Proses pembaruan setiap timestep $t$ pada lapisan sel memori LSTM dideskripsikan sebagai berikut:
 \begin{equation} \label{input_gate}
@@ -95,8 +113,8 @@ Selanjutnya, nilai kandidat baru $c_t$ akan dihitung dan merepresentasikan infor
 Sel state selanjutnya akan dihitung sebagai kombinasi informasi apa yang harus dilupakan di hidden state sebelum $c_{t-1}$ dan kandidat skala baru dari $i_{t} \star c_{t}$. 
 Terakhir, hidden state $h_{t}$ dihitung sama dengan RNN dengan menskalakan menurut cell state baru $c_t$.
 
-\subsection{Strategi prediksi menggunakan LSTM}
-\subsubsection{Strategi direct multi-step forecast} \hfill\\
+\subsubsection{Strategi prediksi menggunakan LSTM}
+\paragraph{Strategi direct multi-step forecast}
 
 Metode prediksi secara langsung melibatkan pengembangan model terpisah untuk setiap timestep prediksi seperti yang diilustrasikan persamaan \ref{direct_forcast}
 Sebagai contoh, memprediksi suhu untuk dua hari ke depan. Maka dikembangkan model untuk memprediksi suhu pada hari ke-1 dan model terpisah untuk memprediksi suhu pada hari ke-2.
@@ -110,7 +128,7 @@ Sebagai contoh, memprediksi suhu untuk dua hari ke depan. Maka dikembangkan mode
 Karena terdapat satu model untuk tiap timestep, hal ini akan menambah beban komputasi dan beban maintenance model terutama ketika jumlah timestep yang akan diprediksi meningkat. Selain itu
 karena terdapat model yang terpisah berarti hubungan dependensi antar hasil prediksi tidak dapat dimodelkan.
 
-\subsubsection{Strategi recursive multi-step forecast} \hfill\
+\paragraph{Strategi recursive multi-step forecast} 
 
 Strategi rekursif melibatkan penggunaan model satu timestep secara berulang beberapa kali. Seperti pada persamaan \ref{recursive_forcast} hasil prediksi timestep sebelumnya akan digunakan sebagai input untuk melakukan prediksi pada timestep selanjutnya.
 Dalam hal memprediksi suhu untuk dua hari ke depan, maka dikembangkan model prediksi cukup satu timestep. Model ini kemudian akan digunakan untuk memprediksi hari 1, hasil prediksi hari 1 ini akan digunakan sebagai input pengamatan untuk memprediksi hari 2.
@@ -123,7 +141,7 @@ Dalam hal memprediksi suhu untuk dua hari ke depan, maka dikembangkan model pred
 
 Karena menggunakan prinsip hasil prediksi digunakan sebagai input pengamatan selanjutnya, strategi rekursif memungkinkan kesalahan prediksi terakumulasi sedemikian rupa sehingga kinerja model dapat dengan cepat menurun ketika timestep yang akan diprediksi meningkat.
 
-\subsubsection{Strategi direct-recursive hybrid} \hfill\
+\paragraph{Strategi direct-recursive hybrid} 
 
 Strategi langsung dan rekursif dapat digabungkan untuk menawarkan manfaat dari kedua metode.
 Seperti pada persamaan \ref{hybrid_forcast}, model terpisah dapat dibuat untuk tiap timestep yang akan diprediksi, tetapi masing-masing model dapat menggunakan hasil prediksi yang dibuat oleh model lain pada timestep sebelumnya sebagai nilai input.
@@ -136,7 +154,7 @@ Seperti pada persamaan \ref{hybrid_forcast}, model terpisah dapat dibuat untuk t
 
 Menggabungkan strategi rekursif dan langsung dapat membantu mengatasi keterbatasan masing-masing metode.
 
-\subsubsection{Strategi multi output} \hfill\
+\paragraph{Strategi multi output}
 
 Strategi multi-output melibatkan pengembangan satu model yang mampu memprediksi seluruh runtun prediksi yang diinginkan dalam satu langkah.
 Dalam hal memprediksi suhu untuk dua hari ke depan, seperti pada persamaan \ref{MIMO_forcast} satu model digunakan untuk memprediksi suhu dua hari berikutnya dalam satu operasi.
@@ -147,11 +165,11 @@ Dalam hal memprediksi suhu untuk dua hari ke depan, seperti pada persamaan \ref{
 Model multi output lebih kompleks karena model ini dapat mempelajari struktur ketergantungan antara input dan output serta antara output satu dengan output yang lain.
 Oleh karena itu model ini membutuhkan waktu lebih banyak untuk proses belajar serta membutuhkan lebih banyak data untuk menghindari \textit{overfitting}.
 
-\subsection{Indikator Kesalahan Hasil Prediksi menggunakan LSTM}
+\subsubsection{Indikator Kesalahan Hasil Prediksi menggunakan LSTM}
 Kesalahan \textit{(Error)} merupakan nilai selisih antara nilai sesungguhnya dengan nilai hasil prediksi. Semakin besar nilai kesalahan maka dapat dikatakan bahwa akurasi model prediksi 
 yang digunakan rendah. Terdapat beberapa indikator kesalahan untuk mengetahui tingkat akurasi suatu model diantaranya:
 
-\subsubsection{\textit{Mean Squared Error}(MSE)} \hfill\\
+\paragraph{\textit{Mean Squared Error}(MSE)} 
 
 \textit{Mean Squared Error} merupakan rata-rata nilai kuadrat selisih antara nilai sebenarnya $y_i$ dengan nilai hasil prediksi $y^{'}_i$ sejumlah T waktu. Secara matematis dapat dituliskan pada persamaan \ref{MSE}
 \begin{equation}\label{MSE}
@@ -162,7 +180,7 @@ Dengan adanya operasi kuadrat pada selisih nilai sebenarnya dengan nilai prediks
 akan semakin besar jika selisih nilai sebenarnya dengan nilai prediksi juga besar.
 
 
-\subsubsection{\textit{Root Mean Squared Error}(RMSE)} \hfill\
+\paragraph{\textit{Root Mean Squared Error}(RMSE)}
 
 \textit{Root Mean Squared Error} adalah akar kuadrat dari rata-rata nilai kuadrat selisih antara nilai sebenarnya $y_i$ dengan nilai hasil prediksi $y^{'}_i$ sejumlah T waktu seperti pada persamaan \ref{RMSE}
 \begin{equation}\label{RMSE}
@@ -172,7 +190,7 @@ akan semakin besar jika selisih nilai sebenarnya dengan nilai prediksi juga besa
 Operasi akar pada RMSE mengakibatkan hasil dari nilai kesalahan akan memiliki skala nilai yang sama dengan nilai realisasi ataupun nilai peramalan, sehingga
 indikator RMSE lebih mudah dipahami daripada indikator MSE. 
 
-\subsubsection{\textit{Mean Absolute Percentage Error}(MAPE)} \hfill\
+\paragraph{\textit{Mean Absolute Percentage Error}(MAPE)}
 
 Mean Average Percentage Error (MAPE) adalah persentase rata-rata perbandingan selisih antara nilai sebenarnya $y_i$ terhadap nilai hasil prediksi $y^{'}_i$ sejumlah T
 titik waktu seperti pada persamaan \ref{MAPE}
@@ -183,7 +201,7 @@ titik waktu seperti pada persamaan \ref{MAPE}
 Tampilan persen pada MAPE memberikan kemudahan dalam perhitungan akurasi. Akan tetapi, MAPE tidak disarankan untuk digunakan jika nilai sebenarnya $y_i$
 bernilai nol, hal ini dikarenakan saat nilai sebenarnya $y_i$ nol maka penyebut pada persamaan akan bernilai nol, sehingga nilai kesalahan akan menjadi tidak berhingga.
 
-\section{\textit{Convolutional Neural Network} (CNN)}
+\subsection{\textit{Convolutional Neural Network} (CNN)}
 
 \textit{Convolutional Neural Network} (CNN) adalah salah satu jenis neural network yang biasa digunakan pada data gambar. CNN bisa digunakan untuk mendeteksi dan mengenali object pada sebuah gambar.
 CNN tidak jauh berbeda dengan neural network pada umumnya. CNN terdiri dari neuron yang memiliki bobot, bias dan fungsi aktivasi.
@@ -196,11 +214,11 @@ Seperti pada gambar \ref{arsi_CNN}, arsitektur CNN dibagi menjadi dua yaitu \tex
 	\label{arsi_CNN}
 \end{figure}
 
-\subsection{Lapisan Konvolusi}
+\subsubsection{Lapisan Konvolusi}
 Lapisan konvolusi merupakan lapisan dimana fitur dari input akan diekstrak menggunakan sebuah filter yang mempunyai ukuran tertentu. Lapisan konvolusi hanya dapat
 dioperasikan pada input yang memliliki minimal dua dimensi. Parameter dari lapisan konvolusi yang paling umum adalah filter, ukuran filter, stride, dan padding.
 
-\subsubsection{Filter} \hfill\
+\paragraph{Filter}
 
 Filter berupa matriks dan digunakan dalam proses konvolusi. Proses konvolusi dilakukan dengan menggeser filter sepanjang data input seperti yang diilustrasikan pada gambar \ref{konvolusi_CNN}. Besarnya pergeseran ditentukan oleh nilai stride yang digunakan. Pada setiap pergeseran, dilakukan operasi perkalian matriks antara elemen input dengan elemen filter. Hasil perkalian tersebut kemudian dijumlahkan dan 
 disimpan pada fitur map. Matriks filter konvolusi umumnya menggunakan ukuran 3 x 3 atau 5 x 5. Ukuran dari matriks filter harus ganjil untuk memudahkan proses konvolusi hal iini dikarenakan proses konvolusi membutuhkan satu elemen center, sedangkan pada matriks dengan ukuran genap, tidak ada elemen yang merupakan center dari matriks.
@@ -212,12 +230,12 @@ disimpan pada fitur map. Matriks filter konvolusi umumnya menggunakan ukuran 3 x
 	\label{konvolusi_CNN}
 \end{figure}
 
-\subsubsection{Stride} \hfill\
+\paragraph{Stride}
 
 Stride adalah parameter yang menentukan berapa jumlah pergeseran filter. Jika nilai stride adalah 1, maka filter konvolusi akan bergeser sebanyak 1 pixels secara horizontal lalu vertical. 
 Semakin kecil stride maka akan semakin detail informasi yang kita dapatkan dari sebuah input, namun membutuhkan komputasi yang lebih jika dibandingkan dengan stride yang besar.
 
-\subsubsection{Padding} \hfill\
+\paragraph{Padding}
 
 Sedangkan Padding atau Zero Padding adalah parameter yang menentukan jumlah pixels (berisi nilai 0) yang akan ditambahkan di setiap sisi dari input seperti pada gambar \ref{padding_CNN}. Hal ini digunakan dengan tujuan untuk memanipulasi dimensi output dari lapisan konvolusi (fitur map).
 Dimensi output dari lapisan konvolusi selalu lebih kecil dari inputnya (kecuali penggunaan 1x1 filter dengan stride 1). Output ini akan digunakan kembali sebagai input dari lapisan konvolusi selanjutnya, sehingga tentu saja semakin banyak informasi yang terbuang.
@@ -237,7 +255,7 @@ Persamaan \ref{Fitur_map_dim} menghitung dimensi dari fitur map berdasarkan ukur
 dimana $W$ : dimensi input, $N$ : ukuran filter, $P$ : padding, dan $S$ : stride
 
 
-\subsection{Lapisan Pooling}
+\subsubsection{Lapisan Pooling}
 Fungsi dari lapisan pooling ini adalah untuk mengurangi dimensi dari fitur map secara spasial (mengurangi jumlah
 parameter) dengan operasi down-sampling. Proses pooling ditunjukan oleh gambar \ref{pooling_CNN}. Dengan pooling 2 x 2 stride 2, jumlah parameter akan direduksi sebanyak 75\%, sangat berguna untuk mengurangi kebutuhan komputasi. Selain
 mereduksi jumlah parameter, pooling juga berfungsi untuk mencegah \textit{overfitting}.
@@ -251,12 +269,12 @@ Umumnya, metode pooling yang digunakan adalah max pooling atau mengambil nilai t
 	\label{pooling_CNN}
 \end{figure}
 
-\subsection{\textit{Fully-Connected Layer} (FCN)}
+\subsubsection{\textit{Fully-Connected Layer} (FCN)}
 Fitur map yang dihasilkan dari \textit{feature extraction layer} masih berbentuk multidimensional array, sehingga harus dilakukan “flatten” atau reshape terhadap fitur map menjadi sebuah vector agar bisa digunakan sebagai input dari \textit{fully-connected layer}.
 
 \textit{Fully-connected layer} berfungsi sebagai \textit{classifier} berdasarkan fitur map yang telah diekstrak dari input. FCN akan memberikan probabilitas untuk tiap objek pada gambar.
 
-\section{YOLO (\textit{You Only Look Once}) V3}
+\subsection{YOLO (\textit{You Only Look Once}) V3}
 
 You Only Look Once (YOLO) merupakan suatu metode pendekatan yang bertujuan untuk deteksi objek. YOLO melihat deteksi objek sebagai suatu masalah regresi dari bounding box dan
 \textit{class probability} yang terpisah secara spasial. YOLO merupakan single neural network yang memprediksi \textit{bounding box} dan \textit{class probability} dari gambar utuh secara langsung dalam satu kali
@@ -300,7 +318,7 @@ Skor kelas yang dihitung menggunakan softmax mengasumsikan bahwa kelas-kelas ter
 Namun, asumsi ini kurang cocok digunakan ketika memiliki 2 atau lebih kelas dengan fitur yang hampir mirip, sebagai contoh kelas wanita dan orang. Oleh karena inilah, YOLOV3 mengunakan sigmoid untuk skor kelas [YOLOv3]
 
 Terdapat beberapa hal yang membuat YOLOV3 lebih baik dibandingkan objek detector lainnya yaitu: Anchor Box, \textit{Intersection over Union}(IoU), \textit{Non-Maxima Supression}(NMS) dan Fitur Ekstraktor.
-\subsection{Anchor Box}
+\subsubsection{Anchor Box}
 Anchor box adalah beberapa bentuk \textit{bounding box} yang telah didefinisakan sebelumnya yang mewakili bentuk objek pada dataset. Anchor box memudahkan dan mempercepat proses prediksi \textit{bounding box} terutama pada kasus dimana terdapat dua objek atau lebih berada di satu grid yang sama sehingga titik tengah kedua objek juga terletak pada grid yang sama seperti pada gambar \ref{anchor_box_merge}. 
 Tanpa menggunakan anchor box, sangat sulit untuk mendapatkan 2 \textit{bounding box} dalam satu grid.
 
@@ -328,7 +346,7 @@ Pada YOLOV3, tiap grid di tiap skala memprediksi 3 \textit{bounding box} menggun
 
 Diatas juga telah disebutkan bahwa pada YOLOV3 setiap \textit{bounding box} memiliki atribut array ukuran \textbf{(5 + C)}. Apabila dijumlahkan secara total, label untuk gambar 416x416 memiliki ukuran $((52x52)+(26x26)+(13x13))\star 3 \star (5+C)$
 
-\subsection{\textit{Intersection over Union}(IoU)}
+\subsubsection{\textit{Intersection over Union}(IoU)}
 Seperti yang telah dijelaskan, YOLOV3 memprediksi 3 \textit{bounding box} pada tiap grid. Untuk dapat menentukan manakah \textit{bounding box} yang paling bagus dari ketiga \textit{bounding box} yang ada, maka digunakan \textit{Intersection over Union}(IoU). 
 IoU akan membandingkan kesamaan antara dua bentuk dengan cara menghitung seberapa besar kedua bentuk tersebut bersimpangan [IoU pdf].
 \begin{equation} \label{IoU}
@@ -338,7 +356,7 @@ IoU akan membandingkan kesamaan antara dua bentuk dengan cara menghitung seberap
 Berdasarkan persamaan \ref{IoU}, IoU dihitung berdasakan luasan daerah yang bersimpangan terhadap total luasan daerah.
 Dalam konteks objek deteksi, maka IoU dihitung dengan membandingkan antara \textit{bounding box} hasil prediksi dengan \textit{bounding box groundtruth}.
 
-\subsection{\textit{Non-Maxima Supression}(NMS)}
+\subsubsection{\textit{Non-Maxima Supression}(NMS)}
 Pada konteks objek deteksi, Non-Maxima Supression (NMS) digunakan untuk menyaring \textit{bounding box} untuk diambil yang memiliki IoU terbesar dan meniadakan \textit{bounding box} yang lain. 
 Teknik ini sangat bermanfaat apabila terdapat lebih dari satu \textit{bounding box} dalam satu objek. NMS akan memastikan bahwa untuk tiap objek hanya ada satu buah \textit{bounding box}. 
 
@@ -353,7 +371,7 @@ Secara singkat, cara kerja NMS sebagai berikut:
 	\item Ulangi langkah 2 sampai semua \textit{bounding box} untuk tiap objek telah diperoleh.
 \end{enumerate}
 
-\subsection{Fitur Ekstraktor}
+\subsubsection{Fitur Ekstraktor}
 YOLOV3 menggunakan Darknet-53 sebagai fitur ekstraktor. Darknet-53 memiliki 53 lapisan konvolusi seperti pada gambar \ref{darknet_53}.
 \begin{figure}[htp]
 	\centering
@@ -379,16 +397,42 @@ Darknet-53 lebih powerful dibandingkan Darknet-19 [yolov2], dan lebih efisien da
 Pengukuran pada tabel \ref{tabel_comp_FE} [yolov3] dilakukan pada GPU Titan X dengan ukuran input 256 × 256. Berdasarkan tabel tersebut dapat dilihat bahwa Darknet-53 memiliki performa setara dengan fitur ekstraktor lain tetapi dengan operasi \textit{floating point} lebih sedikit dan kecepatan lebih tinggi. Darknet lebih cepat 1.5 kali daripada ResNet-101 dan 2 kali daripada ResNet-152.
 Darknet-53 juga memiliki nilai operasi \textit{floating point} per detik paling tinggi. Hal ini menunjukan bahwa arsitektur yang dimiliki yang mana didominasi oleh lapisan konvolusi sangat efisien berjalan di GPU, sehingga membuat eksekusi Darknet-19 lebih cepat [yolov3].
 
+\subsection{Kalman Filter}
+
+Kalman filter adalah persamaan matematika sebagai alat komputasi efisien (rekursif) untuk memperkirakan atau mengestimasi \textit{state} dari suatu proses dengan meminimalkan \textit{mean squared error}.
+Komponen dasar Kalman Filter adalah vektor \textit{state}, model dinamis dan model observasi.
+Vektor \textit{state} menggambarkan \textit{state} dari sistem dinamis dan menunjukkan derajat kebebasan. Varabel di vektor \textit{state} dapat berupa posisi, kecepatan, orientasi sudut dasn sebagainya. Vektor \textit{state} memiliki dua nilai pada saat yang sama yaitu 
+nilai yang diprediksi sebelum di\textit{update} dan nilai posterior setelah di\textit{update}.
+
+Model Kalman Filter mengasumsikan \textit{state} yang benar pada waktu $k$ didapatkan dari \textit{state} pada waktu $k-1$ menurut persamaan \ref{Kalman_Filter}.
+\begin{equation} \label{Kalman_Filter}
+	\textbf{x}_k = \textbf{F}_{k}\textbf{x}_{k-1} + \textbf{B}_{k}\textbf{u}_k + \textbf{w}_k
+\end{equation}
+dimana $\textbf{F}_{k}$: model transisi \textit{state} yang berlaku pada \textit{state} terdahulu $\textbf{x}_{k-1}$. $\textbf{B}_{k}$: model \textit{control-input} yang berlaku pada vektor kontrol $\textbf{u}_k$.
+$\textbf{w}_k$ adalah derau yang terjadi dalam proses yang diasumsikan berdistribusi normal dengan \textit{mean} nol dan \textit{covariance} $\textbf{Q}_k$. 
+Pada waktu $k$ sebuah pengamatan atau pengukuran $\textbf{z}_k$ pada \textit{state} sebenarnya dari $\textbf{x}_k$ dibuat berdasarkan persamaan \ref{Kalman_Filter_2}
+
+\begin{equation} \label{Kalman_Filter_2}
+	\textbf{z}_k = \textbf{H}_{k}\textbf{x}_{k} + \textbf{v}_k
+\end{equation}
+dimana $\textbf{H}_k$ adalah model pengamatan yang memetakan \textit{state} yang sebenarnya dan $\textbf{v}_k$ adalah \textit{noise} pengamatan yang diasumsikan sebagai \textit{white gaussian noise} dengan \textit{mean} nol dan \textit{covarian} $\textbf{R}_k$.$\textbf{v}_k \sim N(0, \textbf{R}_k)$. 
+
+Kalman Filter memiliki dua fase yaitu \textbf{\textit{predict}} dan \textbf{\textit{update}}. Fase \textit{predict} memanfaatkan perkiraan waktu sebelumnya untuk memproduksi perkiraan \textit{state} sekarang.
+Pada fase \textit{update} informasi yang telah diukur dari waktu sekarang digunakan untuk memperbaiki prediksi guna menghasilkan perkiraan yang akurat. Persamaan untuk \textit{update} dan \textit{update} ditunjukkan oleh \ref{Kalman_predict} dan \ref{Kalman_update}.
+\begin{equation} \label{Kalman_predict}
+	X(n) = F \cdot X(n-1) + V_{q}(n-1)	
+\end{equation}
+
+\begin{equation} \label{Kalman_update}
+	Y(n) = H \cdot X(n) + V_{p}(n)
+\end{equation}
+dimana $X(n)$ dan $Y(n)$ adalah variabel estimasi \textit{state} dan variabel pengukuran. $F$ adalah matriks transisi \textit{state} dan $H$ adalah matriks pengukuran. Sedangkan $V_{q}(n)$ dan $V_{p}(n)$ adalah derau sistem dan derau pengukuran.
 
 
-\section{Kalman Filter}
+\subsection{\textit{K-Nearest Neighboor}}
 
-
-
-\section{\textit{K-Nearest Neighboor}}
-
-\section{Software penunjang}
-\subsection{PyTorch}
+\subsection{Software penunjang}
+\subsubsection{PyTorch}
 PyTorch adalah package komputasi berbasis Python yang memanfaatkan GPU. PyTorch merupakan salah satu platform populer untuk penelitian \textit{deep learning} karena memberikan fleksibilitas dan kecepatan yang maksimum.
 PyTorch memiliki dua fitur utama yaitu: komputasi Tensor dengan GPU dan memberikan fasilitas untuk membangun \textit{deep neural network} berdasarkan sistem autograd [PyTorch paper]. 
 \begin{figure}[htp]
@@ -407,7 +451,7 @@ Fitur lain dari PyTorch antara lain:
 \end{enumerate}
 
 
-\subsection{Keras}
+\subsubsection{Keras}
 Keras merupakan high-level neural network API (Application Programming Interface), yang ditulis dengan bahasa pemrograman Python dan mampu berjalan di atas TensorFlow, CNTK, atau
 Theano. Keras pertama kali dikembangkan sebagai bagian dari proyek penelitian ONEIROS(Open-ended Neuro-Electronic Intelligent Robot Operating System). Keras dikembangkan dengan
 berfokus pada eksperimen cepat. Menuangkan ide dengan cepat merupakan langkah yang baik dalam penelitian. Keras dapat digunakan apabila sistem membutuhkan library deep learning yang
@@ -433,7 +477,7 @@ kelebihan sebagai berikut:
 \end{enumerate}
 
 
-\subsection{ZeroMQ}
+\subsubsection{ZeroMQ}
 ZeroMQ adalah library untuk \textit{messaging} secara asinkron yang memiliki performa tinggi. ZeroMQ dapat digunakan untuk \textit{multi processing} dan \textit{multi threading}.
 ZeroMQ memiliki API yang dirancang seperti soket Barkeley.
 ZeroMQ menyediakan soket (semcam IP sederhana dan soket dengan domain UNIX), yang masing-masing dapat mewakili koneksi \textit{many-to-many} diantara endpoint. ZeroMQ melakukan pengiriman pesan menggunkan pola tertentu.
@@ -446,7 +490,7 @@ Pola dasar pengiriman pesan pada ZeroMQ:
 \end{enumerate}
 Pada ZeroMQ, protokol pengiriman pesan yang tersedia meliputi TCP, PGM (multicast), komunikasi \textit{inter-process} (IPC) dan komunikasi \textit{inter-thread} (ITC) [Web ZMQ].
 
-\subsection{Dash dari Plotly}
+\subsubsection{Dash dari Plotly}
 Dash adalah framework berbasis Python untuk membuat aplikasi web. Dash ditulis menggunakan Flask, Plotly.js, dan React.js sehingga sangat cocok untuk membuat aplikasi visualisasi data dengan \textit{user interface} sesuai keinginan dan murni menggunakan Python. 
 Dash dirender di web browser. Developer dapat men-deploy aplikasinya di server kemudian membagikannya melalui URL. Karena Dash ditampilkan pada web browser maka Dash kompatibel untuk lintas platform hingga mobile sekalipun. 
 Dash merupakan library yang \textit{open source}, dirilis dibawah lisensi MIT [web dash]. Contoh aplikasi web yang dibuat menggunakan Dash seperti gambar \ref{Dash}.
@@ -457,7 +501,7 @@ Dash merupakan library yang \textit{open source}, dirilis dibawah lisensi MIT [w
 	\label{Dash}
 \end{figure}
 
-\subsection{LabelImg}
+\subsubsection{LabelImg}
 LabelImg adalah alat untuk anotasi dan pelabelan \textit{bounding box} pada gambar. Alat ini ditulis dalam bahasa Python dan menggunakan Qt untuk antarmuka grafisnya. LabelImg mendukung 2 tipe anotasi yaitu PASCAL VOC dan YOLO. 
 Anotasi untuk PASCAL disimpan dalam format XML, seperti format yang digunakan oleh ImageNet. Sedangkan anotasi YOLO akan disimpan dalam bentuk .txt [link github labelimg]
 

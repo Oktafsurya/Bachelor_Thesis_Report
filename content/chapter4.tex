@@ -6,9 +6,7 @@
 \begin{document}
 
 \selectlanguage{english}
-Secara keseluruhan proses yang dilakukan selama penelitian ini dibagi menjadi 3 bagian yaitu perancangan objek detektor untuk perhitungan jumlah kendaraan,
-perancangan jaringan LSTM untuk prediksi jumlah kendaraan, dan perancangan dashboard sederhana untuk menampilkan semua hasil dalam satu jendela.
-Proses lebih detail dijelaskan pada gambar ...
+Pada bab ini akan dijabarkan hasil penelitian yang meliputi hasil pelatihan ulang model YOLOV3 baik secara statistik maupun secara visual, hasil perhitungan jumlah kendaraan tiap 5 menit oleh sistem dengan sampel durasi 1 jam, serta hasil pelatihan dan pengujian model LSTM untuk masing-masing variasi jumlah runtun data input dan output, jumlah lapisan LSTM, dan jumlah neuron tiap lapisan. Data hasil pengamatan akan dianalisa lebih lanjut.
 
 Semua proses pengambilan data hasil penelitian dijalankan pada komputer Laboratorium Honeywell DTETI UGM dengan spesifikasi prosesor Intel Xeon E3-1225 v5 3.30 GHz.
 RAM 8 GB, GPU NVIDIA GeForce GTX 1060 6GB dan sistem operasi Ubuntu 16.04 LTS.
@@ -125,7 +123,7 @@ Untuk proses pelatihan sendiri akan memvariasikan beberapa parameter yaitu jumla
 Jumlah lapisan yang akan digunakan yaitu 1,2,3, dan 4 LSTM, jumlah neuron yang digunakan 50 dan 100, jumlah data input yang digunakan adalah 130, 260 dan 390, sedangkan jumlah output yang digunakan adalah 130, 65, dan 1. Masing-masing 
 variasi akan diamati nilai RMSE, dan MAPE nya. Variasi yang memberikan nilai RMSE dan MAPE terendah akan dipakai untuk implementasi di dashboard.
 
-Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE dan MAPE masing-masing model dapat dilihat pada tabel \ref{1LSTM_result}, \ref{2LSTM_result},\ref{3LSTM_result}, \ref{4LSTM_result}.
+Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE dan MAPE masing-masing model dapat dilihat pada tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}.
 \begin{table}[htp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -138,13 +136,13 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 	& 65 & 31.782 & 11.628\% & 26.919 & 11.353\% \\
 	& 1 & 28.468 & 11.491\% & 27.669 & 11.614\% \\
 	\hline
-	\multirow{3}{*}{260} & 130 & 29.142 & 11.67\%  & & \\
-	& 65 & 29.784 & 11.458\% & & \\
-	& 1 & 28.267 & 11.389\% & & \\
+	\multirow{3}{*}{260} & 130 & 29.142 & 11.67\%  & 27.716 & 10.864\\
+	& 65 & 29.784 & 11.458\% & 29.830 & 12.022\\
+	& 1 & 28.267 & 11.389\% & 27.883 & 11.440 \\
 	\hline
-	\multirow{3}{*}{390} & 130 & & & & \\
-	& 65 & & & & \\
-	& 2 & & & & \\
+	\multirow{3}{*}{390} & 130 & 32.301 & 12.446 & 30.567 & 11.416 \\
+	& 65 & 32.015 & 12.541 & 30.664 & 12.220 \\
+	& 1 & 28.332 & 11.417 & 27.65 & 11.542 \\
 	\hline
 \end{tabular}
 \caption{Nilai RMSE dan MAPE menggunakan 1 LSTM}
@@ -159,17 +157,17 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 		&  & \multicolumn{2}{c|}{50;50}& \multicolumn{2}{c|}{100;100} \\ \cline{3-6}
 		& & RMSE & MAPE& RMSE & MAPE\\
 		\hline
-		\multirow{3}{*}{130} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{130} & 130 & 32.022 & 12.920 & 29.610 & 10.964 \\
+		& 65 & 29.484 & 12.051 & 39.009 & 15.242 \\
+		& 1 & 27.571 & 12.062 & 27.787 & 12.180 \\
 		\hline
-		\multirow{3}{*}{260} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{260} & 130 & 30.109 & 11.572 & 28.770 & 11.107 \\
+		& 65 & 28.983 & 11.204 & 28.443 & 11.898 \\
+		& 1 & 27.165 & 11.66 & 27.565 & 12.145 \\
 		\hline
-		\multirow{3}{*}{390} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{390} & 130 & 27.68 & 11.03 & 28.625 & 11.958 \\
+		& 65 & 31.245 & 11.610 & 31.512 & 12.579 \\
+		& 1 & 27.377 & 11.55 & 27.833 & 11.658 \\
 		\hline
 	\end{tabular}
 	\caption{Nilai RMSE dan MAPE menggunakan 2 LSTM}
@@ -184,51 +182,59 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 		&  & \multicolumn{2}{c|}{50;50;50}& \multicolumn{2}{c|}{100;100;100} \\ \cline{3-6}
 		& & RMSE & MAPE& RMSE & MAPE\\
 		\hline
-		\multirow{3}{*}{130} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{130} & 130 & 34.268 & 12.801 & 36.555 & 14.052 \\
+		& 65 & 29.479 & 11.915 & 33.423 & 14.439 \\
+		& 1 & 27.390 & 12.116 & 27.346 & 12.008 \\
 		\hline
-		\multirow{3}{*}{260} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{260} & 130 & 26.059 & 11.075 & 25.933 & 10.362 \\
+		& 65 & 26.428 & 10.729 & 37.004 & 14.642 \\
+		& 1 & 26.583 & 11.144 &  27.557 & 11.268 \\
 		\hline
-		\multirow{3}{*}{390} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
+		\multirow{3}{*}{390} & 130 & 29.889 & 11.668 & 35.517 & 13.226 \\
+		& 65 & 38.861 & 16.415 & 38.512 & 14.477 \\
+		& 1 & 27.972 & 11.150 & 27.392 & 11.752 \\
 		\hline
 	\end{tabular}
 	\caption{Nilai RMSE dan MAPE menggunakan 3 LSTM}
 	\label{3LSTM_result}
 	\end{table} 
 
-\begin{table}[htp]
-	\centering
-	\begin{tabular}{|c|c|c|c|c|c|}
-		\hline 
-		\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{4 LSTM}} \\ \cline{3-6}
-		&  & \multicolumn{2}{c|}{50;50;50;50}& \multicolumn{2}{c|}{100;100;100;100} \\ \cline{3-6}
-		& & RMSE & MAPE& RMSE & MAPE\\
-		\hline
-		\multirow{3}{*}{130} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
-		\hline
-		\multirow{3}{*}{260} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
-		\hline
-		\multirow{3}{*}{390} & 130 & & & & \\
-		& 65 & & & & \\
-		& 2 & & & & \\
-		\hline
-	\end{tabular}
-	\caption{Nilai RMSE dan MAPE menggunakan 4 LSTM}
-	\label{4LSTM_result}
-	\end{table} 
+% \begin{table}[htp]
+% 	\centering
+% 	\begin{tabular}{|c|c|c|c|c|c|}
+% 		\hline 
+% 		\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{4 LSTM}} \\ \cline{3-6}
+% 		&  & \multicolumn{2}{c|}{50;50;50;50}& \multicolumn{2}{c|}{100;100;100;100} \\ \cline{3-6}
+% 		& & RMSE & MAPE& RMSE & MAPE\\
+% 		\hline
+% 		\multirow{3}{*}{130} & 130 & & & & \\
+% 		& 65 & & & & \\
+% 		& 2 & & & & \\
+% 		\hline
+% 		\multirow{3}{*}{260} & 130 & & & & \\
+% 		& 65 & & & & \\
+% 		& 2 & & & & \\
+% 		\hline
+% 		\multirow{3}{*}{390} & 130 & & & & \\
+% 		& 65 & & & & \\
+% 		& 2 & & & & \\
+% 		\hline
+% 	\end{tabular}
+% 	\caption{Nilai RMSE dan MAPE menggunakan 4 LSTM}
+% 	\label{4LSTM_result}
+% 	\end{table} 
 
-Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result},\ref{3LSTM_result}, \ref{4LSTM_result}, dapat diketahui karakteristik jaringan LSTM
+Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}, dapat diketahui karakteristik jaringan LSTM sebagai berikut:
+\begin{enumerate}
+	\item Dengan ukuran input yang sama, semakin kecil ukuran output maka semakin kecil pula RMSE dan MAPE yang diberikan. 
+	\item Dengan ukuran output yang sama penambahan jumlah input membuat RMSE dan MAPE semakin berkurang. Namun dengan ukuran input 390, RMSE dan MAPE justru lebih besar dibandingkan input 260. Hal ini dikarenakan meskipun LSTM memiliki kemampuan untuk mempelajari dependensi jangka panjang lebih baik daripada RNN, namun jumlah data yang terlalu banyak tidak cocok untuk LSTM.
+	\item Dengan jumlah lapisan LSTM yang sama, penambahan jumlah neuron tiap lapisan LSTM dapat mengurangi RMSE dan MAPE.
+	\item Menambah jumlah lapisan LSTM tidak mengurangi RMSE dan MAPE secara signifikan.
+	\item Berdasarkan keseluruhan tabel dapat dilihat bahwa penambahan jumlah neuron tiap lapisan lebih efektif untuk mengurangi RMSE dan MAPE dibandingkan menambah jumlah lapisan LSTM.
+	
+\end{enumerate}
 
-(Analisa hasil tabel, kasih grafik training dan grafik testing untuk 3 model terbaik)
+
 
 \section{Perancangan dashboard}
 Pada perancangan ini akan dibuat 2 buah dashboard yaitu dashboard utama dan dashboard kedua. Skema perancangan dashboard secara keseluruhan seperti pada gambar \ref{all_system}.
