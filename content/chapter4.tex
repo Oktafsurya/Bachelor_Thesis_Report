@@ -105,6 +105,14 @@ Hasil perbandingan antara perhitungan sistem dengan pengamat dapat dilihat pada 
 	1& 212 & 206 & 184\\
 	2 & 270 & 278 & 254\\
 	3 & 200 & 192 & 177\\
+	4 & 227 & 235 & 204 \\
+	5 & 223 & 232 & 202 \\
+	6 & 248 & 241 & 235 \\
+	7 & 232 & 208 & 217 \\
+	8 & 235 & 241 & 213 \\
+	9 & 269 & 273 & 248 \\
+	10 & 265 & 271 & 243 \\
+	11 & 229 & 235 & 206 \\
 	\hline
 \end{tabular}
 \caption{Perbandingan hasil perhitungan sistem dengan \textit{groundtruth}}
@@ -136,13 +144,13 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 	& 65 & 31.782 & 11.628\% & 26.919 & 11.353\% \\
 	& 1 & 28.468 & 11.491\% & 27.669 & 11.614\% \\
 	\hline
-	\multirow{3}{*}{260} & 130 & 29.142 & 11.67\%  & 27.716 & 10.864\\
-	& 65 & 29.784 & 11.458\% & 29.830 & 12.022\\
-	& 1 & 28.267 & 11.389\% & 27.883 & 11.440 \\
+	\multirow{3}{*}{260} & 130 & 29.142 & 11.67\%  & 27.716 & 10.864\%\\
+	& 65 & 29.784 & 11.458\% & 29.830 & 12.022\%\\
+	& 1 & 28.267 & 11.389\% & 27.883 & 11.440\% \\
 	\hline
-	\multirow{3}{*}{390} & 130 & 32.301 & 12.446 & 30.567 & 11.416 \\
-	& 65 & 32.015 & 12.541 & 30.664 & 12.220 \\
-	& 1 & 28.332 & 11.417 & 27.65 & 11.542 \\
+	\multirow{3}{*}{390} & 130 & 32.301 & 12.446\% & 30.567 & 11.416\% \\
+	& 65 & 32.015 & 12.541\% & 30.664 & 12.220\% \\
+	& 1 & 28.332 & 11.417\% & 27.65 & 11.542\% \\
 	\hline
 \end{tabular}
 \caption{Nilai RMSE dan MAPE menggunakan 1 LSTM}
@@ -157,17 +165,17 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 		&  & \multicolumn{2}{c|}{50;50}& \multicolumn{2}{c|}{100;100} \\ \cline{3-6}
 		& & RMSE & MAPE& RMSE & MAPE\\
 		\hline
-		\multirow{3}{*}{130} & 130 & 32.022 & 12.920 & 29.610 & 10.964 \\
-		& 65 & 29.484 & 12.051 & 39.009 & 15.242 \\
-		& 1 & 27.571 & 12.062 & 27.787 & 12.180 \\
+		\multirow{3}{*}{130} & 130 & 32.022 & 12.920\% & 29.610 & 10.964 \%\\
+		& 65 & 29.484 & 12.051\%& 39.009\% & 15.242\% \\
+		& 1 & 27.571 & 12.062\% & 27.787 & 12.180\% \\
 		\hline
-		\multirow{3}{*}{260} & 130 & 30.109 & 11.572 & 28.770 & 11.107 \\
-		& 65 & 28.983 & 11.204 & 28.443 & 11.898 \\
-		& 1 & 27.165 & 11.66 & 27.565 & 12.145 \\
+		\multirow{3}{*}{260} & 130 & 30.109 & 11.572\% & 28.770\% & 11.107\% \\
+		& 65 & 28.983 & 11.204\% & 28.443 & 11.898\% \\
+		& 1 & 27.165 & 11.66\% & 27.565 & 12.145\% \\
 		\hline
-		\multirow{3}{*}{390} & 130 & 27.68 & 11.03 & 28.625 & 11.958 \\
-		& 65 & 31.245 & 11.610 & 31.512 & 12.579 \\
-		& 1 & 27.377 & 11.55 & 27.833 & 11.658 \\
+		\multirow{3}{*}{390} & 130 & 27.68 & 11.03\% & 28.625 & 11.958\% \\
+		& 65 & 31.245 & 11.610\% & 31.512 & 12.579\% \\
+		& 1 & 27.377 & 11.55\% & 27.833 & 11.658\% \\
 		\hline
 	\end{tabular}
 	\caption{Nilai RMSE dan MAPE menggunakan 2 LSTM}
@@ -182,17 +190,17 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 		&  & \multicolumn{2}{c|}{50;50;50}& \multicolumn{2}{c|}{100;100;100} \\ \cline{3-6}
 		& & RMSE & MAPE& RMSE & MAPE\\
 		\hline
-		\multirow{3}{*}{130} & 130 & 34.268 & 12.801 & 36.555 & 14.052 \\
-		& 65 & 29.479 & 11.915 & 33.423 & 14.439 \\
-		& 1 & 27.390 & 12.116 & 27.346 & 12.008 \\
+		\multirow{3}{*}{130} & 130 & 34.268 & 12.801\% & 36.555 & 14.052\% \\
+		& 65 & 29.479 & 11.915\% & 33.423 & 14.439\% \\
+		& 1 & 27.390 & 12.116\% & 27.346 & 12.008\% \\
 		\hline
-		\multirow{3}{*}{260} & 130 & 26.059 & 11.075 & 25.933 & 10.362 \\
-		& 65 & 26.428 & 10.729 & 37.004 & 14.642 \\
-		& 1 & 26.583 & 11.144 &  27.557 & 11.268 \\
+		\multirow{3}{*}{260} & 130 & 26.059 & 11.075\% & 25.933 & 10.362\% \\
+		& 65 & 26.428 & 10.729\% & 37.004 & 14.642\% \\
+		& 1 & 26.583 & 11.144\% &  27.557 & 11.268\% \\
 		\hline
-		\multirow{3}{*}{390} & 130 & 29.889 & 11.668 & 35.517 & 13.226 \\
-		& 65 & 38.861 & 16.415 & 38.512 & 14.477 \\
-		& 1 & 27.972 & 11.150 & 27.392 & 11.752 \\
+		\multirow{3}{*}{390} & 130 & 29.889 & 11.668\% & 35.517 & 13.226\% \\
+		& 65 & 38.861 & 16.415\% & 38.512 & 14.477\% \\
+		& 1 & 27.972 & 11.150\% & 27.392 & 11.752\% \\
 		\hline
 	\end{tabular}
 	\caption{Nilai RMSE dan MAPE menggunakan 3 LSTM}
@@ -227,27 +235,48 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}, dapat diketahui karakteristik jaringan LSTM sebagai berikut:
 \begin{enumerate}
 	\item Dengan ukuran input yang sama, semakin kecil ukuran output maka semakin kecil pula RMSE dan MAPE yang diberikan. 
-	\item Dengan ukuran output yang sama penambahan jumlah input membuat RMSE dan MAPE semakin berkurang. Namun dengan ukuran input 390, RMSE dan MAPE justru lebih besar dibandingkan input 260. Hal ini dikarenakan meskipun LSTM memiliki kemampuan untuk mempelajari dependensi jangka panjang lebih baik daripada RNN, namun jumlah data yang terlalu banyak tidak cocok untuk LSTM.
-	\item Dengan jumlah lapisan LSTM yang sama, penambahan jumlah neuron tiap lapisan LSTM dapat mengurangi RMSE dan MAPE.
-	\item Menambah jumlah lapisan LSTM tidak mengurangi RMSE dan MAPE secara signifikan.
-	\item Berdasarkan keseluruhan tabel dapat dilihat bahwa penambahan jumlah neuron tiap lapisan lebih efektif untuk mengurangi RMSE dan MAPE dibandingkan menambah jumlah lapisan LSTM.
-	
+	\item Dengan ukuran output yang sama penambahan jumlah input membuat RMSE dan MAPE semakin berkurang. Namun dengan ukuran input 390, RMSE dan MAPE justru lebih besar dibandingkan input 260. Hal ini dikarenakan kurangnya data latih untuk input 390 sehingga LSTM tidak dapat mempelajari secara maksimal karakteristik data. Dengan data input sebesar 390  dan misalkan jumlah output 1, berarti hanya terdapat 3 runtun data latih dengan bentuk (3, 390, 1). Apabila data latih ini digunakan untuk membuat data $train\_x$ dengan sistem \textit{sliding window} maka hanya didapatkan data $train\_x$ sebanyak (780,390,1). Jumlah runtun data ini lebih sedikit dibandingkan dengan ukuran input 260 dan 130 untuk jumlah output yang sama. Dengan jumlah output yang sama yaitu 1, input 260 memberikan jumlah data $train\_x$ sebanyak (1040, 260, 1) sedangkan dengan input 130 memberikan data $train\_x$ sebanyak (1040,130,1).
+	\item Dengan mengkombinasikan antara jumlah output, jumlah input, jumlah lapisan LSTM dan jumlah neuron tiap lapisan secara proporsional dapat dibuat sebuah model yang optimal  
 \end{enumerate}
 
+Berdasarkan tabel, diketahui bahwa untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 100 dengan RMSE sebesar 25.933 dan MAPE 10.362\%. Untuk output 65 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.428 dan MAPE 10.729\%.
+Sedangkan untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.583 dan MAPE 11.144\%.
 
+Hasil perbandingan antara output model dengan data uji ditunjukkan oleh gambar \ref{out_130}, \ref{out_65}, \ref{out_1}.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_130}
+	\caption{Hasil prediksi model dengan output 130}
+	\label{out_130}
+\end{figure}
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_65}
+	\caption{Hasil prediksi model dengan output 65}
+	\label{out_65}
+\end{figure}
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_1}
+	\caption{Hasil prediksi model dengan output 1}
+	\label{out_1}
+\end{figure}
+Berdasarkan gambar tersebut dapat diketahui bahwa meskipun nilai RMSE dan MAPE yang dimiliki oleh model dengan output 1 secara statistika lebih buruk daripada model dengan output 130 dan 65, namun secara visual model dengan output 1 mampu mengikuti tren dari data uji lebih baik. Hal ini dikarenakan dengan jumlah output yang semakin sedikit, maka model akan semakin presisi untuk mempelajari karakteristik data namun
+akan membuuhkan waktu lama untuk melakukan prediksi. 
 
 \section{Perancangan dashboard}
 Pada perancangan ini akan dibuat 2 buah dashboard yaitu dashboard utama dan dashboard kedua. Skema perancangan dashboard secara keseluruhan seperti pada gambar \ref{all_system}.
-\begin{figure}[htp]
-	\centering
-	\includegraphics[scale=0.6]{all_system}
-	\caption{Skema perancangan dashboard yang dilakukan}
-	\label{all_system}
-\end{figure}
+% \begin{figure}[htp]
+% 	\centering
+% 	\includegraphics[scale=0.6]{all_system}
+% 	\caption{Skema perancangan dashboard yang dilakukan}
+% 	\label{all_system}
+% \end{figure}
 
 Dari gambar \ref{all_system}, tampak bahwa dashboard utama akan menampilkan data berupa view asli dari CCTV, view CCTV setelah dikenai objek detektor, grafik perhitungan jumlah kendaraan, dan hasil prediksi untuk hari yang bersangkutan.
 Sedangkan dashboard kedua akan mengakses data hasil prediksi 1, data hasil prediksi 2 dan data hasil prediksi 3. Data-data ini berada pada file csv terpisah dan mengandung data prediksi hingga 6 hari kedepan. Dengan kata lain dashboard kedua digunakan
 apabila seseorang ingin melihat prediksi arus lalu lintas untuk 2 hari bahkan 6 hari kedepan.
-
 
 \end{document}

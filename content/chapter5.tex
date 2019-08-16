@@ -5,26 +5,31 @@
 \documentclass[../thesis.tex]{subfiles}
 \begin{document}
 
-\section{Conclusions}
+\section{Kesimpulan}
+Prediksi arus lalu secara \textit{real time} menggunakan kamera CCTV jalan yang berbasis \textit{deep learning} telah dibahas dalam penelitian ini. Secara garis besar penelitian ini dibagi menjadi tiga bagian yaitu
+pertama perancangan objek detektor untuk melakukan deteksi, \textit{tracking}, dan perhitungan jumlah kendaraan menggunakan CCTV. Kedua, perancangan model \textit{Long-Short Term Memory} (LSTM) untuk melakukan prediksi arus lalu lintas berdasarkan data yang telah terkumpul. Ketiga, perancangan \textit{dashboard} untuk
+visualisasi hasil.
 
-A kinodynamic motion planning for omnidirectional mobile robot is presented in this work. Trajectory tracking strategy using Proportional-Integral (PI) control is also discussed. This work was divided into two main parts. The first part is about motion planning strategy, using kinodynamic-RRT* with double integrator model to generate translational trajectory considering the dynamic of the model and minimum-time trajectory generator to generate rotational trajectory with acceleration and velocity constraint. The second part is about trajectory tracking strategy to control he robot to follows the planned trajectory.  
+Perancangan objek detektor dilakukan dengan melatihan ulang model YOLOV3 menggunakan dataset yang telah dibuat pada \textit{framework} Darknet. 
+Dataset berupa gambar kondisi lalu lintas di Indonesia yang diambil dari layanan \textit{live streaming} CCTV oleh ATCS Semarang. Model YOLOV3 baru hasil pelatihan ulang digunakan untuk
+melakukan \textit{tracking} dan perhitungan jumlah kendaraan setiap 5 menit selama 11 hari guna membuat dataset untuk media pelatihan LSTM.
 
-The motion planning strategy found the trajectory considering that the obstacles are moving. The movement of the obstacle are assumed to have constant velocity. The system finds a collision free trajectory by growing the tree and connects the nodes of states considering the dynamics of the model. The connection between the states are solved using fixed-final-state free-final-time optimal controller. The collision checking is computed in 3D time-space, taking account into the obstacles movement. The rotational trajectory is computed separately from the translational trajectory, then the resulting trajectories are combined and passed to the trajectory tracker to control the robot's movement.
+Prediksi arus lalu lintas menggunakan LSTM dilakukan dengan terlebih dahulu melatih model LSTM menggunakan data jumlah kendaraan tiap 5 menit yang telah terkumpul. Untuk mendapatkan model yang optimal, pelatihan model LSTM dilakukan dengan 
+memvariasikan beberapa parameter antara lain jumlah input dan output, jumlah lapisan LSTM yang digunakan serta jumlah neuron untuk setiap lapisan. Masing-masing model kemudian dievaluasi untuk melihat besarnya \textit{Root Mean Squared Error} dan 
+\textit{Mean Average Percentage Error} nya. Model LSTM optimal yang diperoleh mampu untuk melakukan prediksi arus lalu lintas 1 hari kedepan dengan tren yang menyerupai data pengujian.
 
-We used trajectory tracking controller to follows the planned trajectory of the robot. The tracking controller is a closed-loop PI control to track the reference trajectory. To address the dynamic environment, we also proposed the computation in an online fashion, without knowing the exact movement of the obstacles at the beginning of computation. This was done by iteratively solving trajectory with an updated information of the obstacles for each iteration, while the trajectory tracker is concurrently control the robot's movement.
+Perancangan \textit{dashboard} dilakukan dengan menggunakan aplikasi Dash. Pada perancangan ini dilakukan pembagian proses untuk menghindari penumpukan proses dalam satu perintah. Pengiriman dan penerimaan data antar proses dilakukan menggunakan \textit{library} ZeroMQ. 
 
-We performed numerical simulations to verify the fixed-final-state free-final-time controller, the kinodynamic-RRT* algorithm, and the rotational trajectory generator. Then we implemented the overall strategy using Robot Operating System (ROS) framework. The strategy is then applied to the robot's model in Gazebo physical simulator. We also visualize the tree of the kinodynamic-RRT*, the dynamic obstacles, and the solution trajectory using RViz. Simulation result shows that the strategy is able to move the robot's to the desired goal without colliding with obstacles.
+\section{Saran}
 
-\section{Future Works}
-
-There are several other problems that emerge during this work that should be tackled in the future research, that are :
+Untuk meningkatkan performa objek detektor dalam melakukan deteksi,\textit{tracking} dan perhitungan jumlah kendaraan serta kemampuan prediksi model LSTM, beberapa hal yang perlu menjadi
+pertimbangan untuk penelitian selanjutnya adalah sebagai berikut:
 
 \begin{enumerate}
-\item In this work, the translational trajectory and the rotational trajectory are computed separately, resulting an out-of-sync velocity in robot's body frame. So, it could be improved by taking the robot's motion in body frame into account.
-\item The trajectory tracking controller only considers the current reference pose to compute the control input, while the subsequent pose is already known. Hence, we suggest future works should take this subsequent reference pose into account, e.g. using Model Predictive Controller.
-\item While this work only tested in simulation, where the information of the robot's and obstacles' states are already available, a robot localization system and also obstacles' detection and tracking may be developed to implements this work in real robot.
-\item The proposed motion planning strategy assuming that the robot's and obstacles' states are perfectly known and accurate, while in real world this may be partially known and uncertain. So, we suggest to take this uncertainty into account while solving the trajectory, e.g. motion planning under uncertainty.
-\item To increase the quality of solution trajectory as well as computation efficiency it is recommended to develop and implement heuristic for the sampling procedure.
+\item Dataset yang digunakan untuk melatih ulang model YOLOV3 pada penelitian ini didominasi oleh kelas sepeda motor dan mobil. Hal ini dikarenakan lalu lintas di Indonesia didominasi oleh dua kelas tersebut. Untuk penelitian selanjutnya disarankan agar menambah jumlah data untuk kelas-kelas yang lain agar dataset semakin seimbang.
+\item Untuk melakukan perhitungan jumlah kendaran, penelitian ini menetapkan garis acuan terlebih dahulu untuk mengecek apakah garis pada objek/kendaraan bersinggungan atau tidak. Metode seperti ini kurang adaptif terhadap perubahan sudut CCTV yang dikendalikan oleh operator. Untuk penelitian selanjutnya mungkin dapat menggunakan metode lain yang lebih adaptif seperti \textit{road segmentation}.
+\item Pada penelitian ini, jumlah data yang digunakan untuk melatih LSTM  hanya sebanyak 11 hari. Sangat disarankan untuk menambah data latih sehingga prediksi yang dihasilkan dapat lebih akurat.
+\item Perancangan \textit{dashboard} pada penelitian ini hanya sebatas berjalan di \textit{localhost}. Penelitian selanjutnya dapat mengembangkan \textit{dashboard} untuk siap diimplementasikan di server
 \end{enumerate}
 
 \end{document}

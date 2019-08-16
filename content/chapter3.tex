@@ -40,7 +40,7 @@ Keseluruhan proses untuk mendapatkan model baik untuk deteksi objek maupun predi
 	\label{get_model_scheme}
 \end{figure}
 
-\subsection{Deteksi, \textit{tracking}, dan \textit{counting} objek}
+\subsection{Deteksi, \textit{tracking}, dan perhitungan jumlah kendaraan}
 Pada bagian ini akan dibahas mengenai perancangan sistem dari segi Deteksi, \textit{tracking}, dan \textit{counting} objek.
 \subsubsection{Deteksi Objek}
 Berdasarkan gambar \ref{get_model_scheme}, proses pertama yang dilakukan adalah pemilihan jaringan objek detektor. Seperti yang telah disebutkan pada bagian dasar teori, terdapat beberapa jaringan objek detektor yang telah dikembangkan oleh ilmuan. 
@@ -77,7 +77,7 @@ Data anotasi dari LabelImg akan disimpan dalam file .txt. Selanjutnya akan dilak
 dari \textit{bounding box} tiap objek dalam gambar. Berikutnya yang perlu dilakukan adalah mengatur parameter pelatihan seperti inisiasi \textit{learning rate}, iterasi maksimum, iterasi awal mulai penerapan \textit{adaptive learning rate}, \textit{batch size}, serta anchor box. Semua parameter training diatur dan disimpan dalam file konfigurasi .cfg dimana file ini akan 
 dipanggil saat proses pelatihan. Darknet telah menyediakan fasilitas untuk menghitung metric evaluasi model antara lain \textit{True Positive (TP), False Positive (FP), False Negative (FN), precision, recall, F1-score, IoU}, dan \textit{Mean Average Precision} (mAP).
 
-\subsubsection{\textit{Tracking} dan \textit{counting} objek}
+\subsubsection{\textit{Tracking} dan Perhitungan Jumlah Kendaraan}
 Tracker yang digunakan pada penelitian ini adalah \textit{Simple Online and Real-time Tracking}(SORT) [pdf sort]. Pada SORT, ketika terdapat objek yang terdeteksi, \textit{bounding box} dari objek akan digunakan untuk menentukan state target. Estimasi geometri \textit{bounding box} untuk target dilakukan dengan memprediksi lokasi berikutnya pada frame saat ini. Prediksi lokasi ini berdasarkan pada komponen kecepatan yang diselesaikan oleh Kalman Filter[pdf kalman filter].
 Ketika terdapat suatu objek yang masuk atau keluar dari gambar, maka tracker akan memberikan id unik kepada objek tersebut. Tracker juga akan memperhitungkan hasil deteksi yang memiliki IoU dibawah $IoU_{min}$ dan mengelompokannya kedalam untracked objek. Setiap tracker baru akan dibandingkan dengan hasil deteksi untuk mencegah terjadinya \textit{false positive} selama proses tracking.
 
@@ -160,8 +160,22 @@ Alur tahapan pada proses ini dijabarkan seperti pada gambar \ref{lstm_training}.
 	\label{lstm_training}
 \end{figure}
 Dataset dimuat dari file csv yang berisi data jumlah kendaraan. Data yang dipakai hanyalah data jumlah total kendaraan. Setelah itu, dilakukan normalisasi data menggunakan module MinMaxScaler dari \textit{library} scikit-learn. Normalisasi akan membuat data memiliki nilai pada rentang 0 dan 1. Hal ini dapat mempercepat proses pelatihan untuk menemukan \textit{global minima}.
-Setelah di normalisasi, dataset akan dibagi menjadi data latih (\textit{train}) dan data uji (\textit{testing}). Data latih akan digunakan untuk mempelajari pola hubungan antar data dan membentuk runtun data latih input ($train\_x$) dan data latih output ($train\_y$). Proses untuk membuat data $train\_x$ dan $train\_y$ menggunakan konsep \textit{sliding window} seperti yang dijabarkan pada algoritma \ref{train_xy}. Sedangkan data uji (\textit{testing}) digunakan untuk validasi model yang telah dibuat.
-
+Setelah di normalisasi, dataset akan dibagi menjadi data latih (\textit{train}) dan data uji (\textit{testing}) seperti pada algoritma \ref{split_dataset}.
+\begin{algorithm}[htp]
+	\begin{algorithmic}[1]
+	\Function{split_dataset}{$data, n\_input, n\_out\_test, n\_out\_model$}
+		\State $train, test \leftarrow data[:-n\_out\_test], data[-n\_out\_test:]$
+		\State $train \leftarrow array(split(train, len(train)/n\_input))$
+		\State $test \leftarrow array(split(test, len(test)/n\_out\_model))$
+		\Return $train$, $test$
+	\EndFunction
+	\end{algorithmic}
+	\caption{Proses pembagian data menjadi data latih dan data uji}
+	\label{split_dataset}
+\end{algorithm}
+Pembagian dataset dilakukan berdasarkan beberapa parameter yaitu jumlah data input dan output model serta jumlah data uji yang diinginkan. Pada penelitian ini data yang terkumpul pada file .csv sebanyak 11430 dengan bentuk (1430,1). Berikutnya data ini akan dibagi menjadi 1170 data (9 hari) untuk pelatihan dan 260 data untuk pengujian (2 hari). 
+Data latih akan dikelompokan sesuai jumlah input model sedangkan data uji akan dikelompokan sesuai jumlah output model. Jika model menggunakan input = 130 data (1 hari) dan output = 1, maka bentuk data latih menjadi ($1170/130, 130, 1$) = (9, 130, 1) dan data uji menjadi ($260/1, 1, 1$) = (260,1,1).
+Selanjutnya data latih akan digunakan untuk mempelajari pola hubungan antar data dan membentuk runtun data latih input ($train\_x$) dan data latih output ($train\_y$). Proses untuk membuat data $train\_x$ dan $train\_y$ menggunakan konsep \textit{sliding window} seperti yang dijabarkan pada algoritma \ref{train_xy}. Sedangkan data uji (\textit{testing}) digunakan untuk validasi model yang telah dibuat.
 \begin{algorithm}[htp]
 	\begin{algorithmic}[1]
 	\Function{to_supervised}{$train, n\_input, n\_out$}
@@ -189,14 +203,14 @@ Masing-masing model ini akan masuk tahap pengujian untuk dievaluasi.
 
 \subsubsection{Proses Pengujian (\textit{Testing})}
 Alur tahapan pada proses pengujian ini dijabarkan seperti pada gambar \ref{lstm_testing}
-\begin{figure}[htp]
+\begin{figure}[t]
 	\centering
 	\includegraphics[scale=0.5]{Testing_lstm}
 	\caption{Tahapan pada proses pengujian (\textit{testing})}
 	\label{lstm_testing}
 \end{figure}
 Tahap pertama memuat dataset dan model yang telah dilatih pada tahap sebelumnya. Selanjutnya data dinormalisasi, kemudian dibagi menjadi data latih dan data uji sama pada proses pelatihan (\textit{training}).
-Tahap berikutnya merupakan tahapan untuk mengevaluasi model yang telah dilatih. Evaluasi dilakukan dengan membandingkan hasil prediksi dengan data uji sebagai \textit{groundtruth}. Pada proses evaluasi ini, metric yang digunakan adalah \textit{Mean Average Percentage Error}(MAPE) dan \textit{Root Mean Squared Error}(RMSE). Kedua metric ini digunakan karena keluaran yang dihasilkan langsung menunjukan seberapa besar kesalahan prediksi dibandingkan data uji. 
+Tahap berikutnya merupakan tahapan untuk mengevaluasi model yang telah dilatih. Evaluasi dilakukan dengan membandingkan hasil prediksi dengan data uji sebagai \textit{groundtruth}. Pada proses evaluasi ini, metric yang digunakan adalah \textit{Mean Average Percentage Error} (MAPE) dan \textit{Root Mean Squared Error} (RMSE). Kedua metric ini digunakan karena keluaran yang dihasilkan langsung menunjukan seberapa besar kesalahan prediksi dibandingkan data uji. 
 
 Untuk mendapatkan hasil prediksi, dilakukan dengan mengambil sebanyak $n\_input$ data dari data latih. Data ini akan menjadi input untuk LSTM. LSTM pada Keras membutuhkan input array 3 dimensi yang memiliki bentuk ($N, W, F$) dimana $N$: jumlah runtun, $W$: panjang runtun data input, dan $F$: adalah jumlah fitur setiap runtun sehingga data input harus di\textit{reshape} menjadi bentuk seperti yang diperbolehkan.
 Proses tersebut dilakukan di dalam sebuah perulangan. Tiap iterasi akan menghasilkan array hasil prediksi. Selain itu pada setiap akhir iterasi, data input akan digabung dengan data uji (sesuai indeks iterasi). Proses lebih jelas dijabarkan pada algoritma \ref{test_LSTM}.
@@ -223,48 +237,24 @@ Proses tersebut dilakukan di dalam sebuah perulangan. Tiap iterasi akan menghasi
 	\label{test_LSTM}
 \end{algorithm}
 
-\begin{algorithm}[htp]
-	\begin{algorithmic}[1]
-	\Function{rekursif_prediction}{$data\_input, num\_pred, n\_input, model$}
-		\State $predictions \leftarrow list()$
-		\For { $i \in range(num\_pred)$ }
-			\State $data \leftarrow data\_input$
-			\State $input\_x \leftarrow data[-n\_input:,0]$
-			\State $input\_x \leftarrow input\_x.reshape((1, len(input\_x), 1))$
-			\State $yhat \leftarrow model.predict(input\_x, verbose=0)$
-			\State $yhat\_sequence \leftarrow yhat[0]$
-			\State $predictions.append(yhat\_sequence)$
-			\State $prediction\_array \leftarrow array(predictions)$
-			\State $prediction\_array \leftarrow prediction\_array.reshape((i+1)*130, 1)$
-			\State $pred\_append \leftarrow prediction\_array[-130:,0]$
-			\State $pred\_append \leftarrow pred\_append.reshape(pred\_append.shape[0], 1)$
-			\State $data\_input \leftarrow np.append(data\_input, pred\_append, axis=0)$
-		\EndFor
-		\State $predictions\_result \leftarrow array(predictions)$
-	\EndFunction
-	\end{algorithmic}
-	\caption{Proses prediksi menggunakan metode rekursif}
-	\label{recursive_LSTM}
-\end{algorithm}
-Model LSTM yang dilatih hanya memiliki output 1, 65 dan 130 (1 hari) runtun data. Apabila ingin dilakukan prediksi untuk jangka waktu 2 hari atau bahkan 6 hari kedepan, maka menggunakan model yang sudah dilatih dapat dilakukan prediksi berdasarkan strategi rekursif.
-Hasil prediksi pada timestep $t$ akan digunakan sebagai input untuk prediksi di timestep $t+1$. Proses akan terus diulangi hingga jangka waktu prediksi yang dikehendaki. Metode rekursif ini digunakan ketika implementasi langsung dilapangan.
-Sebagai gambaran, untuk memprediksi 3 hari kedepan dibutuhkan data 1 hari dan 2 hari kedepan. Kenyataannya, pada implementasi riil data 1 hari dan 2 hari kedepan juga belum tersedia sehingga menggunakan hasil prediksi hari ke 1 dan ke 2 sebagai input untuk prediksi hari ke 3.
-Karena menggunakan metode rekursif maka error akan semakin besar untuk jangka waktu prediksi yang panjang.
-Proses pada prediksi dengan metode rekursif ini dijelaskan pada algoritma \ref{recursive_LSTM}.
+\subsection{Visualisasi hasil pada \textit{dashboard}}
 
 Setelah model terbaik dari objek detektor dan model LSTM diperoleh, model ini akan digunakan pada proses implementasi sistem. Proses implementasi serta pengiriman dan penerimaan data dari satu proses ke proses yang lain dijabarkan pada gambar \ref{implementasi_sistem}.
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.35]{Proses_Sistem}
+	\includegraphics[scale=0.5]{Sistem_all}
 	\caption{Urutan proses implementasi menggunakan model yang telah diperoleh}
 	\label{implementasi_sistem}
 \end{figure}
+
 Data kondisi lalu lintas \textit{real-time} diakses secara \textit{live-streaming} dari CCTV yang tersedia pada layanan ATCS kota Semarang. Untuk menghindari penumpukan proses dalam satu perintah, maka dilakukan pembagian proses terutama dalam hal \textit{streaming} video.
-Pembagian proses ini dapat dengan mudah dilakukan menggunakan \textit{library} ZeroMQ. 
-Terdapat \textit{script} Python yang berperan khusus melakukan \textit{streaming} video kemudian mengirimkan video tersebut dalam format \textit{string} ke dua port penerima yaitu model YOLO dan \textit{dashboard} utama. Pada model YOLO, kendaraan yang berada di dalam video asli CCTV akan dideteksi, diberi \textit{bounding box}, di\textit{tracking} dan dihitung jumlah kendaraan sesuai jenisnya tiap 5 menit.
-Dari YOLO, video yang telah dikenai objek detektor dikirimkan ke \textit{dashboard} utama. Selain itu YOLO juga mengirimkan hasil perhitungan jumlah kendaraan tiap 5 menit ke \textit{dashboard} utama untuk memberikan status kondisi lalu lintas. Diwaktu yang sama, jumlah kendaraan tiap 5 menit tersebut juga disimpan di dalam file csv. 
-Model LSTM akan mengakses file csv ini untuk melakukan 2 prediksi yaitu prediksi 1 hari kedepan menggunakan strategi \textit{multi output} dan prediksi 3 hari kedepan menggunakan strategi rekursif \textit{multi-step}. Hasil prediksi 1 hari kedepan menggunakan strategi \textit{multi output} akan ditampilkan di \textit{dashboard}. Sedangkan hasil prediksi 3 hari kedepan menggunakan strategi rekursif \textit{multi-step}
-akan ditampilkan di \textit{dashboard} kedua.
+Pembagian proses ini dapat dengan mudah dilakukan menggunakan \textit{library} ZeroMQ. Masing-masing proses diberi port khusus untuk memudahkan pengiriman dan penerimaan data dari proses lain.
+Terdapat \textit{script} Python yang berperan khusus melakukan \textit{streaming} video kemudian mengirimkan video tersebut dalam format \textit{string} ke dua port penerima yaitu model YOLO dan \textit{dashboard}. Pada model YOLO, kendaraan yang berada di dalam video asli CCTV akan dideteksi, diberi \textit{bounding box}, di\textit{tracking} dan dihitung jumlah kendaraan sesuai jenisnya tiap 5 menit.
+Dari YOLO, video yang telah dikenai objek detektor juga dikirimkan ke \textit{dashboard}. Selain itu YOLO juga mengirimkan hasil perhitungan jumlah kendaraan tiap 5 menit ke \textit{dashboard} untuk memberikan status kondisi lalu lintas. Diwaktu yang sama, jumlah kendaraan tiap 5 menit tersebut juga disimpan di dalam file csv. 
+Model LSTM akan mengakses file csv ini untuk melakukan prediksi 1 hari kedepan menggunakan strategi \textit{multi output}. Hasil prediksi ini juga akan ditampilkan di \textit{dashboard}.
+Jadi, \textit{dashboard} akan menampilkan informasi data berupa view asli dari CCTV, view CCTV setelah dikenai objek detektor, grafik perhitungan jumlah kendaraan, dan hasil prediksi untuk hari yang bersangkutan.
+
 
 
 \end{document}

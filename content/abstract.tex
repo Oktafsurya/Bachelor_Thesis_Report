@@ -7,14 +7,14 @@
 
 \begin{document}
 
-\chapter*{ABSTRACT}%
+\chapter*{INTISARI}%
 %\parindent \z@ \centering 
 \normalfont
 %{\large\textbf{\abstractname}} \\
 \vspace{1.0cm}
 \begin{singlespacing}%
 %\vskip 20\p@
-\addcontentsline{toc}{chapter}{ABSTRACT}
+\addcontentsline{toc}{chapter}{INTISARI}
 
 Saat ini teknologi \textit{deep learning} telah banyak digunakan dalam berbagai bidang mulai dari pengolahan citra, pengenalan suara, klasifikasi bahkan deteksi suatu objek. Telah banyak jaringan deep learning yang dikembangkan. Untuk deteksi objek terdapat
 YOLO (\textit{You Only Look Once}), SSD, dan Fast-RCNN sedangkan untuk data yang sifatnya sekuensial waktu terdapat LSTM, RNN dan GRU. 
@@ -32,20 +32,35 @@ Data dari objek detektor dan LSTM akan ditampilkan jadi satu pada dashboard sehi
 \textbf{Kata kunci : \textit{You Only Look Once}, \textit{Long-Short Term Memory}, \textit{tracking}, precision, recall , F1-score, \textit{Root Mean Squared Error}, \textit{Mean Average Percentage Error } }
 \end{singlespacing}
 
-\chapter*{\emph{INTISARI}}%
+\chapter*{\emph{ABSTRACT}}%
 %\parindent \z@ \centering 
 \normalfont
 %{\large\textbf{\abstractname}} \\
 \vspace{1.0cm}
 \begin{singlespacing}%
 %\vskip 20\p@
-\addcontentsline{toc}{chapter}{\emph{INTISARI}}
+\addcontentsline{toc}{chapter}{\emph{ABSTRACT}}
 
+\emph{Currently, deep learning technology has been widely used in various fields ranging from image processing, voice recognition, classification and even object detection. Many deep learning networks have been developed. For object detection there are
+YOLO (You Only Look Once), SSD, and Fast-RCNN while for time-series data there are LSTM, RNN and GRU.
+}
+
+\emph{This research will discuss the process of designing a system that can predict traffic flow using CCTV cameras in real time. The approach taken is based on deep learning by using several existing architectures.
+The system design process will be divided into 3 parts they are designing an object detetctor using YOLOV3 architecture to be implemented on CCTV, designing a LSTM model for predict the number of vehicle, and designing a dashboard for system visualization.
+The object detector used to detect and classify type of vehicle, tracking and counting total number of vehicle every 5 minutes. 
+LSTM is used to predict traffic flow based on the number of vehicles data that have been created by the object detector. 
+To provide optimal results, both networks will be trained and evaluated using their respective metrics. 
+The object detector will be trained using own dataset in Darknet framework, and evaluated using the precisions, recall, mAP and F1-Score metric.
+Whereas LSTM will be trained by varying the training's parameters like number of LSTM layers, number of neurons per layer, amount of input data, and the amount of LSTM output data. After training process, LSTM will be evaluated using test data to find out the values ​​of Root Mean Squared Error (RMSE) and Mean Average Percentage Error (MAPE).
+}
+
+\emph{Data from the object detector and LSTM will be displayed together on the dashboard so that information from both models can be understood more easily.
+}
 %\emph{}
 
 \bigskip
 \noindent
 
-\textbf{\emph{Kata kunci : estimasi titik angkat}, bin picking, \emph{gambar} RGBD, deep learning, semantic segmentation, ROS}
+\textbf{\emph{Keywords : You Only Look Once, Long-Short Term Memory, tracking, precision, recall , F1-score, Root Mean Squared Error, Mean Average Percentage Error }}
 \end{singlespacing}
 \end{document}
