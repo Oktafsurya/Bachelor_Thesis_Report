@@ -18,7 +18,7 @@ Jumlah total dataset adalah 1856 gambar dengan pembagian data pelatihan sebanyak
 Pada proses pembuatan dataset ini dilakukan teknik augmentasi variasi tingkat saturasi dan kecerahan gambar. Teknik augmentasi seperti rotasi dan \textit{flip} tidak digunakan karena kondisi lalu lintas indonesia yang sangat padat sehingga 
 terdapat banyak kendaraan yang memiliki daerah tumpang tindih.
 
-Dataset akan dilatih menggunakan arsitektur YOLOV3 pada \textit{framework} darknet[link darknet]. Seperti yang telah dijelaskan, YOLOV3 membutuhkan 
+Dataset akan dilatih menggunakan arsitektur YOLOV3 pada \textit{framework} Darknet. Seperti yang telah dijelaskan, YOLOV3 membutuhkan 
 9 buah anchor box. Anchor box dataset COCO tidak dapat digunakan dikarenakan dataset yang telah dibuat pada penelitian ini memiliki karakteristik yang jauh berbeda dengan COCO.
 \textit{Framework} Darknet menyediakan fasilitas untuk membuat anchor box menggunakan algoritma K-NN. 9 Anchor box dari dataset pada penelitian ini adalah \\
 \centerline{$[10x16, 12x27,  19x26,  16x42,  27x37,  24x58,  41x51, 47x76, 75x97]$}\
@@ -35,7 +35,7 @@ Setelah anchor box berhasil dibuat, selanjutnya masuk tahap pelatihan dataset. S
 \textit{Adaptive learning rate} juga diterapkan ketika perulangan telah mencapai 70\% dan 90\% dari total perulangan. Hal ini dilakukan agar informasi yang dilatih oleh jaringan semakin detail. Grafik pelatihan ditunjukan oleh gambar \ref{train_darknet}. Berdasarkan gambar tersebut, metric yang diamati selama pelatihan adalah mAP (\textit{mean average precision}) dan loss pelatihan.
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.25]{new_full_dataset}
+	\includegraphics[scale=0.25]{new_full_dataset_high_reso}
 	\caption{Grafik proses pelatihan}
 	\label{train_darknet}
 \end{figure}
@@ -128,7 +128,7 @@ Data hasil perhitungan ini disimpan dalam file .csv dan akan digunakan baik untu
 Berdasarkan skema pengambilan data jumlah kendaraan diatas, diperoleh data dengan jumlah 1430 data untuk 11 hari sehingga per hari terdapat 130 data.
 Proses pengolahan data yang dilakukan yaitu membagi data menjadi data latih dan data uji. Pada penelitian ini data latih sebanyak 1170 data (9 hari) dan data uji sebanyak 260 data (2 hari)
 Untuk proses pelatihan sendiri akan memvariasikan beberapa parameter yaitu jumlah lapisan LSTM, jumlah neuron tiap lapisan, jumlah data input, serta jumlah data output LSTM. 
-Jumlah lapisan yang akan digunakan yaitu 1,2,3, dan 4 LSTM, jumlah neuron yang digunakan 50 dan 100, jumlah data input yang digunakan adalah 130, 260 dan 390, sedangkan jumlah output yang digunakan adalah 130, 65, dan 1. Masing-masing 
+Jumlah lapisan yang akan digunakan yaitu 1,2, dan 3 LSTM, jumlah neuron yang digunakan 50 dan 100, jumlah data input yang digunakan adalah 130, 260 dan 390, sedangkan jumlah output yang digunakan adalah 130, 65, dan 1. Masing-masing 
 variasi akan diamati nilai RMSE, dan MAPE nya. Variasi yang memberikan nilai RMSE dan MAPE terendah akan dipakai untuk implementasi di dashboard.
 
 Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE dan MAPE masing-masing model dapat dilihat pada tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}.
@@ -207,31 +207,6 @@ Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE 
 	\label{3LSTM_result}
 	\end{table} 
 
-% \begin{table}[htp]
-% 	\centering
-% 	\begin{tabular}{|c|c|c|c|c|c|}
-% 		\hline 
-% 		\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{4 LSTM}} \\ \cline{3-6}
-% 		&  & \multicolumn{2}{c|}{50;50;50;50}& \multicolumn{2}{c|}{100;100;100;100} \\ \cline{3-6}
-% 		& & RMSE & MAPE& RMSE & MAPE\\
-% 		\hline
-% 		\multirow{3}{*}{130} & 130 & & & & \\
-% 		& 65 & & & & \\
-% 		& 2 & & & & \\
-% 		\hline
-% 		\multirow{3}{*}{260} & 130 & & & & \\
-% 		& 65 & & & & \\
-% 		& 2 & & & & \\
-% 		\hline
-% 		\multirow{3}{*}{390} & 130 & & & & \\
-% 		& 65 & & & & \\
-% 		& 2 & & & & \\
-% 		\hline
-% 	\end{tabular}
-% 	\caption{Nilai RMSE dan MAPE menggunakan 4 LSTM}
-% 	\label{4LSTM_result}
-% 	\end{table} 
-
 Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}, dapat diketahui karakteristik jaringan LSTM sebagai berikut:
 \begin{enumerate}
 	\item Dengan ukuran input yang sama, semakin kecil ukuran output maka semakin kecil pula RMSE dan MAPE yang diberikan. 
@@ -242,41 +217,40 @@ Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}
 Berdasarkan tabel, diketahui bahwa untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 100 dengan RMSE sebesar 25.933 dan MAPE 10.362\%. Untuk output 65 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.428 dan MAPE 10.729\%.
 Sedangkan untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.583 dan MAPE 11.144\%.
 
-Hasil perbandingan antara output model dengan data uji ditunjukkan oleh gambar \ref{out_130}, \ref{out_65}, \ref{out_1}.
+Hasil perbandingan antara output model dengan data uji ditunjukkan oleh gambar \ref{out_130}, \ref{out_65}, \ref{out_1}. Berdasarkan gambar tersebut dapat diketahui bahwa meskipun nilai RMSE dan MAPE yang dimiliki oleh model dengan output 1 secara statistika lebih buruk daripada model dengan output 130 dan 65, namun secara visual model dengan output 1 mampu mengikuti tren dari data uji lebih baik. Hal ini dikarenakan dengan jumlah output yang semakin sedikit, maka model akan semakin presisi untuk mempelajari karakteristik data namun
+akan membutuhkan waktu lama untuk melakukan prediksi hingga \textit{timestep} $n$ ke depan. Namun model dengan output 1 kurang cocok untuk penerapan di lapangan karena model ini hanya memprediksi untuk 1 data atau 5 menit ke depan.
+Karena hasil prediksi akan digunakan untuk melakukan perencanaan optimalisasi lalu lintas, maka model yang cocok untuk penerapan di lapangan adalah model output 65 yang dapat memprediksi pergerakan lalu lintas hingga 5 jam ke depan atau model output 130 yang dapat memprediksi lalu lintas untuk 11 jam ke depan.
+
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.3]{out_130}
+	\includegraphics[scale=0.3]{out_130_high_reso}
 	\caption{Hasil prediksi model dengan output 130}
 	\label{out_130}
 \end{figure}
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.3]{out_65}
+	\includegraphics[scale=0.3]{out_65_high_reso}
 	\caption{Hasil prediksi model dengan output 65}
 	\label{out_65}
 \end{figure}
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.3]{out_1}
+	\includegraphics[scale=0.3]{out_1_high_reso}
 	\caption{Hasil prediksi model dengan output 1}
 	\label{out_1}
 \end{figure}
-Berdasarkan gambar tersebut dapat diketahui bahwa meskipun nilai RMSE dan MAPE yang dimiliki oleh model dengan output 1 secara statistika lebih buruk daripada model dengan output 130 dan 65, namun secara visual model dengan output 1 mampu mengikuti tren dari data uji lebih baik. Hal ini dikarenakan dengan jumlah output yang semakin sedikit, maka model akan semakin presisi untuk mempelajari karakteristik data namun
-akan membuuhkan waktu lama untuk melakukan prediksi. 
 
-\section{Perancangan dashboard}
-Pada perancangan ini akan dibuat 2 buah dashboard yaitu dashboard utama dan dashboard kedua. Skema perancangan dashboard secara keseluruhan seperti pada gambar \ref{all_system}.
-% \begin{figure}[htp]
-% 	\centering
-% 	\includegraphics[scale=0.6]{all_system}
-% 	\caption{Skema perancangan dashboard yang dilakukan}
-% 	\label{all_system}
-% \end{figure}
 
-Dari gambar \ref{all_system}, tampak bahwa dashboard utama akan menampilkan data berupa view asli dari CCTV, view CCTV setelah dikenai objek detektor, grafik perhitungan jumlah kendaraan, dan hasil prediksi untuk hari yang bersangkutan.
-Sedangkan dashboard kedua akan mengakses data hasil prediksi 1, data hasil prediksi 2 dan data hasil prediksi 3. Data-data ini berada pada file csv terpisah dan mengandung data prediksi hingga 6 hari kedepan. Dengan kata lain dashboard kedua digunakan
-apabila seseorang ingin melihat prediksi arus lalu lintas untuk 2 hari bahkan 6 hari kedepan.
+\section{Perancangan \textit{dashboard}}
+Hasil dari perancangan \textit{dashboard} ditunjukkan oleh gambar \ref{dash_result} 
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{dash_2_high_reso}
+	\caption{Hasil perancangan \textit{dashboard} yang dilakukan}
+	\label{dash_result}
+\end{figure}
+Dari gambar \ref{dash_result}, tampak bahwa dashboard akan menampilkan data berupa view asli video \textit{live streaming} dari CCTV, view CCTV setelah dikenai objek detektor, grafik perhitungan jumlah kendaraan, dan hasil prediksi untuk hari yang bersangkutan menggunakan model output 1, ouput 65 dan output 130.
 
 \end{document}

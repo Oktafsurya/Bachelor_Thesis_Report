@@ -15,9 +15,9 @@ lunak, yang terdiri atas:
 \begin{enumerate}
 	\item Komputer Laboratorium Honeywell DTETI UGM dengan spesifikasi prosesor Intel Xeon E3-1225 v5 3.30 GHz. RAM 8 GB, GPU NVIDIA GeForce GTX 1060 6GB dan sistem operasi Ubuntu 16.04 LTS.
 	\item \textit{Framework} PyTorch untuk implementasi deteksi objek, \textit{tracking}, dan perhitungan jumlah kendaraan menggunakan model YOLOV3.
-	\item \textit{Framework} Darknet untuk pelatihan ulang model YOLOV3 menggunakan dataset sendiri.
+	\item \textit{Framework} Darknet \cite{darknet13} untuk pelatihan ulang model YOLOV3 menggunakan dataset sendiri.
 	\item \textit{Framework} Keras untuk implementasi prediksi arus lalu lintas menggunakan LSTM.
-	\item Dash untuk membuat dashboard.
+	\item Dash untuk membuat \textit{dashboard}.
 	\item Pandas untuk olah data csv.
 	\item ZeroMQ untuk \textit{multi threading} pada proses streaming video CCTV dari ATCS Semarang.
 	\item LabelImg untuk anotasi dataset gambar.
@@ -35,13 +35,13 @@ Bahan dalam penelitian ini dibagi menjadi tiga yaitu:
 Keseluruhan proses untuk mendapatkan model baik untuk deteksi objek maupun prediksi menggunakan LSTM dijabarkan pada gambar \ref{get_model_scheme}.
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.4]{Get_Model_Scheme}
+	\includegraphics[scale=0.4]{Get_Model_Scheme_high_reso}
 	\caption{Keseluruhan proses untuk mendapatkan model terbaik}
 	\label{get_model_scheme}
 \end{figure}
 
 \subsection{Deteksi, \textit{tracking}, dan perhitungan jumlah kendaraan}
-Pada bagian ini akan dibahas mengenai perancangan sistem dari segi Deteksi, \textit{tracking}, dan \textit{counting} objek.
+Pada bagian ini akan dibahas mengenai perancangan sistem dari segi deteksi, \textit{tracking}, dan perhitungan jumlah kendaraan.
 \subsubsection{Deteksi Objek}
 Berdasarkan gambar \ref{get_model_scheme}, proses pertama yang dilakukan adalah pemilihan jaringan objek detektor. Seperti yang telah disebutkan pada bagian dasar teori, terdapat beberapa jaringan objek detektor yang telah dikembangkan oleh ilmuan. 
 Gambar \ref{yolo_comparison} menunjukan perbandingan performa dari beberapa jaringan objek detektor yang ada saat ini.
@@ -57,7 +57,7 @@ mAP-50 yang cukup tinggi diperlukan agar deteksi objek yang dihasilkan baik dan 
 
 Proses berikutnya yaitu menguji performa detektor yang dipilih pada permasalahan yang akan diselesaikan. Untuk penelitian ini, YOLOV3 akan dijalankan menggunakan PyTorch. Hal ini disebabkan karena terdapat beberapa pertimbangan. Pertama, PyTorch dapat mengakomodasi file berisi bobot YOLOV3 yang memiliki ekstensi .weights. Hal ini dikarenakan YOLOV3 akan dilatih ulang pada \textit{framework} Darknet menggunakan dataset baru. \textit{Framework} lain seperti Tensorflow dan Keras tidak dapat digunakan untuk mengakses file .weights. Tensorflow membutuhkan file .ckpt atau .pb sedangkan Keras membutuhkan file .h5. Jika tidak menggunakan PyTorch maka untuk proses pelatihan ulang
 tidak dapat menggunakan Darknet dan harus membuat script pelatihan sendiri. Kedua, PyTorch memberikan kemudahan dalam pemrosesan tensor sehingga mudah untuk mengolah data \textit{bounding box} hasil prediksi.
-Setelah YOLOV3 diuji, ditemukan bahwa meskipun YOLOV3-416 memiliki performa yang bagus dibandingkan objek detektor lainnya, objek detektor ini memberikan hasil yang kurang optimal apabila diterapkan untuk deteksi kendaraan pada lalu lintas di Indonesia secara langsung dari cctv. Hasil deteksi YOLOV3-416 original pada lalu lintas Indonesia ditunjukkan oleh gambar \ref{yoloV3_ori}
+Setelah YOLOV3 diuji, ditemukan bahwa meskipun YOLOV3-416 memiliki performa yang bagus dibandingkan objek detektor lainnya, objek detektor ini memberikan hasil yang kurang optimal apabila diterapkan untuk deteksi kendaraan pada lalu lintas di Indonesia secara langsung dari CCTV. Hasil deteksi YOLOV3-416 original pada lalu lintas Indonesia ditunjukkan oleh gambar \ref{yoloV3_ori}
 
 \begin{figure}[htp]
 	\centering
@@ -65,11 +65,11 @@ Setelah YOLOV3 diuji, ditemukan bahwa meskipun YOLOV3-416 memiliki performa yang
 	\caption{Hasil deteksi kendaraan oleh YOLOV3-416 pada lalu lintas Indonesia}
 	\label{yoloV3_ori}
 \end{figure}
-Berdasarkan gambar \ref{yoloV3_ori}, YOLOV3-416 mengalami kesulitan untuk mendeteksi objek sepeda motor secara benar. Hal ini dikarenakan YOLOV3 original di latih pada dataset COCO dimana objek kendaraan sepeda motor, mobil dan yang lainnya diambil hanya pada sudut tertentu seperti tampak depan dan tampak samping. Oleh karena itu YOLOV3 akan mengalami kesulitan untuk mendeteksi objek kendaraan dari sudut cctv (tampak atas). 
+Berdasarkan gambar \ref{yoloV3_ori}, YOLOV3-416 mengalami kesulitan untuk mendeteksi objek sepeda motor secara benar. Hal ini dikarenakan YOLOV3 original di latih pada dataset COCO dimana objek kendaraan sepeda motor, mobil dan yang lainnya diambil hanya pada sudut tertentu seperti tampak depan dan tampak samping. Oleh karena itu YOLOV3 akan mengalami kesulitan untuk mendeteksi objek kendaraan dari sudut CCTV (tampak atas). 
 Dikarenakan hasil deteksi akan digunakan pada proses perhitungan jumlah kendaraan, maka dibutuhkan objek detektor yang mampu medeteksi kendaraan degan benar terutama mobil dan sepeda motor yang menjadi kendaraan utama di lalu lintas Indonesia.
 
-Oleh karena itu seperti gambar \ref{get_model_scheme} dilakukan proses ketiga yaitu pelatihan ulang YOLOV3. Untuk melakukan pelatihan ulang maka diperlukan dataset dari kondisi permasalahan sebenarnya. Proses pengambilan dataset dilakukan dengan cara mengumpulkan gambar-gambar yang berkaitan dengan kondisi lalu lintas di Indonesia yang dilihat dari cctv. Gambar-gambar tersebut diperoleh dari layanan \textit{live streaming} ATCS di beberapa kota. 
-Setelah data terkumpul, maka dilakuakan proses pelabelan (\textit{hand labeling}) untuk membuat \textit{groundtruth}. Untuk mempercepat proses pelabelan dataset maka digunakan aplikasi LabelImg [gitHub]. LabelImg merupakan tools yang \textit{open source} di GitHub.
+Oleh karena itu seperti gambar \ref{get_model_scheme} dilakukan proses ketiga yaitu pelatihan ulang YOLOV3. Untuk melakukan pelatihan ulang maka diperlukan dataset dari kondisi permasalahan sebenarnya. Proses pengambilan dataset dilakukan dengan cara mengumpulkan gambar-gambar yang berkaitan dengan kondisi lalu lintas di Indonesia yang dilihat dari CCTV. Gambar-gambar tersebut diperoleh dari layanan \textit{live streaming} ATCS di beberapa kota. 
+Setelah data terkumpul, maka dilakuakan proses pelabelan (\textit{hand labeling}) untuk membuat \textit{groundtruth}. Untuk mempercepat proses pelabelan dataset maka digunakan aplikasi LabelImg \cite{LabelImg}. LabelImg merupakan tools yang \textit{open source} di GitHub.
 
 Data anotasi dari LabelImg akan disimpan dalam file .txt. Selanjutnya akan dilakukan pelatihan ulang YOLOV3 menggunakan dataset yang ada. Pelatihan ulang YOLOV3 dilakukan menggunakan \textit{framework} official yaitu Darknet. Untuk YOLO, Darknet membutuhkan anotasi dengan format
 5 komponen yaitu \\ 
@@ -78,7 +78,7 @@ dari \textit{bounding box} tiap objek dalam gambar. Berikutnya yang perlu dilaku
 dipanggil saat proses pelatihan. Darknet telah menyediakan fasilitas untuk menghitung metric evaluasi model antara lain \textit{True Positive (TP), False Positive (FP), False Negative (FN), precision, recall, F1-score, IoU}, dan \textit{Mean Average Precision} (mAP).
 
 \subsubsection{\textit{Tracking} dan Perhitungan Jumlah Kendaraan}
-Tracker yang digunakan pada penelitian ini adalah \textit{Simple Online and Real-time Tracking}(SORT) [pdf sort]. Pada SORT, ketika terdapat objek yang terdeteksi, \textit{bounding box} dari objek akan digunakan untuk menentukan state target. Estimasi geometri \textit{bounding box} untuk target dilakukan dengan memprediksi lokasi berikutnya pada frame saat ini. Prediksi lokasi ini berdasarkan pada komponen kecepatan yang diselesaikan oleh Kalman Filter[pdf kalman filter].
+Tracker yang digunakan pada penelitian ini adalah \textit{Simple Online and Real-time Tracking} (SORT) \cite{SORT}. Pada SORT, ketika terdapat objek yang terdeteksi, \textit{bounding box} dari objek akan digunakan untuk menentukan state target. Estimasi geometri \textit{bounding box} untuk target dilakukan dengan memprediksi lokasi berikutnya pada frame saat ini. Prediksi lokasi ini berdasarkan pada komponen kecepatan yang diselesaikan oleh Kalman Filter \cite{Kalman}.
 Ketika terdapat suatu objek yang masuk atau keluar dari gambar, maka tracker akan memberikan id unik kepada objek tersebut. Tracker juga akan memperhitungkan hasil deteksi yang memiliki IoU dibawah $IoU_{min}$ dan mengelompokannya kedalam untracked objek. Setiap tracker baru akan dibandingkan dengan hasil deteksi untuk mencegah terjadinya \textit{false positive} selama proses tracking.
 
 Proses tracking terhadap suatu objek akan dihentikan apabila objek tersebut tidak terdeteksi selama $T_{lost}$ frame. Hal ini untuk menghindari semakin besarnya jumlah tracker dan kesalahan prediksi lokasi yang dikarenakan prediksi dengan jangka waktu lama tanpa ada koreksi dari detektor. Pada SORT $T_{lost}$ diset memiliki nilai 1 dengan alasan pertama, model dengan kecepatan konstan adalah prediktor yang buruk jika dibandingkan dengan kondisi sebenarnya dilapangan sehingga diperlukan nilai $T_{lost}$ yang kecil. Kedua, SORT fokus pada tracking \textit{frame-to-frame} dikarenakan proses identifikasi ulang objek berada 
@@ -155,7 +155,7 @@ Langkah yang dilakukan untuk dapat melakukan prediksi menggunakan LSTM dibagi me
 Alur tahapan pada proses ini dijabarkan seperti pada gambar \ref{lstm_training}.
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.5]{Training_lstm}
+	\includegraphics[scale=0.5]{Training_lstm_high_reso}
 	\caption{Tahapan pada proses pelatihan (\textit{training})}
 	\label{lstm_training}
 \end{figure}
@@ -205,7 +205,7 @@ Masing-masing model ini akan masuk tahap pengujian untuk dievaluasi.
 Alur tahapan pada proses pengujian ini dijabarkan seperti pada gambar \ref{lstm_testing}
 \begin{figure}[t]
 	\centering
-	\includegraphics[scale=0.5]{Testing_lstm}
+	\includegraphics[scale=0.5]{Testing_lstm_high_reso}
 	\caption{Tahapan pada proses pengujian (\textit{testing})}
 	\label{lstm_testing}
 \end{figure}
@@ -243,7 +243,7 @@ Setelah model terbaik dari objek detektor dan model LSTM diperoleh, model ini ak
 
 \begin{figure}[htp]
 	\centering
-	\includegraphics[scale=0.5]{Sistem_all}
+	\includegraphics[scale=0.5]{Sistem_all_high_reso}
 	\caption{Urutan proses implementasi menggunakan model yang telah diperoleh}
 	\label{implementasi_sistem}
 \end{figure}
@@ -251,7 +251,7 @@ Setelah model terbaik dari objek detektor dan model LSTM diperoleh, model ini ak
 Data kondisi lalu lintas \textit{real-time} diakses secara \textit{live-streaming} dari CCTV yang tersedia pada layanan ATCS kota Semarang. Untuk menghindari penumpukan proses dalam satu perintah, maka dilakukan pembagian proses terutama dalam hal \textit{streaming} video.
 Pembagian proses ini dapat dengan mudah dilakukan menggunakan \textit{library} ZeroMQ. Masing-masing proses diberi port khusus untuk memudahkan pengiriman dan penerimaan data dari proses lain.
 Terdapat \textit{script} Python yang berperan khusus melakukan \textit{streaming} video kemudian mengirimkan video tersebut dalam format \textit{string} ke dua port penerima yaitu model YOLO dan \textit{dashboard}. Pada model YOLO, kendaraan yang berada di dalam video asli CCTV akan dideteksi, diberi \textit{bounding box}, di\textit{tracking} dan dihitung jumlah kendaraan sesuai jenisnya tiap 5 menit.
-Dari YOLO, video yang telah dikenai objek detektor juga dikirimkan ke \textit{dashboard}. Selain itu YOLO juga mengirimkan hasil perhitungan jumlah kendaraan tiap 5 menit ke \textit{dashboard} untuk memberikan status kondisi lalu lintas. Diwaktu yang sama, jumlah kendaraan tiap 5 menit tersebut juga disimpan di dalam file csv. 
+Dari YOLO, video yang telah dikenai objek detektor juga dikirimkan ke \textit{dashboard}. Selain itu YOLO juga mengirimkan hasil perhitungan jumlah kendaraan tiap 5 menit ke \textit{dashboard} untuk memberikan status kondisi lalu lintas. Di waktu yang sama, jumlah kendaraan tiap 5 menit tersebut juga disimpan di dalam file csv. 
 Model LSTM akan mengakses file csv ini untuk melakukan prediksi 1 hari kedepan menggunakan strategi \textit{multi output}. Hasil prediksi ini juga akan ditampilkan di \textit{dashboard}.
 Jadi, \textit{dashboard} akan menampilkan informasi data berupa view asli dari CCTV, view CCTV setelah dikenai objek detektor, grafik perhitungan jumlah kendaraan, dan hasil prediksi untuk hari yang bersangkutan.
 

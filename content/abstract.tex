@@ -20,16 +20,16 @@ Saat ini teknologi \textit{deep learning} telah banyak digunakan dalam berbagai 
 YOLO (\textit{You Only Look Once}), SSD, dan Fast-RCNN sedangkan untuk data yang sifatnya sekuensial waktu terdapat LSTM, RNN dan GRU. 
 
 Pada penelitian ini akan dibahas mengenai perancangan sebuah sistem agar dapat melakukan prediksi arus lalu lintas secara real-time menggunakan kamera CCTV jalan raya. Pendekatan yang dilakukan berbasis deep learning dengan menggunakan beberapa arsitektur yang telah ada.
-Secara garis besar, proses perancangan sistem akan dibagi menjadi 3 bagian yaitu perancangan objek detektor menggunakan arsitektur YOLOV3 untuk diimplementasikan di CCTV, perancangan LSTM untuk prediksi jumlah kendaraan serta perancangan dashboard untuk visualisasi sistem.
+Secara garis besar, proses perancangan sistem akan dibagi menjadi 3 bagian yaitu perancangan objek detektor menggunakan arsitektur YOLOV3 untuk diimplementasikan di CCTV, perancangan LSTM untuk prediksi jumlah kendaraan serta perancangan \textit{dashboard} untuk visualisasi sistem.
 Objek detektor akan bertugas untuk melakukan deteksi jenis kendaraan, \textit{tracking} dan perhitungan jumlah kendaraan. LSTM bertugas untuk memprediksi arus lalu lintas berdasarkan data jumlah kendaraan yan telah dibuat oleh objek detektor. Untuk memberikan hasil yang optimal, kedua jaringan akan dilatih dan dievaluasi menggunakan metric nya masing-masing. 
 Objek detektor akan dilatih menggunakan dataset sendiri pada \textit{framework} Darknet, dan dievaluasi menggunakan nilai precisions, recall, mAP dan F1-Score. 
 Sedangkan LSTM akan dilatih dengan memvariasikan parameter jumlah lapisan LSTM, jumlah neuron tiap lapisan, jumlah data input, serta jumlah data output LSTM dan akan dievaluasi menggunakan data uji untuk mengetahui nilai \textit{Root Mean Squared Error} (RMSE) dan \textit{Mean Average Percentage Error} (MAPE). 
 
-Data dari objek detektor dan LSTM akan ditampilkan jadi satu pada dashboard sehingga informasi dari kedua model dapat dipahami lebih mudah.
+Data dari objek detektor dan LSTM akan ditampilkan jadi satu pada \textit{dashboard} sehingga informasi dari kedua model dapat dipahami lebih mudah.
 
 \bigskip
 \noindent
-\textbf{Kata kunci : \textit{You Only Look Once}, \textit{Long-Short Term Memory}, \textit{tracking}, precision, recall , F1-score, \textit{Root Mean Squared Error}, \textit{Mean Average Percentage Error } }
+\textbf{Kata kunci : \textit{Deep Learning}, \textit{You Only Look Once}, \textit{Long-Short Term Memory}, \textit{tracking}, precision, recall , F1-score, \textit{Root Mean Squared Error}, \textit{Mean Average Percentage Error } }
 \end{singlespacing}
 
 \chapter*{\emph{ABSTRACT}}%
@@ -46,7 +46,7 @@ YOLO (You Only Look Once), SSD, and Fast-RCNN while for time-series data there a
 }
 
 \emph{This research will discuss the process of designing a system that can predict traffic flow using CCTV cameras in real time. The approach taken is based on deep learning by using several existing architectures.
-The system design process will be divided into 3 parts they are designing an object detetctor using YOLOV3 architecture to be implemented on CCTV, designing a LSTM model for predict the number of vehicle, and designing a dashboard for system visualization.
+The system design process will be divided into 3 parts they are: designing an object detetctor using YOLOV3 architecture to be implemented on CCTV, designing a LSTM model for predict the number of vehicle, and designing a dashboard for system visualization.
 The object detector used to detect and classify type of vehicle, tracking and counting total number of vehicle every 5 minutes. 
 LSTM is used to predict traffic flow based on the number of vehicles data that have been created by the object detector. 
 To provide optimal results, both networks will be trained and evaluated using their respective metrics. 
@@ -61,6 +61,6 @@ Whereas LSTM will be trained by varying the training's parameters like number of
 \bigskip
 \noindent
 
-\textbf{\emph{Keywords : You Only Look Once, Long-Short Term Memory, tracking, precision, recall , F1-score, Root Mean Squared Error, Mean Average Percentage Error }}
+\textbf{\emph{Keywords : Deep Learning, You Only Look Once, Long-Short Term Memory, tracking, precision, recall , F1-score, Root Mean Squared Error, Mean Average Percentage Error }}
 \end{singlespacing}
 \end{document}

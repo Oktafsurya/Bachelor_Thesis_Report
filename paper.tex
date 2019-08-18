@@ -17,7 +17,9 @@
 \newcommand{\func}{\textrm}
 \let\oldReturn\Return
 \renewcommand{\Return}{\State\oldReturn}
-
+\makeatletter
+\renewcommand{\ALG@name}{Algoritma}
+\makeatother
 % for url
 \usepackage{hyperref}
 
@@ -27,21 +29,23 @@
 % for multirow table
 \usepackage{multirow}
 
-\bibliographystyle{IEEEtran}
+
+
+\graphicspath{{assets/}{../assets/}}
 
 \begin{document}
 
-\title{Real-Time Kinodynamic Motion Planning for Omnidirectional Mobile Robot Soccer using Rapidly-Exploring Random Tree in Dynamic Environment with Moving Obstacles\\
+\title{Prediksi Arus Lalu Lintas secara \textit{Real-Time} menggunakan Kamera CCTV Jalan berbasis \textit{Deep Learning} dengan \textit{Long-Short Term Memory} (LSTM)\\
 %{\footnotesize \textsuperscript{*}Note: Sub-titles are not captured in Xplore and
 %should not be used}
 %\thanks{Identify applicable funding agency here. If none, delete this.}
 }
 
-\author{\IEEEauthorblockN{Fahri Ali Rahman, Igi Ardiyanto, Adha Imam Cahyadi}
-\IEEEauthorblockA{\textit{Department of Electrical Engineering and Information Technology} \\
-\textit{Faculty of Engineering Universitas Gadjah Mada}\\
+\author{\IEEEauthorblockN{Okta Fajar Suryani, Igi Ardiyanto, Addin Suwastono}
+\IEEEauthorblockA{\textit{Departemen Teknik Elektro dan Teknologi Informasi} \\
+\textit{Fakultas Teknik Universitas Gadjah Mada}\\
 Yogyakarta, Indonesia \\
-fahri.ali.r@mail.ugm.ac.id, \{igi; adha.imam\}@ugm.ac.id}
+okta.fajar.s@mail.ugm.ac.id, \{igi; adyn\}@ugm.ac.id}
 %\and
 %\IEEEauthorblockN{2\textsuperscript{nd} Given Name Surname}
 %\IEEEauthorblockA{\textit{dept. name of organization (of Aff.)} \\
@@ -59,716 +63,469 @@ fahri.ali.r@mail.ugm.ac.id, \{igi; adha.imam\}@ugm.ac.id}
 \maketitle
 
 \begin{abstract}
-RoboCup Middle Size League (RoboCup MSL) provides a standardized testbed for research on mobile robot navigation, multi-robot cooperation, communication and integration via robot soccer competition. In such competition, the environment is highly dynamic and adversarial. One of important research topic in such area is kinodynamic motion planning that plan the trajectory of the robot while avoiding obstacles and obeying its dynamics. 
-Kinodynamic motion planning for omnidirectional robot based on kinodynamic-RRT* method is presented in this work. Trajectory tracking control to execute the planned trajectory is also considered in this work. First, we decouple robot motion planning in translational and rotational direction. Then we implemented kinodynamic-RRT* with double integrator model to plan the translational trajectory. The rotational trajectory is generated using minimum-time trajectory generator satisfying velocity and acceleration constraints. The planned trajectory is then tracked using PI-Control. To address changing environment, we developed concurrent sofware module for motion planning and trajectory tracking. 
-The resulting system were applied and tested using RoboCup simulation system based on Robot Operating System (ROS). The simulation results that the motion planning system are able to generate collision-free trajectory and the trajectory tracking system are able to follow the generated trajectory. It is also shown that in highly dynamic environment the online scheme are able to re-plan the trajectory.
+Saat ini teknologi \textit{deep learning} telah banyak digunakan dalam berbagai bidang mulai dari pengolahan citra, pengenalan suara, klasifikasi bahkan deteksi suatu objek. Telah banyak jaringan deep learning yang dikembangkan. Untuk deteksi objek terdapat
+YOLO (\textit{You Only Look Once}), SSD, dan Fast-RCNN sedangkan untuk data yang sifatnya sekuensial waktu terdapat LSTM, RNN dan GRU. 
+	
+Pada penelitian ini akan dibahas mengenai perancangan sebuah sistem agar dapat melakukan prediksi arus lalu lintas secara real-time menggunakan kamera CCTV jalan raya. Pendekatan yang dilakukan berbasis deep learning dengan menggunakan beberapa arsitektur yang telah ada.
+Secara garis besar, proses perancangan sistem akan dibagi menjadi 3 bagian yaitu perancangan objek detektor menggunakan arsitektur YOLOV3 untuk diimplementasikan di CCTV, perancangan LSTM untuk prediksi jumlah kendaraan serta perancangan \textit{dashboard} untuk visualisasi sistem.
+Objek detektor akan bertugas untuk melakukan deteksi jenis kendaraan, \textit{tracking} dan perhitungan jumlah kendaraan. LSTM bertugas untuk memprediksi arus lalu lintas berdasarkan data jumlah kendaraan yan telah dibuat oleh objek detektor. Untuk memberikan hasil yang optimal, kedua jaringan akan dilatih dan dievaluasi menggunakan metric nya masing-masing. 
+Objek detektor akan dilatih menggunakan dataset sendiri pada \textit{framework} Darknet, dan dievaluasi menggunakan nilai precisions, recall, mAP dan F1-Score. 
+Sedangkan LSTM akan dilatih dengan memvariasikan parameter jumlah lapisan LSTM, jumlah neuron tiap lapisan, jumlah data input, serta jumlah data output LSTM dan akan dievaluasi menggunakan data uji untuk mengetahui nilai \textit{Root Mean Squared Error} (RMSE) dan \textit{Mean Average Percentage Error} (MAPE). 
+	
+Data dari objek detektor dan LSTM akan ditampilkan jadi satu pada \textit{dashboard} sehingga informasi dari kedua model dapat dipahami lebih mudah.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Kinodynamic Motion Planning, Omnidirectional Mobile Robot, Dynamic Environment, Trajectory Tracking, Online Planning
+\textit{Deep Learning}, \textit{You Only Look Once}, \textit{Long-Short Term Memory}, \textit{tracking}, precision, recall , F1-score, \textit{Root Mean Squared Error}, \textit{Mean Average Percentage Error }
 \end{IEEEkeywords}
 
-\section{Introduction}
+\section{Pendahuluan}
+Kemacetan menjadi masalah serius di Indonesia. Berdasarkan survei yang dilakukan oleh Inrix, pada tahun 2017 Indonesia menempati peringkat ke 2 dunia dalam hal jumlah rata-rata waktu yang dihabiskan di jalan karena kemacetan. Selama tahun 2017 masyarakat Indonesia rata-rata menghabiskan waktu sia-sia di jalan (terjebak macet) sampai 51 jam \cite{Inrix2017Survei}. Sedangkan, berdasarkan index lalu lintas Indonesia menempati posisi ke 6 di Asia sebagai negara termacet dengan index 177.91 dari total index 216, index emisi $CO_2$ yang disebabkan kemacetan ini sebesar 6415.58 \cite{Numbeo2015Survei}. 
+Di tahun yang sama, beberapa lembaga survei mencatat bahwa Jakarta menjadi kota termacet di Indonesia dengan level kemacetan mencapai 61\% \cite{TomTom2017Survei}. Kota kedua termacet di Indonesia adalah Bandung dengan rata-rata waktu yang dihabiskan di kemacetan sebesar 42,57 jam per tahun \cite{Inrix2017Survei}. Melihat kondisi seperti itu kemacetan membawa kerugian dari segi waktu maupun lingkungan.
+Tak heran, saat ini informasi terkait arus lalu lintas yang akurat dan \textit{real time} sangat dibutuhkan untuk wisatawan atau travelers, sektor bisnis, dan lembaga pemerintah \cite{Zhang2008DynaCAS}.
 
-RoboCup is an international robot competition that attempting to foster AI and intelligent robotics research \cite{kitano1997robocup}. By providing common problem and evaluation where a wide range of technologies need to be integrated, it includes multiple areas of robotic research and AI, such as multi-agent collaboration, real-time reasoning and planning, intelligent robotics and sensor fusion. RoboCup Middle-Size League (RoboCup MSL) is a robot soccer competition of two teams with $50 x 50 x 80$-cm sized robots playing with each other \cite{burkhard2002road}. Where the robots are fully autonomous and required sensors and power are on-board. Such competition settings leads to a very dynamic and adversarial environment \cite{burkhard2002road}. In case of soccer robot, it is also desirable for the robot to be able move safely from one point to another while colliding with obstacles, hence, it is necessary to solve the motion planning problem. Furthermore, in such dynamic environment where the obstacles are obviously not a static object, it is preferred to anticipate the movement of the obstacles while solving the planning problem. In addition, when the robot moving in high speed, it becomes necessary to address the dynamics of the robot. Therefore, this work aimed to resolve the kinodynamic motion planning problem for omnidirectional mobile robot with moving obstacles in robot soccer context.
+Salah satu cara untuk menyediakan informasi arus lalu lintas yang akurat adalah dengan menggunakan metode prediksi. Dari sudut pandang otoritas transportasi, kemampuan untuk memprediksi pola lalu lintas merupakan persyaratan utama untuk efisiensi manajemen lalu lintas baik di perkotaan maupun di daerah sub-urban. Prediksi lalu lintas dapat digunakan untuk identifikasi awal terjadinya kemacetan sehingga memungkinkan otoritas lalu lintas mengambil tindakan pencegahan untuk mengurangi kemacetan
+jalan \cite{Djahel2014SmartCity}. Dengan adanya prediksi arus lalu lintas, dapat diketahui bagaimana pengaruh arus saat ini terhadap kondisi jalan di periode waktu berikutnya sehingga dapat dibuat penjadwalan arus lalu lintas secara otomatis untuk suatu area kota \cite{Yuangfang2018TrafficPrediction}.
 
-In \cite{manalu2014double}, Manalu developed movement planning in case of passing and kicking the ball using Double Target Potential Field while assuming the obstacles as static object. Afakh et. al. implemented fuzzy logic controller to  optimize bicycle path planning on omnidirectional mobile robot \cite{afakh2018bicycle}. In \cite{albab2017path}, Albab et. al. generate paths for omnidirectional robot soccer that avoid some static obstacles using genetic algorithm that will generate random via points and encode the paths as gene. It is reported that the system is able to avoid obstacles in static environment, and it is also tested on dynamic environment by updating the path every time the environment changing but still assuming static obstacles. Dikairono et. al. presented motion planning simulator and implemented A* path planning algorithm for obstacle avoidance while treating the obstacles as a static object \cite{dikairono2017motion}. The simulator is based only on robot's kinematics. The experiments shows that the robot successfully create a path that avoid the obstacles. However, it is unclear whether the proposed system are successfully avoid moving obstacles. In this work, we also considered the dynamics of the robot and explicitly model the movement of the obstacles.
+Melihat fakta bahwasannya data lalu lintas merupakan data dari waktu ke waktu yang memiliki suatu pola tertentu serta melihat potensi yang dimilki oleh \textit{deep learning} untuk pemrosesan gambar maupun video, tidak menutup kemungkinan bahwa dapat dibuat sebuah sistem prediksi lalu lintas cerdas berbasis deep learning dengan memanfaatkan peran kamera CCTV di jalan raya secara \textit{real time}. 
+Menggunakan teknologi deep learning, kamera CCTV dapat difungsikan lebih jauh lagi misalnya untuk mengklasifikasikan jenis kendaraan, menghitung jumlah kendaraan, serta memberikan prediksi arus lalu lintas untuk jam atau hari tertentu. Sehingga berdasarkan hasil analisa tersebut dapat disusun suatu strategi optimalisasi lalu lintas yang lebih efektif, efisien dan dapat mengurangi kemacetan. 
+Tentu saja hal ini akan sangat membantu dan membawa dampak yang besar. Dengan berkurangnya tingkat kemacetan karena arus lalu lintas dapat diprediksi sebelumnya, membuat orang-orang dapat menghewat waktunya lebih banyak, tidak terbuang sia-sia di jalanan karena kemacetan panjang, dan dapat melakukan berbagai hal yang lebih produktif. 
+Selain itu distribusi barang dan jasa bisa menjadi lebih cepat dimana hal ini sangat berpengaruh terhadap perekonomian negara. 
 
-The remainder of this paper is organized as follows. In section \ref{modeling}, we discuss the kinematic model of omnidirectional robot, environment model, and double integrator dynamics. In section \ref{planning_tracking}, we discuss the proposed motion planning and trajectory tracking system. In section \ref{result}, we report our numerical and dynamic simulation. Finally, we conclude in section \ref{conclusion}.
+\section{Tinjauan Pustaka}
 
-\section{Robot and Environment Model} \label{modeling}
+\subsection{Deteksi, \textit{tracking} dan perhitungan jumlah kendaraan}
 
-\subsection{Kinematics of Omnidirectional Robot}
+Berbagai macam pendekatan telah dilakukan untuk mengembangkan sistem yang dapat mendeteksi, menghitung dan mengklasifikasikan jenis kendaraan sehingga dapat digunakan untuk pengawasan lalu lintas dalam sistem transportasi cerdas.
 
-An omnidirectional robot belongs to holonomic robot family. It can move in translational and rotational space simultaneously and independently. The kinematic equation of the robot is given by 2-dimensional coordinate transformation in from the body frame to the world frame :
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=0.2\textwidth]{assets/omni-frame}
-%	\caption{Illustration of fixed World Frame and Robot's Body Frame}
-%	\label{frame}
-%\end{figure}
-\begin{equation} \label{omnirobot_eq}
-\begin{bmatrix}
-u\\
-v\\
-r
-\end{bmatrix}
-=
-\begin{bmatrix}
-\cos{\omega(t)} & \sin{\omega(t)} & 0 \\
--\sin{\omega(t)} & \cos{\omega(t)} & 0 \\
-0 & 0 & 1
-\end{bmatrix}
-\begin{bmatrix}\dot{x}
-\\ \dot{y}
-\\ \dot{\omega}
-\end{bmatrix}
+Lei, M. melakukan penelitian seputar perhitungan jumlah kendaraan berbasis video. Dalam penelitian tersebut, digunakan metode \textit{Adaptive background estimation} dan \textit{Gaussian shadow elimination}. Seperti kebanyakan metode pengolahan citra konvensional, kelemahan utama terletak pada pengaruh pencahayaan. Dalam penelitian tersebut akurasi perhitungan
+sangat bergantung pada kemampuan untuk menghilangkan efek bayangan karena pengaruh pencahayaan. Selain itu sistem yang dikembangkan oleh \cite{Lei2018VehicleCounting} belum mampu mengklasifikasikan kendaraan dengan bagus.
+Pada \cite{Sheeraz2018VehicleDetection}, juga dilakukan penelitian untuk klasifikasi dan perhitungan jumlah kendaraan berbasis video dengan membandingan performa metode pengolahan citra biasa dengan metode \textit{machine learning} sederhana. Dalam penelitian \cite{Sheeraz2018VehicleDetection}, perhitungan jumlah kendaraan dilakukan dengan mensubtraksi background menggunakan metode \textit{Gaussian Mixture Model} (GMM) sedangkan untuk klasfikasi menggunakan \textit{Contour Comparison} (CC) dan kombinasi antara \textit{Bag of Features}
+(BoF) dengan \textit{Support Vector Machine} (SVM). Hasil penelitian menunjukan bahwa CC memiliki akurasi klasifikasi lebih tinggi daripada BoF \& SVM dengan selisih tidak terlalu jauh. 
+Meskipun demikian, hal ini menunjukkan bahwa metode klasifikasi dan perhitungan jumlah kendaraan berbasis algoritma \textit{learning} memiliki prospek yang menjanjikan.
+Salah satu penelitian dalam bidang deteksi, \textit{tracking} dan perhitungan jumlah kendaraan yang berbasis \textit{deep learning} adalah penelitian \cite{Chaucan2019CNN}. Pada penelitian ini digunakan model YOLO yang telah dilatih ulang untuk melakukan deteksi dan klasifikasi. Dataset yang digunakan berasal dari data Delhi-NCR. Hasil penelitian ini menunjukan bahwa menggunakan model \textit{deep learning} untuk klasifikasi dan deteksi memberikan akurasi yang tinggi.
+
+\subsection{Prediksi arus lalu lintas}
+
+Informasi arus lalu lintas yang akurat sangat penting untuk manajemen dan pengembangan sistem transportasi cerdas. Termasuk salah satunya adalah prediksi arus lalu lintas. Oleh karenanya, berbagai penelitian telah dilakukan untuk memberikan hasil prediksi arus lalu lintas yang akurat.
+Penelitian yang dilakukan oleh \cite{LSTM_2} menggunakan model encoder-decoder \textit{Long-Short Term Memory} (LSTM). Data yang digunakan berasal dari Caltrans Performance Measurement System (PeMS). Model yang telah dibuat dibandingkan dengan beberapa model lain seperti Random Walk (RW), Support Vector Regression (SVR) dan Wavelet Neural Network (WNN). 
+Penelitian serupa dilakukan oleh \cite{LSTM_1}. Penelitian tersebut juga menggunakan LSTM untuk melakukan prediksi arus lalu lintas kapal di jalur air pedalaman sungai Yangtze Wuhan, China secara \textit{short-term} dan \textit{long-term}. Data yang digunakan berasal dari Changjiang Maritime Safety Administration. Penelitian ini juga membandingkan performa LSTM dengan beberapa model lain yaitu GRU, DBNs, Linear Regression (LR) dan ARIMA.
+Kedua penelitian \cite{LSTM_1} dan \cite{LSTM_2} memberikan hasil yang menunjukkan bahwa model LSTM memberikan hasil yang lebih baik untuk prediksi secara \textit{short-term} maupun \textit{long-term}
+
+\subsection{YOLO (\textit{You Only Look Once}) V3}
+
+\textit{You Only Look Once} (YOLO) merupakan suatu metode pendekatan yang bertujuan untuk deteksi objek. YOLO melihat deteksi objek sebagai suatu masalah regresi dari \textit{bounding box} dan
+probabilitas kelas yang terpisah secara spasial. YOLO merupakan \textit{neural network} yang memprediksi \textit{bounding box} dan \textit{class probability} dari gambar utuh secara langsung dalam satu kali
+evaluasi. Oleh karena deteksi YOLO menggunakan \textit{single network}, maka optimasi performa deteksi dapat dilakukan langsung secara end-to-end \cite{YoloV1}.
+
+Secara arsitekturnya, YOLO hanya menggunakan lapisan konvolusi sehingga menjadikannya sebuah jaringan konvolusi penuh (FCN). Pada YOLOV3 terdapat 75 lapisan konvolusi dengan \textit{skip connection} dan lapisan upsampling.
+YOLOv3 menggunakan stride 2 untuk \textit{downsample} fitur map serta tidak menggunakan lapisan \textit{pooling} untuk mencegah hilangnya informasi dari fitur tingkat rendah. Pada YOLOV3 setiap \textit{bounding box} memiliki atribut array ukuran \textbf{(5 + C)} dimana array ini mengandung informasi
+mengenai koordinat titik tengah, ukuran dimensi, skor objektivitas, dan $C$ skor kelas.
+
+YOLOV3 mendeteksi suatu objek dengan cara membagi gambar input kedalam grid sebanyak ukuran fitur map. Kemudian masing-masing grid akan memprediksi \textit{bounding box} sebanyak 3 buah.
+Kemudian jaringan akan mencari grid yang berpotensi memiiliki koordinat titik tengah suatu objek pada gambar input. Grid-grid tersebutlah yang kemudian akan bertanggung jawab untuk melakukan prediksi \textit{bounding box} untuk objek \cite{YoloV3}.
+
+Sebagai contoh, misalkan suatu gambar input berukuran 416x416 dan stride pada lapisan deteksi bernilai 32, maka fitur map akan memiliki dimensi 13x13. Selanjutnya gambar input akan dibagi menjadi 13 grid seperti pada gambar \ref{grid_YOLO}.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{grid_input}
+	\caption{Gambar input dibagi kedalam grid sesuai ukuran fitur map}
+	\label{grid_YOLO}
+\end{figure}
+Berdasarkan gambar \ref{grid_YOLO}, grid yang berpotensi memiliki koordinat titik tengah objek adalah grid merah (baris dan kolom ke-7). Berarti, grid inilah yang bertugas untuk memprediksi \textit{bounding box} dari objek (anjing). 
+
+YOLO memprediksi titik tengah \textit{bounding box} dengan mencari offset relatif terhadap grid pojok kiri atas dari grid yang bertugas untuk memprediksi \cite{YoloV2}. Pada contoh diatas, grid yang digunakan sebagai acuan adalah grid (6,6).
+Persamaan untuk mencari \textit{bounding box}:
+\begin{equation} \label{bx_bb}
+	b_{x} = \sigma(t_{x}) + c_x
+   \end{equation}
+\begin{equation} \label{by_bb}
+	b_{y} = \sigma(t_{y}) + c_y
 \end{equation}
-where $\dot{x}$ and $\dot{y}$ are the translational velocity in $x$ and $y$ direction of the robot in the world frame, respectively. While $u$ and $v$ are the translational velocity of the robot in $x$ and $y$ direction of the robot in the body frame, respectively. It should be noted that from the transformation matrix above, the rotational velocity in the world frame, $\dot{\omega}$, equals to the rotational velocity in the robot's body frame, $r$. Moreover, we could maps the velocity in the world frame to velocity in the body frame by inverting the transformation matrix which is invertible for every $\omega$ values.
-
-\subsection{Dynamic Environment with Moving Obstacles}
-
-This work considered the environment which robot operate is a dynamic environment with soccer robot competition setting. To be able plan effectively in the presence of moving obstacles, it is desirable to take the motion of the obstacles while planning the motion. In this Work, we used 3D time-space representation, as defined by Ardiyanto and Miura in \cite{ardiyanto2012real}. The position of the moving obstacles, at time $t$, with constant velocity could be expressed as :
-\begin{equation} \label{dynamic_obs_x}
- D^{'}_{x}(t) = D^{'}_{x}(0) + v_{D_x}t
+\begin{equation} \label{bw_bb}
+	b_{w} = p_{w}e^{t_w}
 \end{equation}
-\begin{equation} \label{dynamic_obs_y}
- D^{'}_{y}(t) = D^{'}_{y}(0) + v_{D_y}t
+\begin{equation} \label{bh_bb}
+	b_{h} = p_{h}e^{t_h}
 \end{equation}
-where $D^{'}_{x}(t)$ and $D^{'}_{y}(t)$ represents the predicted position of the obstacles at time $t$ in $x$ and $y$ axis of world frame, respectively, while $D^{'}_{x}(0)$ and $D^{'}_{y}(0)$ are the current position of the obstacles and $v_{D_x}$ and $v_{D_y}$ are the velocity of the obstacles.
+$b_x$, $b_y$: koordinat titik tengah pada gambar input, $b_w$, $b_h$: lebar dan tinggi hasil prediksi, $t_x$, $t_y$: koordinat titik tengah terhadap grid, $t_w$, $t_h$: lebar dan tinggi terhadap grid, $c_x$, $c_y$: grid acuan (pojok kiri atas), pada contoh diatas grid (6,6). Sedangkan $p_h$, $p_w$: dimensi anchor box yang digunakan. 
+$t_x$, $t_y$ dilewatkan fungsi sigmoid agar nilainya berada diantara 0 dan 1. Hal ini agar koordinat titik tengah hasil prediksi tidak keluar dari grid yang bertugas melakukan prediksi, dalam contoh diatas yaitu grid (7,7)
 
-\subsection{Fixed-Final-State Free-Final-Time Control for Double Integrator}
+Skor kelas menunjukan probabilitas objek yang terdeteksi milik kelas tertentu. Pada YOLO, dan YOLOV2 skor kelas menggunakan softmax, sedangkan pada YOLOV3 menggunkan sigmoid.
+Skor kelas yang dihitung menggunakan softmax mengasumsikan bahwa kelas-kelas tersebut saling eksklusif. Dengan kata lain, jika suatu objek telah terdeteksi milik satu kelas, maka dijamin tidak bisa milik kelas lain. 
+Namun, asumsi ini kurang cocok digunakan ketika memiliki 2 atau lebih kelas dengan fitur yang hampir mirip, sebagai contoh kelas wanita dan orang. Oleh karena inilah, YOLOV3 mengunakan sigmoid untuk skor kelas \cite{YoloV3}.
 
-This subsection describe the derivation of fixed-state free-final-time controller to solve the trajectory between two states obeying double integrator dynamics. We derive the controller from fixed-final-state free-final-time for general system described in \cite{webb2013kinodynamic}.
-The state-space equation for double integrator model is given by:
-\begin{equation} \label{dbl_int_state_space_eq}
-\dot{\boldsymbol{x}} = \begin{bmatrix}
-0 & I \\
-0 & 0
-\end{bmatrix}\boldsymbol{x} + \begin{bmatrix}
-0 \\
-I
-\end{bmatrix}\boldsymbol{u}
+\subsection{Prediksi menggunakan LSTM}
+
+Sebagai contoh dalam kasus prediksi arus lalu lintas, misalnya runtun nilai input adalah $X = (x_{1},x_{2},...,x_{T})$ , hidden vektor yang terhitung adalah $H = (h_{1},h_{2},...,h_{T})$ dan runtun yang akan diprediksi adalah $Y = (y_{1},y_{2},...,y_{T})$. 
+Proses pembaruan setiap timestep $t$ pada lapisan sel memori LSTM dideskripsikan sebagai berikut:
+\begin{equation} \label{input_gate}
+ i_{t} = \sigma(W_{i}x_{t} + U_{i}c_{t-1}+b_{i})
 \end{equation}
-where, 
-\begin{equation*} \label{dbl_int_label_eq}
-\boldsymbol{x} = 
-\begin{bmatrix}
-\boldsymbol{p} &
-\boldsymbol{v}
-\end{bmatrix}^{T},
-\boldsymbol{u} = \boldsymbol{a},
-\end{equation*}
-\begin{equation*}
-\boldsymbol{p} = 
-\begin{bmatrix} 
-p_x &
-p_y
-\end{bmatrix}^{T},
-\boldsymbol{v} =
-\begin{bmatrix}
-v_x &
-v_y
-\end{bmatrix}^{T},
-\boldsymbol{a} = 
-\begin{bmatrix}
-a_x &
-a_y
-\end{bmatrix}^{T}
-\end{equation*}
-where $p_x, p_y, v_x, v_y, a_x,$ and $a_y$ are the position, velocity, and acceleration of the robot in the $x$, and $y$ direction in the world frame, respectively. The trajectory of the robot is defined by a tuple $\pi = (\boldsymbol{x}[], \boldsymbol{u}[], \tau)$. The cost of a trajectory $\pi$ is defined as :
-\begin{equation} \label{cost_eq}
-c(\pi) = \int_{0}^{\tau}(1+\boldsymbol{u}(t)^{T}R\boldsymbol{u}(t))dt, \quad R = rI
+\begin{equation} \label{forget_gate}
+	f_{t} = \sigma(W_{f}x_{t} + U_{f}c_{t-1}+b_{f})
 \end{equation}
-where $r$ is the input weighting constant.
-
-As proposed in \cite{webb2013kinodynamic}, to solve the optimal trajectory, it is required to solve the \emph{weighted controllability Gramian} and the optimal cost of the double integrator model. The \emph{weighted controllability Gramian} for double integrator dynamics id defined as :
-\begin{equation} \label{dbl_int_gramian_eq}
-G(t)=\begin{bmatrix}
-\frac{t^{3}}{3r} & 0 & \frac{t^{2}}{2r} & 0 \\
-0 & \frac{t^{3}}{3r} & 0 & \frac{t^{2}}{2r} \\
-\frac{t^{2}}{2r} & 0 & \frac{t}{r} & 0\\
-0 & \frac{t^{2}}{2r} & 0 & \frac{t}{r}
-\end{bmatrix}
+\begin{equation} \label{cell_state}
+	c_{t} = f_{t}\circ c_{t-1} + i_{t}\circ g(W_{c}x_{t}+b_{c})
 \end{equation}
-and the cost for double integrator dynamics :
-\begin{equation} \label{dbl_int_cost_eq}
-c(\tau) =
-\tau +
-\left \{  
-\boldsymbol{x}_f -
-\bar{\boldsymbol{x}}(\tau)
-\boldsymbol{x}_i
-\right \}^{T}
-G^{-1}(\tau)
-\left \{  
-\boldsymbol{x}_f -
-\bar{\boldsymbol{x}}(\tau)
-\boldsymbol{x}_i
-\right \}
+\begin{equation} \label{output_gate}
+	o_{t} = \sigma(W_{o}x_{t} + U_{o}c_{t-1}+b_{o})
 \end{equation}
-where
-\begin{equation} \label{ext_dbl_int_eq}
-\bar{\boldsymbol{x}}(t) =
-e^{At} \boldsymbol{x}_i 
-%= \begin{bmatrix}
-%1 & 0 & t & 0 \\
-%0 & 1 & 0 & t \\
-%0 & 0 & 1 & 0 \\
-%0 & 0 & 0 & 1
-%\end{bmatrix}
-%\boldsymbol{x}_i
+\begin{equation} \label{hidden_state}
+	h_{t} = o_{t} \circ \sigma_{h}(c_{t})
 \end{equation}
-\begin{equation} \label{d_sym_dbl_int_eq}
-\boldsymbol{d}(\tau) =
-G^{-1}(\tau)
-\left \{
-\boldsymbol{x}_f -
-\bar{\boldsymbol{x}}(\tau)
-\boldsymbol{x}_i \right \},
+\begin{equation} \label{result_gate}
+	y_{t} = \phi(W_{y}h_{t} + b_{y})
 \end{equation}
-%define $\boldsymbol{x}_f = \begin{bmatrix}
-%p_{xf} & p_{yf} & v_{xf} & v_{yf}
-%\end{bmatrix}^{T}$ and $\boldsymbol{x}_i = \begin{bmatrix}
-%p_{xi} & p_{yi} & v_{xi} & v_{yi}
-%\end{bmatrix}^{T}$, we could expand the equation \ref{d_sym_dbl_int_eq} as :
-%\begin{equation*}
-%\boldsymbol{d}(\tau) =
-%\begin{bmatrix}
-%\frac{12r}{t^{3}} & 0 & \frac{-6r}{t^{2}} & 0 \\
-%0 & \frac{12r}{t^{3}} & 0 & \frac{-6r}{t^{2}} \\
-%\frac{-6r}{t^{2}} & 0 & \frac{4r}{t} & 0 \\
-%0 & \frac{-6r}{t^{2}} & 0 & \frac{4r}{t}
-%\end{bmatrix}
-%\begin{bmatrix}
-%p_{xf} - p_{xi} - v_{xi}t\\
-%p_{yf} - p_{yi} - v_{yi}t\\
-%v_{xf} - v_{xi}\\
-%v_{yf} - v_{yi}
-%\end{bmatrix},
-%\end{equation*}
-%\begin{equation*}
-%\boldsymbol{d}(\tau) =
-%\begin{bmatrix}
-%\frac{-6r(v_{xf}-v_{xi})}{t^2} + \frac{12r(p_{xf}-p_{xi}-v_{xi}t)}{t^3}\\
-%\frac{-6r(v_{yf}-v_{yi})}{t^2} + \frac{12r(p_{yf}-p_{yi}-v_{yi}t)}{t^3} \\
-%\frac{4r(v_{xf}-v_{xi})}{t} - \frac{6r(p_{xf}-p_{xi}-v_{xi}t)}{t^2}\\
-%\frac{4r(v_{yf}-v_{yi})}{t} - \frac{6r(p_{yf}-p_{yi}-v_{yi}t)}{t^2}
-%\end{bmatrix}
-%\end{equation*}
-%and we have closed expression of the derivative of the cost :
 
-Webb et al. suggest that the optimal arrival time, $\tau^{*}$, for the trajectory is at the time when the derivative of \eqref{dbl_int_cost_eq} equals zero \cite{webb2013kinodynamic}. The derivative of \eqref{dbl_int_cost_eq} is given by : 
+Pada persamaan diatas $W_{i}$,$W_{f}$,$W_{c}$, $W_{o}$, $W_{y}$, $U_{i}$,$U_{f}$, $U_{o}$ adalah matiks bobot. Sedangkan $b_{i}$,$b_{f}$, $b_{c}$, $b_{o}$, $b_{y}$ adalah vektor bias.
+$\circ$ adalah perkalian \textit{element-wise} dari vektor. $\sigma$, $g$, $\phi$ adalah fungsi aktivasi.
 
-\begin{equation} \label{dbl_int_cost_derivative_eq}
-\dot{c}(\tau) = 1-2\left \{ \begin{bmatrix}
-0 & I \\
-0 & 0 
-\end{bmatrix}
-\boldsymbol{x}_f
-\right \}^{T}\boldsymbol{d}(\tau)-
-\boldsymbol{d}(\tau)^{T}
-\begin{bmatrix}
-0 & 0 \\
-0 & R^{-1}
-\end{bmatrix}
-\boldsymbol{d}(\tau),
-\end{equation}
-in this work, to find the root of \eqref{dbl_int_cost_derivative_eq}, we use secant method \cite{chapra1998numerical}. Furthermore, since the time is needed to be positive value, we simply restart the search of the root if it finds negative value. Finally, the optimal trajectory is given by:
-\begin{equation} \label{dbl_int_composite_state_eq}
-\begin{bmatrix}
-\boldsymbol{x}(t)\\
-\boldsymbol{y}(t)
-\end{bmatrix}
-=
-\begin{bmatrix}
-I &
-A_1 & A_2 & A_3
-\\
-0 & I & A_4 & A_5 \\
-0 & 0 & I & 0 \\
-0 & 0 & A_6 & I
-\end{bmatrix}
-\begin{bmatrix}
-\boldsymbol{x}_f\\
-\boldsymbol{d}(\tau^{*})
-\end{bmatrix}
-\end{equation}
-where 
-%\begin{equation} \label{y_sym_eq}
-%\boldsymbol{y}(t) = e^{A^{T}(\tau^{*})}\boldsymbol{d}(\tau^{*})
-%\end{equation}
-\begin{equation} \label{u_eq}
-\boldsymbol{u}(t) = R^{-1}B^{T}\boldsymbol{y}(t)
-\end{equation}
-\begin{equation*}
-A_1 = 
-\begin{bmatrix}
-t-\tau & 0 \\
-0 & t-\tau
-\end{bmatrix}
-,\quad
-A_2 = 
-\begin{bmatrix}
-\frac{(-t+\tau)(t-\tau)^2}{6r} & 0 \\
-0 & \frac{(-t+\tau)(t-\tau)^2}{6r}
-\end{bmatrix}
-\end{equation*}
-\begin{equation*}
-A_3 = \begin{bmatrix}
-\frac{(t-\tau)^2}{2r} & 0 \\
-0 & \frac{(t-\tau)^2}{2r}
-\end{bmatrix}
-,\quad
-A_6 = \begin{bmatrix}
--t+\tau & 0 \\
-0 & -t+\tau
-\end{bmatrix}
-\end{equation*}
-\begin{equation*}
-A_5 = \begin{bmatrix}
-\frac{t-\tau}{r} & 0\\
-0 & \frac{t-\tau}{r}
-\end{bmatrix}
-,\quad
-A_4 = \begin{bmatrix}
-\frac{(-t+\tau)(t-\tau)}{2r} & 0 \\
-0 & \frac{(-t+\tau)(t-\tau)}{2r}
-\end{bmatrix} 
-\end{equation*}
+\section{Perancangan Sistem}
+Pada bab ini, akan dibahas mengenai pendekatan yang digunakan untuk memecahkan permasalah terkait deteksi objek dan prediksi arus lalu lintas menggunakan LSTM. Untuk permasalahan yang terkait deteksi objek meliputi deteksi objek itu sendiri, \textit{tracking} dan perhitungan jumlah kendaraan. Sedangkan
+untuk masalah prediksi menggunakan \textit{Long-Short Term Memory} meliputi pengolahan data, proses pelatihan dan pengujian.
 
-Equation (\ref{dbl_int_composite_state_eq}) above solves the trajectory connecting initial state $x_i$ to final stat $x_f$ satisfying double integrator dynamics. This trajectory solver is used by the following Kinodynamic RRT* algorithm to determine the connection between state.
+Keseluruhan proses untuk mendapatkan model baik untuk deteksi objek maupun prediksi menggunakan LSTM dijabarkan pada gambar \ref{get_model_scheme}.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.4]{Get_Model_Scheme}
+	\caption{Keseluruhan proses untuk mendapatkan model terbaik}
+	\label{get_model_scheme}
+\end{figure}
 
-\section{Kinodynamic Motion Planning and Trajectory Tracking for Omnidirectional Robot} \label{planning_tracking}
+\subsection{Deteksi objek}
+Berdasarkan gambar \ref{get_model_scheme}, proses pertama yang dilakukan adalah pemilihan jaringan objek detektor. Seperti yang telah disebutkan pada bagian dasar teori, terdapat beberapa jaringan objek detektor yang telah dikembangkan oleh ilmuan. 
+Gambar \ref{yolo_comparison} menunjukan perbandingan performa dari beberapa jaringan objek detektor yang ada saat ini.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.4]{YOLO_Comparison}
+	\caption{Perbedaan performa beberapa network objek detektor}
+	\label{yolo_comparison}
+\end{figure}
 
-\subsection{Motion Planning Strategy}\label{MPS}
-The main idea of the strategy is to decouple the trajectory planning for translational motion and rotational motion, taking advantages of the holonomic property of the omnidirectional mobile robot to simplify the collision checking by model the robot as point mass with double integrator dynamics. This simplification leads to simpler algorithm since only translational motion contribute to the collision while the rotational motion can be solved afterwards. Trajectory planning for the translational motion is done by the kinodynamic-RRT*, and the trajectory planning for the rotational motion is done by minimum-time trajectory generator with velocity and acceleration constraints \cite{purwin2006trajectory}.
+Berdasarkan perbandingan tersebut, akhirnya dipilih YOLOV3-416 sebagai objek detektor pada penelitian ini. Pertimbangan ini didasari performa YOLOV3-416 yang memiliki mAP-50 cukup tinggi dengan waktu \textit{inference} yang cukup cepat. 
+mAP-50 yang cukup tinggi diperlukan agar deteksi objek yang dihasilkan baik dan akurat, waktu \textit{inference} yang cukup cepat diperlukan agar deteksi yang diberikan dapat \textit{real time}. 416 menunjukan ukuran gambar input. Ukuran gambar yang tidak terlalu besar akan mempercepat proses komputasi di GPU.
 
-%
-%\begin{figure}[ht!]
-%	\centering
-%	\includegraphics[width=0.4\textwidth]{assets/block}
-%	\caption{Proposed Motion Planning Strategy.}
-%	\label{block_diagram}
-%\end{figure}
+Setelah YOLOV3 diuji, ditemukan bahwa meskipun YOLOV3-416 memiliki performa yang bagus dibandingkan objek detektor lainnya, objek detektor ini memberikan hasil yang kurang optimal apabila diterapkan untuk deteksi kendaraan pada lalu lintas di Indonesia secara langsung dari CCTV. Hasil deteksi YOLOV3-416 original pada lalu lintas Indonesia ditunjukkan oleh gambar \ref{yoloV3_ori}
 
-%\subsection{Trajectory Collision-Checking with Moving Obstacles}
-%
-%\begin{figure}[ht!]
-%	\centering 
-%	\includegraphics[width=0.35\linewidth]{assets/collision}
-%	\caption{Collision check for line and circle}
-%	\label{collision}
-%\end{figure}
-%
-%We implement collision checking algorithm in dynamic environment by approximating the trajectory as sequence of lines and checking the collision with each moving obstacles for each time slice, hence reduce the problem as a collection of line circles collision checking problem illustrated in figure \ref{collision}. While this approximation of obstacles motion are not correct in long term, this approximation lets the planner to anticipate the obstacles' motions in shorter term and gives the planner to generate safer trajectory plan.
-%
-%\begin{equation} \label{collision_eq1}
-%u = \frac{(c_x-p_{0x})(p_{1x}-p_{0x})+(c_y-p_{0y})(p_{1y}-p_{0y})}{\|p_1-p_0\|^2}
-%\end{equation}
-%\begin{equation} \label{collision_eq2}
-%p \leftarrow p_{0} + u (p_{1}-p_{0})
-%,\quad
-%R = \|p3-c\|
-%\end{equation}
-%
-%To check if there is collision between line and circle, we first compute \eqref{collision_eq1} and \eqref{collision_eq2}. If the distance from circle to nearest point $p$ is less than or equals to the radius of the circle, the line collides with the circle.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.5]{yoloV3}
+	\caption{Hasil deteksi kendaraan oleh YOLOV3-416 pada lalu lintas Indonesia}
+	\label{yoloV3_ori}
+\end{figure}
+Berdasarkan gambar \ref{yoloV3_ori}, YOLOV3-416 mengalami kesulitan untuk mendeteksi objek sepeda motor secara benar.
+Dikarenakan hasil deteksi akan digunakan pada proses perhitungan jumlah kendaraan, maka dibutuhkan objek detektor yang mampu medeteksi kendaraan degan benar terutama mobil dan sepeda motor yang menjadi kendaraan utama di lalu lintas Indonesia.
 
-%\subsection{Stochastic Decision to Directly Sampling Goal State}
-%
-%To improve the quality and consistency of the planned trajectory, we implements stochastic decision for the sampling procedure of the kinodynamic-RRT* as proposed in \cite{bruce2002real}. The stochastic decision decide whether or not to directly sampling the goal state:
-%
-%\begin{itemize}
-%\item with probability $p$, directly sampling the goal state,
-%\item with probability $1-p$, randomly sample the state from uniform distribution.
-%\end{itemize}
+Oleh karena itu seperti gambar \ref{get_model_scheme} dilakukan proses ketiga yaitu pelatihan ulang YOLOV3. Untuk melakukan pelatihan ulang maka diperlukan dataset dari kondisi permasalahan sebenarnya. Proses pengambilan dataset dilakukan dengan cara mengumpulkan gambar-gambar yang berkaitan dengan kondisi lalu lintas di Indonesia yang dilihat dari CCTV. Gambar-gambar tersebut diperoleh dari layanan \textit{live streaming} ATCS di beberapa kota. 
+Setelah data terkumpul, maka dilakuakan proses pelabelan (\textit{hand labeling}) untuk membuat \textit{groundtruth}. Untuk mempercepat proses pelabelan dataset maka digunakan aplikasi LabelImg \cite{LabelImg}. LabelImg merupakan tools yang \textit{open source} di GitHub. Berikutnya yang perlu dilakukan adalah mengatur parameter pelatihan seperti inisiasi \textit{learning rate}, iterasi maksimum, iterasi awal mulai penerapan \textit{adaptive learning rate}, \textit{batch size}, serta anchor box. Semua parameter training diatur dan disimpan dalam file konfigurasi .cfg dimana file ini akan 
+dipanggil saat proses pelatihan. Darknet telah menyediakan fasilitas untuk menghitung metric evaluasi model antara lain \textit{True Positive (TP), False Positive (FP), False Negative (FN), precision, recall, F1-score, IoU}, dan \textit{Mean Average Precision} (mAP).
 
-\subsection{Kinodynamic-RRT* for Double Integrator Model in Dynamic Environment}
-
-We implemented kinodynamic-RRT* algorithm, as proposed by Webb and Berg in \cite{webb2013kinodynamic}, with double integrator model to deal with dynamic environment. Algorithm \ref{impl_rrt} shows the implemented kinodynamic-RRT* algorithm. Furthermore, we also apply stochastic decision to directly sampling the goal state as proposed in \cite{bruce2002real}, to improve the quality and consistency of solution trajectory.
-
-The algorithm takes initial state, $\boldsymbol{q}_{start}$, goal state, $\boldsymbol{q}$, probability of direct sampling, $p$, and maximum number of iteration $n_{iter}$. Unlike the original kinodynamic-RRT*, we restrict the number of iteration to $n_{iter}$, instead of infinitely growing the tree. 
-
-\begin{algorithm}[ht!]
-\begin{algorithmic}[1]
-\Function{DoubleIntKinodynamic-RRT*}{$\boldsymbol{q}_{start}, \boldsymbol{q}_{goal}, p, n_{iter}$}
-	\State $\mathcal{T} \leftarrow \{\boldsymbol{q}_{start}\}$
-	\For{ $i\in [1,n_{iter}]$ }
-		\State $\boldsymbol{q}_i \leftarrow \func{Sample}(\boldsymbol{q}_{goal})$
-		\State $\boldsymbol{q}_{neighbor} \leftarrow \mathcal{T} \mid c^{*}(\boldsymbol{q},\boldsymbol{q}_i) < r \wedge \, not \,\textsc{TrajectoryCollision}(\pi^{*}(\boldsymbol{q},\boldsymbol{q}_i))$
-		\State $\boldsymbol{q} \leftarrow \func{argmin} \left(\{ \boldsymbol{q} \in \boldsymbol{q}_{neighbor} \right\}(c^{*}(\boldsymbol{q},\boldsymbol{q}_i))$
-		\State $parent(\boldsymbol{q}_i) \leftarrow \boldsymbol{q}$
-		\State $cost(\boldsymbol{q}_i) \leftarrow cost(\boldsymbol{q}) + c^{*}(\boldsymbol{q},\boldsymbol{q}_i)$
-		\State
-			$\boldsymbol{q}_{neighbor} \leftarrow \mathcal{T} \cup \{q_{goal}\} \mid c^{*}(\boldsymbol{q}_i,\boldsymbol{q}) < r $
-			\par\hskip\algorithmicindent $\wedge \, not \, \textsc{TrajectoryCollision}(\pi^{*}(\boldsymbol{q}_i,\boldsymbol{q}))$
-			%\end{varwidth}
-		\For{$\boldsymbol{q} \in \boldsymbol{q}_{neighbor}$}
-			\If{$cost(\boldsymbol{q}_i)+c^{*}(\boldsymbol{q}_i,\boldsymbol{q})<cost(\boldsymbol{q})$}
-				\State $parent(\boldsymbol{q}) \leftarrow \boldsymbol{q}_i$
-				\State $cost(\boldsymbol{q}) \leftarrow cost(\boldsymbol{q}_i)+c^{*}(\boldsymbol{q}_i,\boldsymbol{q})$
-			\EndIf
-		\EndFor
-		\If{$parent(q_i)$}
-			\State $\mathcal{T}\leftarrow\mathcal{T}\cup q_i$
+\subsubsection{\textit{Tracking} dan Perhitungan Jumlah Kendaraan}
+Tracker yang digunakan pada penelitian ini adalah \textit{Simple Online and Real-time Tracking} (SORT) \cite{SORT}. Pada SORT, ketika terdapat objek yang terdeteksi, \textit{bounding box} dari objek akan digunakan untuk menentukan state target. Estimasi geometri \textit{bounding box} untuk target dilakukan dengan memprediksi lokasi berikutnya pada frame saat ini. Prediksi lokasi ini berdasarkan pada komponen kecepatan yang diselesaikan oleh Kalman Filter \cite{Kalman}.
+\begin{algorithm}[htp]
+	\begin{algorithmic}[1]
+		%\State $boxes.append([x, y, w, h])$ 
+		%\State $memory[indexIDs[-1]] \leftarrow boxes[-1]$
+		\If {$len(boxes) > 0$}
+			\State $i \leftarrow 0$
+			\For { $box \in boxes$ }
+				\State $(x, y) \leftarrow (int(box[0]), int(box[1]))$
+				\State $(w, h) \leftarrow (int(box[2]), int(box[3]))$
+				\If {$indexIDs[i] \in previous$}
+					\State $previous_box \leftarrow previous[indexIDs[i]]$
+					\State $(x2, y2) \leftarrow (int(previous_box[0]), int(previous_box[1]))$
+					\State $(w2, h2) \leftarrow (int(previous_box[2]), int(previous_box[3]))$
+					\State $p0 \leftarrow (int(x + (w-x)/2), int(y + (h-y)/2))$
+					\State $p1 \leftarrow (int(x2 + (w2-x2)/2), int(y2 + (h2-y2)/2))$
+					\State $buat garis (p0, p1)$
+					\If {$intersect(p0, p1, line[0], line[1])$}
+						\State $counter += 1$
+					\EndIf
+				\EndIf
+				\State $i \leftarrow i+1$
+			\EndFor
 		\EndIf
-	\EndFor
-	\State $\boldsymbol{q}_{solution}[]\leftarrow\emptyset$
-	\State $\boldsymbol{q}\leftarrow\boldsymbol{q}_{goal}$
-	\While {$parent(\boldsymbol{q})$}
-		\State $\func{insert}\;\pi^{*}(parent(\boldsymbol{q}),\boldsymbol{q})\; \func{to}\; \boldsymbol{q}_{solution}[]$
-		\State $\boldsymbol{q}\leftarrow parent(\boldsymbol{q})$
-	\EndWhile
-	\Return $\boldsymbol{q}_{solution}[]$
-\EndFunction
-\end{algorithmic}
-\caption{Implemented Kinodynamic-RRT* Algorithm}
-\label{impl_rrt}
+	\end{algorithmic}
+	\caption{Proses perhitungan jumlah kendaraan}
+	\label{counting_ob}
 \end{algorithm}
 
-The optimal control policy, $\pi^{*}$, in line $5$ and $9$ implements the fixed-final-state free-final-time control for double integrator model from \eqref{dbl_int_composite_state_eq}. The cost of the optimal control policy, $c^{*}$, needed in line $6$ and $12$, is calculated using the cost of optimal control for double integrator model in \eqref{dbl_int_cost_eq}. We implement collision-checking algorithm, needed by \textsc{TrajectoryCollisionCheck} procedure in line $5$ and line $6$, by approximating the trajectory as sequence of lines and moving obstacles as collection of circles and check the collision by performing collision check for line and circle \cite{bourke2016points}. Line $6$ of the algorithm select the neighboring states of the sampled state that has lower cost among the other.
+Berdasarkan algoritma \ref{counting_ob} diketahui bahwa agar suatu objek dapat terhitung maka objek tersebut harus melewati garis acuan perhitungan dan garis pada objek harus bersinggungan dengan garis acuan tersebut. 
+Untuk menentukan apakah dua buah garis bersinggungan atau tidak, dilakukan dengan menentukan formasi 3 dari 4 titik dua garis yang bersinggungan terlebih dahulu kemudian membawa konsep formasi ini untuk pengambilan keputusan.
 
-After the tree is grown, the solution trajectory, $\boldsymbol{q}_{solution}[]$ is returned by backtracking the goal state to initial state in line $17$ to $20$. In this work, we use KD-Tree representation from \cite{blanco2014nanoflann}.
-
-\subsection{Trajectory Planning for Rotational Motion}
-
-We implemented a minimum-time trajectory generation algorithm, as proposed by Purwin et al. in \cite{purwin2006trajectory}, for our rotational trajectory planning. The algorithm generate a 1-dimensional optimal trajectory that minimize the travel time subject to velocity and acceleration limit. The algorithm works by computing control effort, terminal state, and arrival time by applying different case depending on the initial position and velocity, as well as final state and constraints of the system. We refer the readers to \cite{purwin2006trajectory} for more detailed description.
-
-\subsection{Trajectory Tracking for Omnidirectional Mobile Robot}
-In this subsection, we discuss the implemented trajectory tracking for omnidirectional mobile robot. In this work, we use 'outer-loop' Trajectory Tracking as proposed in \cite{liu2008omni} to control the robot to follow the planned trajectory as reference. Unlike the original trajectory tracking as proposed in \cite{liu2008omni}, we do not use pseudo-differentiator to approximate the derivative of the desired trajectory since the outputted trajectory from motion planning module obeying the robots dynamic.
-
-The error of trajectory is defined as :
-\begin{equation*}
-\boldsymbol{e} = 
-\begin{bmatrix}
-x(t) &
-y(t) & 
-\omega(t)
-\end{bmatrix}^{T} - 
-\begin{bmatrix}
-x_d(t) &
-y_d(t) & 
-\omega_d(t)
-\end{bmatrix}^{T}
-\end{equation*}
-where $[x(t), y(t), \omega(t)]^{T}$ is the position of the robot at time $t$, while $[x_d(t),y_d(t),\omega_d(t)]^{T}$ is the position of the desired trajectory at time $t$. %and $\boldsymbol{e}=\left[e_x\, e_y\, e_\omega \right]^T$.
-
-In \cite{liu2008omni}, to stabilize the tracking error, a proportional-integral (PI) feedback control is proposed:
-
-\begin{equation}
-\begin{bmatrix}
-\tilde{u} & \tilde{v} & \tilde{r}
-\end{bmatrix}^{T} = 
--K_{P}\,\boldsymbol{e}
--K_{I}\int \boldsymbol{e}\,dt
-\end{equation}
-where $K_P$ is a constant for proportional term and $K_I$ is a constant for integral term.
-
-\begin{equation}
-K_{I} = -B_{1}^{-1} diag(-a_{I1}, -a_{I2}, -a_{I3})
-\end{equation}
-\begin{equation}
-K_{P} = 
--B_{1}^{-1} 
-( A_1 - diag(-a_{P1},-a_{P2},-a_{P3}))
-\end{equation}
-where
-\begin{equation}
-A_1(t)=
-\begin{bmatrix}
-0 & 0 & -u_d(t)sin(\omega_d(t)) - v_d(t)cos(\omega_d(t)) \\ 
-0 & 0 & u_d(t)cos(\omega_d(t))-v_d(t)sin(\omega_d(t)) \\ 
-0 & 0 & 0
-\end{bmatrix}
+Formasi acuan yang digunakan adalah formasi \textit{counterclockwise} (ccw). Misalkan terdapat titik A, B, dan C seperti pada gambar \ref{ccw_img}. Tiga titik tersebut dapat dikatakan memiliki formasi ccw jika \textbf{\textit{gradien garis AC > gradien garis AB}}
+sehingga harus memenuhi persamaan \ref{ccw_eq}.
+\begin{equation} \label{ccw_eq}
+	(C_y - A_y)*(B_x - A_x) > (B_y - A_y)*(C_x - A_x)
 \end{equation}
 
-\begin{equation}
-B_1(t) =
-\begin{bmatrix}cos(\omega_d(t)) & -sin(\omega_d(t)) & 0 \\ 
-sin(\omega_d(t)) & cos(\omega_d(t)) & 0 \\ 
-0 & 0 & 1
-\end{bmatrix}
-\end{equation}
-Finally, the commanded velocity in the body frame is given by :
-\begin{equation}
-\begin{bmatrix}
-u_{com} &
-v_{com} &
-r_{com} 
-\end{bmatrix}^{T}
-=
-\begin{bmatrix}
-u_d &
-v_d &
-r_d
-\end{bmatrix}^{T}
-+
-\begin{bmatrix}
-\tilde{u} &
-\tilde{v} &
-\tilde{r}
-\end{bmatrix}^{T}
-\end{equation}
-
-\begin{figure}[ht!]
+\begin{figure}[htp]
 	\centering
-	\includegraphics[width=0.4\textwidth]{assets/online_loop}
-	\caption{Online Computation of Motion Planning and Trajectory Tracking}
-	\label{online_loop}
+	\includegraphics[scale=0.5]{CCW}
+	\caption{Ilustrasi formasi 3 titik secara \textit{counterclockwise}}
+	\label{ccw_img}
 \end{figure}
 
-\subsection{Online Computation of Motion Planning and Trajectory Tracking}
+Berikutnya, konsep formasi akan digunakan untuk menentukan keputusan apakah dua buah garis bersinggungan atau tidak. Garis AB dan garis CD akan bersinggungan \textbf{\textit{jika dan hanya jika titik C dan D dipisahkan oleh garis AB}}.
+Jika titik A dan B dipisahkan oleh garis CD, maka ACD dan BCD, ADC dan BDC, CAD dan CBD, DAC dan DBC memiliki orientasi yang berbeda. Begitu juga apabila titik C dan D dipisahkan oleh garis AB maka ACB dan ADB, CAB dan DAB, CBA dan DBA, BAC dan BAD memiliki orientasi yang berbeda. Dari berbagai kombinasi tersebut cukup diambil masing-masing satu saja.
+Jika dirumuskan secara matematis menjadi persamaan \ref{intersect_eq}.
+\begin{equation} \label{intersect_eq}
+	ccw(A,C,D) =! ccw(B,C,D) \hspace{5mm} and \hspace{5mm} ccw(A,B,D) =! ccw(A,B,C)
+\end{equation}
+Sehingga apabila dua buah garis saling bersingungan persamaan \ref{intersect_eq} akan memberikan nilai benar.
 
-We tackle the problem of changing environment by executing motion planning and trajectory tracking module in online fashion. Figure \ref{online_loop} illustrates our online computation approach. With this approach, we could compute motion plan and track the trajectory separately at different rate.
+\subsection{Prediksi Arus Lalu Lintas menggunakan LSTM}
+Proses pertama yang dilakukan adalah pelatihan untuk memperoleh model LSTM. Alur tahapan pelatihan dijabarkan seperti pada gambar \ref{lstm_training}.
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{Training_lstm}
+	\caption{Tahapan pada proses pelatihan (\textit{training})}
+	\label{lstm_training}
+\end{figure}
 
-In figure \ref{online_loop}, each ellipses illustrate different processes that are executed concurrently and each box represents data that are in the form of ROS messages, with \vars{f sim}, \vars{f plan}, and \vars{f control} represents the loop rate of simulator, motion planning, and trajectory tracking loop, respectively. The simulator process, in this experiment, is the Gazebo simulator from standard ROS distribution.
+Pada proses ini, akan dilakukan pelatihan dengan memvariasikan beberapa parameter jaringan LSTM antara lain jumlah runtun data input dan output, jumlah lapisan LSTM yang digunakan serta jumlah neuron per lapisan LSTM. 
+Masing-masing model ini akan masuk tahap pengujian untuk dievaluasi. Alur tahapan pengujian dijabarkan seperti pada gambar \ref{lstm_testing}.
+\begin{figure}[t]
+	\centering
+	\includegraphics[scale=0.5]{Testing_lstm}
+	\caption{Tahapan pada proses pengujian (\textit{testing})}
+	\label{lstm_testing}
+\end{figure}
 
-\section{Experiment Result} \label{result}
+Untuk mendapatkan hasil prediksi, dilakukan dengan mengambil sebanyak $n\_input$ data dari data latih. Data ini akan menjadi input untuk LSTM. LSTM pada Keras membutuhkan input array 3 dimensi yang memiliki bentuk ($N, W, F$) dimana $N$: jumlah runtun, $W$: panjang runtun data input, dan $F$: adalah jumlah fitur setiap runtun sehingga data input harus di\textit{reshape} menjadi bentuk seperti yang diperbolehkan.
+Proses tersebut dilakukan di dalam sebuah perulangan. Tiap iterasi akan menghasilkan array hasil prediksi. Selain itu pada setiap akhir iterasi, data input akan digabung dengan data uji (sesuai indeks iterasi). Proses lebih jelas dijabarkan pada algoritma \ref{test_LSTM}.
+\begin{algorithm}[htp]
+	\begin{algorithmic}[1]
+	\Function{get_prediction}{$train, test, n\_input$}
+		\State $model \leftarrow get\_model()$
+		\State $data\_input \leftarrow array(train)$
+		\State $data\_input \leftarrow data\_input.reshape$
+		\State $prediction \leftarrow list()$
+		\For { $i \in range(len(test))$ }
+			\State $data \leftarrow data\_input$
+			\State $input\_x \leftarrow data[-n\_input:,0]$
+			\State $input\_x \leftarrow input\_x.reshape((1, len(input\_x), 1))$
+			\State $yhat \leftarrow model.predict(input\_x, verbose=0)$
+			\State $yhat\_sequence \leftarrow yhat[0]$
+			\State $predictions.append(yhat\_sequence)$
+			\State $test\_append = test[i, :]$
+			\State $data\_input \leftarrow np.append(data\_input, test\_append, axis=0)$
+		\EndFor
+	\EndFunction
+	\end{algorithmic}
+	\caption{Proses prediksi menggunakan LSTM}
+	\label{test_LSTM}
+\end{algorithm}
 
-We performed several experiment to verify the proposed kinodynamic motion planning system for omnidirectional mobile robot. These Experiment were executed on Laptop PC with Intel Core i3 2.0 GHz processor, 4 GB memory and Ubuntu 16.04 Operating System.
+Setelah model terbaik dari objek detektor dan model LSTM diperoleh, model ini akan digunakan pada proses implementasi sistem. Proses implementasi serta pengiriman dan penerimaan data dari satu proses ke proses yang lain dijabarkan pada gambar \ref{implementasi_sistem}.
 
-\subsection{Dynamic Constraints Consideration}
-We performed numerical simulation to verify the fixed-state free-final-time control. We compared the trajectories of the model across different value of input weight, $r$, from similar value initial and final state. We also compared the maximum control input among the trajectories of the double integrator model from the initial state $x_i=[2.3, -2.3, 1.0, -1.0]^{T}$ to the final state $x_f=[0.0, 0.0, 0.0, 0.0]^{T}$ on different input weight, $r$, with $r=1.5, \, r=1.0,$ and $r=0.5$.
-%\begin{figure}[ht!]
-%	\centering
-%	\includegraphics[width=0.4\textwidth]{assets/fig1}
-%	\caption{Double Integrator Trajectory with $r=1.5$.}
-%	\label{trajectory1}
-%\end{figure}
-%\begin{figure}[ht!]
-%	\centering
-%	\includegraphics[width=0.4\textwidth]{assets/fig2}
-%	\caption{Double Integrator Trajectory with $r=1.0$.}
-%	\label{trajectory2}
-%\end{figure}
-%\begin{figure}[ht!]
-%	\centering
-%	\includegraphics[width=0.4\textwidth]{assets/fig3}
-%	\caption{Double Integrator Trajectory with $r=0.5$.}
-%	\label{trajectory3}
-%\end{figure}
-%Figure \ref{trajectory1}, \ref{trajectory2}, and \ref{trajectory3} above show the trajectories of the double integrator model from the initial state $x_i=[2.3, -2.3, 1.0, -1.0]^{T}$ to the final state $x_f=[0.0, 0.0, 0.0, 0.0]^{T}$ on different input weight, $r$, with $r=1.5, \, r=1.0,$ and $r=0.5$ respectively. 
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.5]{Sistem_all}
+	\caption{Urutan proses implementasi menggunakan model yang telah diperoleh}
+	\label{implementasi_sistem}
+\end{figure}
 
-\begin{table}[ht!]
-\caption{Arrival Time and Maximum Control Input of Translational Trajectory for Several Input Weight}
-\label{trajectories_table}
+\section{Hasil dan Pembahasan}
+\subsection{Deteksi Objek}
+Jumlah total dataset adalah 1856 gambar dengan pembagian data pelatihan sebanyak 1688 gambar dan data uji sebanyak 168 gambar.
+Pada proses pembuatan dataset ini dilakukan teknik augmentasi variasi tingkat saturasi dan kecerahan gambar. Teknik augmentasi seperti rotasi dan \textit{flip} tidak digunakan karena kondisi lalu lintas indonesia yang sangat padat sehingga 
+terdapat banyak kendaraan yang memiliki daerah tumpang tindih.
+
+Setting untuk proses pelatihan dilakukan pada file \textit{configuration} dimana Darknet akan membaca file ini. Untuk pelatihan pada penelitian ini menggunakan jumlah perulangan 12000 dengan 6 kelas sehingga setiap kelas akan dilatih sebanyak 2000 perulangan. 
+\textit{Adaptive learning rate} juga diterapkan ketika perulangan telah mencapai 70\% dan 90\% dari total perulangan. Hal ini dilakukan agar informasi yang dilatih oleh jaringan semakin detail. Grafik pelatihan ditunjukan oleh gambar \ref{train_darknet}. Berdasarkan gambar tersebut, metric yang diamati selama pelatihan adalah mAP (\textit{mean average precision}) dan loss pelatihan.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.25]{new_full_dataset}
+	\caption{Grafik proses pelatihan}
+	\label{train_darknet}
+\end{figure}
+Dari gambar juga dapat diketahui bahwa model yang telah dilatih tidak mengalami \textit{overfitting}. Hal ini dapat dilihat dari grafik mAP (merah) yang terus mengalami kenaikan sedangkan grafik loss pelatihan (biru) mengalami penurunan.
+Hasil pelatihan model pada masing-masing kelas dapat dilihat pada tabel \ref{Tabel_training}.
+\begin{table}[htp]
 \centering
-\begin{tabular}{|l|l|l|}
-\hline
-$r$ & arrival time (s) & maximum $\| u \|$ \\ \hline
-$1.5$ & $6.9187936337$ & $1.2253000912634624$ \\ \hline
-$1.0$ & $6.05276367644$ & $1.467295152420136$ \\ \hline
-$0.5$ & $4.84707681233$ & $1.997746119057331$ \\ \hline
+\begin{tabular}{ cccccc }
+	\hline 
+	Kelas Id & Nama Kelas & AP & TP & FP\\
+	\hline
+	0& Person & 89.3\% & 10 & 2\\
+	1 & Car & 94.93\% & 1624 & 171\\
+	2 & Motorbike& 89.93\% &1092& 212 \\
+	3 & Bus & 84.73\% & 27& 5 \\
+	4 & Truck & 94.60\% & 191 & 27\\
+	5 & Bicycle & 0.00\% &0 & 0 \\
 \end{tabular}
-\end{table}
-\begin{table}[ht!]
-\caption{Arrival Time and Maximum Acceleration of Rotational Trajectory for Several Constraints}
-\label{angular_trajectory_table}
+\caption{Hasil pelatihan untuk tiap kelas}
+\label{Tabel_training}
+\end{table} 
+
+Berdasarkan tabel tersebut dapat dilihat bahwa kelas yang memiliki \textit{average precision} terbesar adalah mobil, truck dan sepeda motor. Hal ini dikarenakan data latih atau kondisi lalu lintas Indonesia didominasi oleh tiga kelas tersebut, terutama mobil dan motor. 
+Dari tabel \ref{Tabel_training} juga diketahui bahwa Total TP = 2944, Total FP = 417, dengan IoU = 68.22\% memberikan Total FN = 401. Maka dapat dicari nilai precision, recall dan F1-score nya berdasarkan persamaan \ref{Recall}, \ref{Precision}, \ref{F1_score}.
+\begin{equation} \label{Precision}
+	Precision = \frac{TP}{TP+FP} = \frac{2944}{2944+417} = 0.8759
+\end{equation}
+
+\begin{equation} \label{Recall}
+	Recall = \frac{TP}{TP+FN} = \frac{2944}{2944+401} = 0.88
+\end{equation}
+
+\begin{equation} \label{F1_score}
+	F1-score = 2*\frac{Precision * Recall}{Precision + Recall} = 2*\frac{0.88 * 0.8759}{0.88 + 0.8759} = 0.8779
+\end{equation}
+
+\subsection{Perhitungan jumlah kendaraan}
+
+Hasil perhitungan jumlah kendaraan oleh model yang telah dilatih kemudian dibandingkan dengan data acuan untuk mengetahui besaran error yang diberikan. Dalam penelitian ini, data acuan merupakan data hasil pengamatan secara langsung oleh pengamat yang diambil dari sampel 15 menit.
+Metode mendapatkan data acuan ini dilakukan karena ATCS kota Semarang belum memiliki database yang berisi jumlah kendaraan tiap 5 menit. Untuk memberikan informasi yang lebih valid, pembuatan data acuan dilakukan oleh dua pengamat.
+Hasil perbandingan antara perhitungan sistem dengan pengamat dapat dilihat pada tabel \ref{Count_result}. 
+\begin{table}[htp]
 \centering
-\begin{tabular}{|l|l|l|}
-\hline
-Constraints                                                   $[\dot{\omega}_{max}\,\ddot{\omega}_{max}]$ & arrival time ($s$) & max acceleration \\ \hline
-$[0.5\;rad/s;\;0.5\;rad/s^2]$ & $4.6$   & $0.5\,rad/s^2$           \\ \hline
-$[1.0\;rad/s;\;1.0\;rad/s^2]$ & $2.8$   & $1.0\,rad/s^2$           \\ \hline
-$[1.5\;rad/s;\;1.5\;rad/s^2]$ & $2.089$ & $1.5\,rad/s^2$         \\ \hline
+\begin{tabular}{|c|c|c|c|}
+	\hline 
+	\multirow{2}{*}{\textbf{5 menit ke-}} & \multicolumn{2}{c|}{\textbf{Grountruth}} &  \multirow{2}{*}{\textbf{Hasil perhitungan sistem}}\\ \cline{2-3}
+	& Orang 1& Orang 2 &\\
+	\hline
+	1& 212 & 206 & 184\\
+	2 & 270 & 278 & 254\\
+	3 & 200 & 192 & 177\\
+	4 & 227 & 235 & 204 \\
+	5 & 223 & 232 & 202 \\
+	6 & 248 & 241 & 235 \\
+	7 & 232 & 208 & 217 \\
+	8 & 235 & 241 & 213 \\
+	9 & 269 & 273 & 248 \\
+	10 & 265 & 271 & 243 \\
+	11 & 229 & 235 & 206 \\
+	\hline
 \end{tabular}
-\end{table}
-Table \ref{trajectories_table} shows the arrival time and the maximum control input for each input weights, where $\|u\| = \sqrt{u_x^2+u_y^2}$. It could be noted that penalizing more control input results on lower maximum acceleration and longer arrival time. Input weight, $r$, provides a 'soft' constraint for the translational trajectory.
+\caption{Perbandingan hasil perhitungan sistem dengan \textit{groundtruth}}
+\label{Count_result}
+\end{table} 
+Berdasarkan tabel \ref{Count_result} diketahui bahwa rata-rata error perhitungan oleh sistem tiap 5 menit sebesar 20 kendaraan.
 
-We evaluated our numerical experiment on minimum-time trajectory for rotational motion of omnidirectional robot. We performed our numerical experiment on three cases with different constraint but with same initial and final state, $\omega_{i}=2.3\;rad$, $\dot{\omega}_{i}=-1.0\;rad/s$, and $\omega_{f}=0.0\;rad$.
+\subsection{Prediksi arus lalu lintas menggunakan LSTM}
+Berdasarkan skema pengambilan data jumlah kendaraan diatas, diperoleh data dengan jumlah 1430 data untuk 11 hari sehingga per hari terdapat 130 data.
+Proses pengolahan data yang dilakukan yaitu membagi data menjadi data latih dan data uji. Pada penelitian ini data latih sebanyak 1170 data (9 hari) dan data uji sebanyak 260 data (2 hari)
+Untuk proses pelatihan sendiri akan memvariasikan beberapa parameter yaitu jumlah lapisan LSTM, jumlah neuron tiap lapisan, jumlah data input, serta jumlah data output LSTM. 
+Jumlah lapisan yang akan digunakan yaitu 1,2, dan 3 LSTM, jumlah neuron yang digunakan 50 dan 100, jumlah data input yang digunakan adalah 130, 260 dan 390, sedangkan jumlah output yang digunakan adalah 130, 65, dan 1. Masing-masing 
+variasi akan diamati nilai RMSE, dan MAPE nya. Variasi yang memberikan nilai RMSE dan MAPE terendah akan dipakai untuk implementasi di dashboard.
 
-Table \ref{angular_trajectory_table} shows the arrival time for each experiments. It could be noted that the maximum acceleration of rotational motion satisfying 'hard' constraint of the motion.
-
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.4\textwidth]{assets/time_plot}
-	\caption{The Computation Time to grow the Tree}
-	\label{plot_compare_all:time}
-\end{figure}
-\begin{figure}[ht!]
-	\centering
-	\includegraphics[width=0.4\textwidth]{assets/cost_plot}
-	\caption{The Solution Cost of the Tree}
-	\label{plot_compare_all:cost}
-\end{figure}
-\begin{figure}[ht!]
-	\centering
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\includegraphics[width=1\linewidth]{assets/direct_sample_disabled_boxplot}
-		\caption{Solution Cost without Direct Sampling}
-		\label{plot_compare_cost:no}
-	\end{subfigure}
-	\begin{subfigure}{0.4\textwidth}
-		\centering
-		\includegraphics[width=1\linewidth]{assets/direct_sample_enabled_boxplot}
-		\caption{Solution Cost without Direct Sampling with $p=0.1$}
-		\label{plot_compare_cost:0.1}
-	\end{subfigure}
-	\caption{Comparison of Solution Cost with and without Direct Sampling}
-	\label{plot_compare_cost}
-\end{figure}
-
-\subsection{Performance Analysis}
-
-\subsubsection{Computation Time}
-We compare the computation time of the motion planner to find a solution. The comparison was done on different size of node grown and different direct sampling parameter. Figure \ref{plot_compare_all:time} shows the comparison of the mean computation time needed to grow the tree to a certain node size. 
-
-It is shown that the computation time grows exponentially as the node size increases. It is also shown that by directly sampling the goal state, the computation time also increases. While this effect is small on lower number of nodes, it becomes more evident on larger number of nodes. 
-
-On lower number of nodes, the difference of computation time between different direct sampling is relatively small compared to that with larger number of nodes. This is mainly because the planner too frequently tries to connect the goal state and less exploring the other possible state. This effect could be caused by the inserted goal state already has the lowest possible cost but the sampler keeps returning the goal state, hence much of computation time wasted while it could not grow the tree.
-
-\subsubsection{Solution Cost}
-Figure \ref{plot_compare_all:cost} shows the comparison of the mean solution cost of the growth tree across several node size. It is shown that by directly sampling the goal state reduce the cost of the solution trajectory. While it greatly reduce the cost on lower number of nodes, it should also be noted that more frequent direct sampling does not further reduce the cost on higher number of nodes. 
-
-Figure \ref{plot_compare_cost} shows the data of solution costs from $100$ times of experiment with and without direct sampling. Figure \ref{plot_compare_cost:no} shows the solution cost without directly sampling the goal state and figure \ref{plot_compare_cost:0.1} shows the distribution of the solution cost with direct sampling to the goal with $0.1$ probability. 
-
-Without direct sampling to goal state, the median of solution costs becomes smaller as the number of node increases, while with direct sampling to the goal state, the median of the costs is already on the lower range of solution costs even with smaller number of nodes and further increase the number of nodes does not reduces the median of solution costs. On both cases, however, increasing the number of nodes tends to reduce the range of maximum costs.
-
-%\subsection{Minimum-Time Trajectory for Rotational Motion}
-%We evaluated our numerical experiment on minimum-time trajectory for rotational motion of omnidirectional robot. We performed our numerical experiment on two cases using different initial state.
-
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-%\begin{table}[ht!]
-%\caption{Experiments Settings}
-%\label{angular_exp_table}
-%\centering
-%\begin{tabular}{|l|l|l|}
-%\hline
-%Exp. No.            & parameter     & value                                                              \\ \hline
-%\multirow{3}{*}{$1$.} & initial state & $[-2.3,1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=0.5\,rad/s;\;\ddot{\omega}_{max}=0.5\,rad/s^2$ \\ \hline
-%\multirow{3}{*}{$2$.} & initial state & $[2.3,-1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=0.5\,rad/s;\;\ddot{\omega}_{max}=0.5\,rad/s^2$ \\ \hline
-%\multirow{3}{*}{$3$.} & initial state & $[-2.3,1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=1.0\,rad/s;\;\ddot{\omega}_{max}=1.0\,rad/s^2$ \\ \hline
-%\multirow{3}{*}{$4$.} & initial state & $[2.3,-1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=1.0\,rad/s;\;\ddot{\omega}_{max}=1.0\,rad/s^2$ \\ \hline
-%\multirow{3}{*}{$5$.} & initial state & $[-2.3,1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=1.5\,rad/s;\;\ddot{\omega}_{max}=1.5\,rad/s^2$ \\ \hline
-%\multirow{3}{*}{$6$.} & initial state & $[2.3,-1.0]^T$                                                     \\ \cline{2-3} 
-%                    & goal state    & $[0.0,0.0]^T$                                                      \\ \cline{2-3} 
-%                    & constraint    & $\dot{\omega}_{max}=1.5\,rad/s;\;\ddot{\omega}_{max}=1.5\,rad/s^2$ \\ \hline
-%\end{tabular}
-%\end{table}
-
-%We performed 6 numerical experiments with different initial states and constraints as listed in table \ref{angular_exp_table}. Constraints in this experiments are the maximum angular velocity, $\dot{\omega}_{max}$, and maximum angular acceleration, $\ddot{\omega}_{max}$. The initial and final states are vectors consist of initial position and angular velocity, $[\omega,\dot{\omega}]^T$. Figure \ref{angular_trajectory}, \ref{angular_trajectory1}, and \ref{angular_trajectory2} show the resulted trajectory on experiment $1$ and $2$, $3$ and $4$, $5$ and $6$ respectively. In the figure, $x0$ and $x1$ represents the position and velocity, $\omega$ and $\dot{\omega}$, while $u0$ represents acceleration, $\ddot{\omega}$.
-
-%Experiment $1$ and $2$ are performed with velocity constraint of $0.5\;rad/s$ and acceleration constraint of $0.5\;rad/s^2$ with two different initial state, experiment $1$ with $q=[-2.3,1.0]^T$ and experiment $2$ with $q=[2.3,-1.0]^T$. The resulted trajectory, as shown in figure \ref{angular_trajectory:0} and \ref{angular_trajectory:1}, shows that the controller first decelerate to reduce velocity since it exceed the limit, then it cruising before slows down again and reach the destination. Both figure \ref{angular_trajectory:0} and \ref{angular_trajectory:1} shows similar pattern since its magnitude of initial value and its final destination are equal.
-
-%Experiment $3$ and $4$ are performed with less constrained velocity of $1.0\;rad/s$ and acceleration of $1.0\;rad/s^2$, but with same initial and goal state as experiment $1$ and $2$ respectively. Unlike experiment $1$ and $2$, since the initial velocity in this experiment are equal to the maximum velocity limit, the resulted trajectory does not decelerate at first, but it cruise instead. Finally, before reach the final destination, it slows down to reach the destination with zero velocity.
-
-%Experiment $5$ and $6$ are performed with much less constraint than experiment $1$ and $2$ with velocity limit of $1.5\;rad/s$ and acceleration limit of $1.5\;rad/s^2$, again, with same initial and goal state as experiment $1$ and $2$ respectively. As shown in figure \ref{angular_trajectory2:0} and \ref{angular_trajectory2:1}, the resulted trajectory for this experiments show that at first, the controller speeds up the velocity to the maximum allowable velocity with maximum acceleration, and then cruising before it slows down to reach destination with zero velocity.
-
-%\begin{figure}[ht!]
-%	\centering
-%	\begin{subfigure}{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular0}
-%		\caption{Angular Trajectory from $[-2.3,1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory:0}
-%	\end{subfigure}\hfill
-%	\begin{subfigure}{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular1}
-%		\caption{Angular Trajectory from $[2.3,-1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory:1}
-%	\end{subfigure}
-%	\caption{Angular Trajectory}
-%	\label{angular_trajectory}
-%\end{figure}
-%
-%\begin{figure}[ht!]
-%	\centering
-%	\begin{subfigure}{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular2}
-%		\caption{Angular Trajectory from $[-2.3,1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory1:0}
-%	\end{subfigure}\hfill
-%	\begin{subfigure}{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular3}
-%		\caption{Angular Trajectory from $[2.3,-1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory1:1}
-%	\end{subfigure}
-%	\caption{Angular Trajectory}
-%	\label{angular_trajectory1}
-%\end{figure}
-%
-%\begin{figure}[ht!]
-%	\centering
-%	\begin{subfigure}[t]{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular4}
-%		\caption{Angular Trajectory from $[-2.3,1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory2:0}
-%	\end{subfigure}\hfill
-%	\begin{subfigure}[t]{.4\textwidth}
-%		\centering
-%		\includegraphics[width=1\linewidth]{assets/angular5}
-%		\caption{Angular Trajectory from $[2.3,-1.0]^T$ to $[0.0,0.0]^T$}
-%		\label{angular_trajectory2:1}
-%	\end{subfigure}
-%	\caption{Angular Trajectory}
-%	\label{angular_trajectory2}
-%\end{figure}			
-
-%Table \ref{arrival_time} shows the arrival time for each experiments. As expected, the arrival time is faster with less constraint.
-%
-%\begin{table}[H]
-%\caption{Arrival Time}
-%\label{arrival_time}
-%\centering
-%\begin{tabular}{|l|l|l|}
-%\hline
-%Exp. No. & Constraints                                                  & arrival time ($s$) \\ \hline
-%$1$.     & $\dot{\omega}_{max}=0.5\;rad/s;\;\ddot{\omega}_{max}=0.5\;rad/s^2$ & $4.6$              \\ \hline
-%$2$.     & $\dot{\omega}_{max}=0.5\;rad/s;\;\ddot{\omega}_{max}=0.5\;rad/s^2$ & $4.6$              \\ \hline
-%$3$.     & $\dot{\omega}_{max}=1.0\;rad/s;\;\ddot{\omega}_{max}=1.0\;rad/s^2$ & $2.8$              \\ \hline
-%$4$.     & $\dot{\omega}_{max}=1.0\;rad/s;\;\ddot{\omega}_{max}=1.0\;rad/s^2$ & $2.8$              \\ \hline
-%$5$.     & $\dot{\omega}_{max}=1.5\;rad/s;\;\ddot{\omega}_{max}=1.5\;rad/s^2$ & $2.08889$          \\ \hline
-%$6$.     & $\dot{\omega}_{max}=1.5\;rad/s;\;\ddot{\omega}_{max}=1.5\;rad/s^2$ & $2.08889$          \\ \hline
-%\end{tabular}
-%\end{table}
-
-% set url font
-\urlstyle{tt}
-
-\subsection{Dynamic Simulation Experiment}
-We performed dynamic simulation using ROS-based RoboCup MSL simulation framework as proposed in \cite{yao2015simulation}. Table \ref{online_exp_settings} shows the configuration for the experiment. In this experiment, the controlled robot is commanded to move from one corner of the field to another corner without colliding with another robots. While another robots act as obstacles ignoring other robots' motions. Our implementation of the motion planning and trajectory tracking system is available at \url{https://bitbucket.org/alifahrri/robosoccer_motion_planning_ws/}. Video demonstration of this experiment is available at \url{https://youtu.be/jYTKOSrrcoY}. 
-
-\begin{table}[ht!]
-\caption{Experiment Settings}
-\label{online_exp_settings}
+Setelah melakukan proses pelatihan diperoleh model sebanyak variasi. Nilai RMSE dan MAPE masing-masing model dapat dilihat pada tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}.
+\begin{table}[htp]
 \centering
-\begin{tabular}{|l|l|}
-\hline
-Parameter                                      & Value                 \\ \hline
-target tree size                               & $75$                  \\ \hline
-direct sampling probability, $p$               & $0.1$                 \\ \hline
-input weight, $r$                              & $0.5$                 \\ \hline
-angular trajectory constraint, $[\dot{\omega}_{max},\,\ddot{\omega}_{max}]^T$ & $[0.75,\,0.75]^T$     \\ \hline
-$a_I = [a_{I1},\,a_{I2},\,a_{I3}]^T$                 & $[5.0,\,5.0,\,5.0]^T$ \\ \hline
-$a_P = [a_{P1},\,a_{P2},\,a_{P3}]^T$                 & $[3.0,\,3.0,\,3.0]^T$ \\ \hline
-\vars{f sim}								& $60$ Hz                 \\ \hline
-\vars{f plan}								& $3$ Hz                 \\ \hline
-\vars{f control}							& $60$ Hz                 \\ \hline
+\begin{tabular}{|c|c|c|c|c|c|}
+	\hline 
+	\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{1 LSTM}} \\ \cline{3-6}
+	&  & \multicolumn{2}{c|}{50}& \multicolumn{2}{c|}{100} \\ \cline{3-6}
+	& & RMSE & MAPE& RMSE & MAPE\\
+	\hline
+	\multirow{3}{*}{130} & 130 & 30.34& 11.316\%& 28.153 & 10.878\%\\
+	& 65 & 31.782 & 11.628\% & 26.919 & 11.353\% \\
+	& 1 & 28.468 & 11.491\% & 27.669 & 11.614\% \\
+	\hline
+	\multirow{3}{*}{260} & 130 & 29.142 & 11.67\%  & 27.716 & 10.864\%\\
+	& 65 & 29.784 & 11.458\% & 29.830 & 12.022\%\\
+	& 1 & 28.267 & 11.389\% & 27.883 & 11.440\% \\
+	\hline
+	\multirow{3}{*}{390} & 130 & 32.301 & 12.446\% & 30.567 & 11.416\% \\
+	& 65 & 32.015 & 12.541\% & 30.664 & 12.220\% \\
+	& 1 & 28.332 & 11.417\% & 27.65 & 11.542\% \\
+	\hline
 \end{tabular}
-\end{table}
+\caption{Nilai RMSE dan MAPE menggunakan 1 LSTM}
+\label{1LSTM_result}
+\end{table} 
 
-\begin{figure}[ht!]
-	\begin{subfigure}{0.45\textwidth}
-		\centering
-		\includegraphics[width=1\linewidth]{assets/exppos}
-		\caption{Planned and Realized Robot Pose versus Time}
-		\label{exp_plot:pos}
-	\end{subfigure}
-	\begin{subfigure}{0.45\textwidth}
-		\centering
-		\includegraphics[width=1\linewidth]{assets/expvel}
-		\caption{Planned and Realized Robot Velocity versus Time}
-		\label{exp_plot:vel}
-	\end{subfigure}	
+\begin{table}[htp]
 	\centering
-	\caption{Planned and Realized Trajectory}
-	\label{exp_plot}
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline 
+		\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{2 LSTM}} \\ \cline{3-6}
+		&  & \multicolumn{2}{c|}{50;50}& \multicolumn{2}{c|}{100;100} \\ \cline{3-6}
+		& & RMSE & MAPE& RMSE & MAPE\\
+		\hline
+		\multirow{3}{*}{130} & 130 & 32.022 & 12.920\% & 29.610 & 10.964 \%\\
+		& 65 & 29.484 & 12.051\%& 39.009\% & 15.242\% \\
+		& 1 & 27.571 & 12.062\% & 27.787 & 12.180\% \\
+		\hline
+		\multirow{3}{*}{260} & 130 & 30.109 & 11.572\% & 28.770\% & 11.107\% \\
+		& 65 & 28.983 & 11.204\% & 28.443 & 11.898\% \\
+		& 1 & 27.165 & 11.66\% & 27.565 & 12.145\% \\
+		\hline
+		\multirow{3}{*}{390} & 130 & 27.68 & 11.03\% & 28.625 & 11.958\% \\
+		& 65 & 31.245 & 11.610\% & 31.512 & 12.579\% \\
+		& 1 & 27.377 & 11.55\% & 27.833 & 11.658\% \\
+		\hline
+	\end{tabular}
+	\caption{Nilai RMSE dan MAPE menggunakan 2 LSTM}
+	\label{2LSTM_result}
+	\end{table} 
+
+\begin{table}[htp]
+	\centering
+	\begin{tabular}{|c|c|c|c|c|c|}
+		\hline 
+		\multirow{3}{*}{\textbf{Input LSTM}} & \multirow{3}{*}{\textbf{Output LSTM}} & \multicolumn{4}{c|}{\textbf{3 LSTM}} \\ \cline{3-6}
+		&  & \multicolumn{2}{c|}{50;50;50}& \multicolumn{2}{c|}{100;100;100} \\ \cline{3-6}
+		& & RMSE & MAPE& RMSE & MAPE\\
+		\hline
+		\multirow{3}{*}{130} & 130 & 34.268 & 12.801\% & 36.555 & 14.052\% \\
+		& 65 & 29.479 & 11.915\% & 33.423 & 14.439\% \\
+		& 1 & 27.390 & 12.116\% & 27.346 & 12.008\% \\
+		\hline
+		\multirow{3}{*}{260} & 130 & 26.059 & 11.075\% & 25.933 & 10.362\% \\
+		& 65 & 26.428 & 10.729\% & 37.004 & 14.642\% \\
+		& 1 & 26.583 & 11.144\% &  27.557 & 11.268\% \\
+		\hline
+		\multirow{3}{*}{390} & 130 & 29.889 & 11.668\% & 35.517 & 13.226\% \\
+		& 65 & 38.861 & 16.415\% & 38.512 & 14.477\% \\
+		& 1 & 27.972 & 11.150\% & 27.392 & 11.752\% \\
+		\hline
+	\end{tabular}
+	\caption{Nilai RMSE dan MAPE menggunakan 3 LSTM}
+	\label{3LSTM_result}
+	\end{table} 
+
+Berdasarkan tabel \ref{1LSTM_result}, \ref{2LSTM_result}, dan \ref{3LSTM_result}, dapat diketahui karakteristik jaringan LSTM sebagai berikut:
+\begin{enumerate}
+	\item Dengan ukuran input yang sama, semakin kecil ukuran output maka semakin kecil pula RMSE dan MAPE yang diberikan. 
+	\item Dengan ukuran output yang sama penambahan jumlah input membuat RMSE dan MAPE semakin berkurang. Namun dengan ukuran input 390, RMSE dan MAPE justru lebih besar dibandingkan input 260. Hal ini dikarenakan kurangnya data latih untuk input 390 sehingga LSTM tidak dapat mempelajari secara maksimal karakteristik data. Dengan data input sebesar 390  dan misalkan jumlah output 1, berarti hanya terdapat 3 runtun data latih dengan bentuk (3, 390, 1). Apabila data latih ini digunakan untuk membuat data $train\_x$ dengan sistem \textit{sliding window} maka hanya didapatkan data $train\_x$ sebanyak (780,390,1). Jumlah runtun data ini lebih sedikit dibandingkan dengan ukuran input 260 dan 130 untuk jumlah output yang sama. Dengan jumlah output yang sama yaitu 1, input 260 memberikan jumlah data $train\_x$ sebanyak (1040, 260, 1) sedangkan dengan input 130 memberikan data $train\_x$ sebanyak (1040,130,1).
+	\item Dengan mengkombinasikan antara jumlah output, jumlah input, jumlah lapisan LSTM dan jumlah neuron tiap lapisan secara proporsional dapat dibuat sebuah model yang optimal  
+\end{enumerate}
+
+Berdasarkan tabel, diketahui bahwa untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 100 dengan RMSE sebesar 25.933 dan MAPE 10.362\%. Untuk output 65 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.428 dan MAPE 10.729\%.
+Sedangkan untuk output 130 model terbaik ditemukan pada kombinasi jumlah input = 260, jumlah lapisan LSTM = 3, dan jumlah neuron tiap lapisan = 50 dengan RMSE sebesar 26.583 dan MAPE 11.144\%.
+
+Hasil perbandingan antara output model dengan data uji ditunjukkan oleh gambar \ref{out_130}, \ref{out_65}, \ref{out_1}.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_130}
+	\caption{Hasil prediksi model dengan output 130}
+	\label{out_130}
 \end{figure}
 
-Figure \ref{exp_plot} shows the planned and realized trajectory of the controlled robot. Figure \ref{exp_plot:pos} shows the robot pose over time with the realized poses are shown with solid lines while planned poses are shown with dashed lines. Figure \ref{exp_plot:vel} shows the robot's velocity over time with the realized velocities are shown in solid lines and planned velocities are shown in dashed lines. It is shown that the trajectory tracker is able to closely follows the planned pose from the motion planner, while the body rate roughly follows the planned velocity to track the reference trajectory. 
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_65}
+	\caption{Hasil prediksi model dengan output 65}
+	\label{out_65}
+\end{figure}
 
-By taking the obstacles motion into account, the system could anticipate its movement in short time span resulting more reliable trajectory plan even if the motion planning loop rate is far lower than the simulator and trajectory tracking loop rate.
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.3]{out_1}
+	\caption{Hasil prediksi model dengan output 1}
+	\label{out_1}
+\end{figure}
+Berdasarkan gambar tersebut dapat diketahui bahwa meskipun nilai RMSE dan MAPE yang dimiliki oleh model dengan output 1 secara statistika lebih buruk daripada model dengan output 130 dan 65, namun secara visual model dengan output 1 mampu mengikuti tren dari data uji lebih baik. Hal ini dikarenakan dengan jumlah output yang semakin sedikit, maka model akan semakin presisi untuk mempelajari karakteristik data namun
+akan membutuhkan waktu lama untuk melakukan prediksi. 
 
 \section{Conclusion} \label{conclusion}
 
 \emph{Kinodynamic motion planning} for omnidirectional mobile robot was presented in this work. Obstacles' motion and robot's dynamic was taken into account while planning the collision-free trajectory. Dynamic constraints for translational motion was addressed by 'soft' constraint via input control weight while 'hard' constraints for rotational motion was satisfied by setting maximum allowed velocity and acceleration. The presented sampling strategy was able to reduce solution cost. Online planning \& tracking scheme was presented. Dynamic simulation shows the scheme was successfully applied to the simulated robot and environment.
 
+\bibliographystyle{IEEEtran}
 \bibliography{reference}
 
 \end{document}

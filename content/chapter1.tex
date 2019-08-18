@@ -8,9 +8,6 @@
 \begin{document}
 
 \section{Latar Belakang}
-Teknologi \textit{Artificial Intelligence} (AI) mengalami perkembangan yang sangat pesat beberapa tahun terakhir. Teknologi ini telah diterapkan di berbagai bidang kehidupan untuk memudahkan pekerjaan manusia seperti pada bidang robotika, pemrosesan citra dll. 
-Salah satu cabang AI yang saat ini banyak digunakan untuk penelitian maupun keperluan lain adalah \textit{deep learning}. \textit{Deep learning} menawarkan performa yang optimal, handal dan dapat mengakomodasi pemrosesan data dalam jumlah yang sangat besar (\textit{big data}). 
-\textit{Deep learning} telah mengalahkan berbagai teknik \textit{machine learning} yang ada saat ini dalam hal pengenalan gambar \cite{Krizhevsky2002ImageNet}, pengenalan suara \cite{Hinton2012Speech}, pemahaman bahasa \cite{Collobert2011NLP} dan deteksi objek.
 
 Kemacetan menjadi masalah serius di Indonesia. Berdasarkan survei yang dilakukan oleh Inrix, pada tahun 2017 Indonesia menempati peringkat ke 2 dunia dalam hal jumlah rata-rata waktu yang dihabiskan di jalan karena kemacetan. Selama tahun 2017 masyarakat Indonesia rata-rata menghabiskan waktu sia-sia di jalan (terjebak macet) sampai 51 jam \cite{Inrix2017Survei}. Sedangkan, berdasarkan index lalu lintas Indonesia menempati posisi ke 6 di Asia sebagai negara termacet dengan index 177.91 dari total index 216, index emisi $CO_2$ yang disebabkan kemacetan ini sebesar 6415.58 \cite{Numbeo2015Survei}. 
 Di tahun yang sama, beberapa lembaga survei mencatat bahwa Jakarta menjadi kota termacet di Indonesia dengan level kemacetan mencapai 61\% \cite{TomTom2017Survei}. Kota kedua termacet di Indonesia adalah Bandung dengan rata-rata waktu yang dihabiskan di kemacetan sebesar 42,57 jam per tahun \cite{Inrix2017Survei}. Melihat kondisi seperti itu kemacetan membawa kerugian dari segi waktu maupun lingkungan.
@@ -18,6 +15,10 @@ Tak heran, saat ini informasi terkait arus lalu lintas yang akurat dan \textit{r
 
 Salah satu cara untuk menyediakan informasi arus lalu lintas yang akurat adalah dengan menggunakan metode prediksi. Dari sudut pandang otoritas transportasi, kemampuan untuk memprediksi pola lalu lintas merupakan persyaratan utama untuk efisiensi manajemen lalu lintas baik di perkotaan maupun di daerah sub-urban. Prediksi lalu lintas dapat digunakan untuk identifikasi awal terjadinya kemacetan sehingga memungkinkan otoritas lalu lintas mengambil tindakan pencegahan untuk mengurangi kemacetan
 jalan \cite{Djahel2014SmartCity}. Dengan adanya prediksi arus lalu lintas, dapat diketahui bagaimana pengaruh arus saat ini terhadap kondisi jalan di periode waktu berikutnya sehingga dapat dibuat penjadwalan arus lalu lintas secara otomatis untuk suatu area kota \cite{Yuangfang2018TrafficPrediction}.
+
+Teknologi \textit{Artificial Intelligence} (AI) mengalami perkembangan yang sangat pesat beberapa tahun terakhir. Teknologi ini telah diterapkan di berbagai bidang kehidupan untuk memudahkan pekerjaan manusia seperti pada bidang robotika, pemrosesan citra dll. 
+Salah satu cabang AI yang saat ini banyak digunakan untuk penelitian maupun keperluan lain adalah \textit{deep learning}. \textit{Deep learning} menawarkan performa yang optimal, handal dan dapat mengakomodasi pemrosesan data dalam jumlah yang sangat besar (\textit{big data}). 
+\textit{Deep learning} telah mengalahkan berbagai teknik \textit{machine learning} yang ada saat ini dalam hal pengenalan gambar \cite{CNNinImageNet}, pengenalan suara \cite{Hinton2012Speech}, pemahaman bahasa \cite{Collobert2011NLP} dan deteksi objek.
 
 Melihat fakta bahwasannya data lalu lintas merupakan data dari waktu ke waktu yang memiliki suatu pola tertentu serta melihat potensi yang dimilki oleh \textit{deep learning} untuk pemrosesan gambar maupun video, tidak menutup kemungkinan bahwa dapat dibuat sebuah sistem prediksi lalu lintas cerdas berbasis deep learning dengan memanfaatkan peran kamera CCTV di jalan raya secara \textit{real time}. 
 Menggunakan teknologi deep learning, kamera CCTV dapat difungsikan lebih jauh lagi misalnya untuk mengklasifikasikan jenis kendaraan, menghitung jumlah kendaraan, serta memberikan prediksi arus lalu lintas untuk jam atau hari tertentu. Sehingga berdasarkan hasil analisa tersebut dapat disusun suatu strategi optimalisasi lalu lintas yang lebih efektif, efisien dan dapat mengurangi kemacetan. 
@@ -31,11 +32,12 @@ Berdasarkan latar belakang masalah yang telah dijelaskan, bahwa kemacetan menjad
 Batasan masalah pada penelitian ini adalah:
 \begin{enumerate}
     \item Model yang dihasilkan dari penelitian baik model objek detektor maupun model LSTM hanya difokuskan pada waktu siang hari yaitu antara pukul 07.00 sampai dengan pukul 17.45.
-    \item Perhitungan jumlah kendaraan pada penelitian ini hanya dilakukan di jalan Fatmawati kota Semarang.
+    \item Perhitungan jumlah kendaraan hanya dilakukan di jalan Fatmawati kota Semarang.
+    \item \textit{Tuning hyperparameter} untuk model LSTM yang optimal dilakukan secara experimental.
 \end{enumerate}
 
 \section{Tujuan Tugas Akhir}
-Tujuan dari penelitian ini adalah:
+Pengembangan sistem yang dapat melakukan prediksi arus lalu lintas menggunakan CCTV jalan raya secara \textit{real time} dilakukan melalui beberapa tahapan yaitu:
 \begin{enumerate}
     \item Merancang sistem objek detektor yang dapat mendeteksi jenis kendaraan, melakukan \textit{tracking} dan perhitungan jumlah kendaraan secara \textit{real-time} menggunkan kamera CCTV.
     \item Merancang sistem LSTM yang dapat melakukan prediksi arus lalu lintas dengan akurat.

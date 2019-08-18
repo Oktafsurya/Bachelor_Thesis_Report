@@ -14,9 +14,9 @@ Berbagai macam pendekatan telah dilakukan untuk mengembangkan sistem yang dapat 
 
 Lei, M. melakukan penelitian seputar perhitungan jumlah kendaraan berbasis video. Dalam penelitian tersebut, digunakan metode \textit{Adaptive background estimation} dan \textit{Gaussian shadow elimination}. Seperti kebanyakan metode pengolahan citra konvensional, kelemahan utama terletak pada pengaruh pencahayaan. Dalam penelitian tersebut akurasi perhitungan
 sangat bergantung pada kemampuan untuk menghilangkan efek bayangan karena pengaruh pencahayaan. Selain itu sistem yang dikembangkan oleh \cite{Lei2018VehicleCounting} belum mampu mengklasifikasikan kendaraan dengan bagus.
-Pada \cite{Sheeraz2018VehicleDetection}, juga dilakukan penelitian untuk klasifikasi dan perhitungan jumlah kendaraan berbasis video dengan membandingan performa metode pengolahan citra biasa dengan metode \textit{machine learning} sederhana. Dalam penelitian \cite{Sheeraz2018VehicleDetection}, perhitungan jumlah kendaraan dilakukan dengan mensubtraksi background menggunakan \textit{Gaussian Mixture Model} (GMM) sedangkan untuk klasfikasi menggunakan \textit{Contour Comparison} (CC) dan kombinasi antara \textit{Bag of Features}
+Pada \cite{Sheeraz2018VehicleDetection}, juga dilakukan penelitian untuk klasifikasi dan perhitungan jumlah kendaraan berbasis video dengan membandingan performa metode pengolahan citra biasa dengan metode \textit{machine learning} sederhana. Dalam penelitian \cite{Sheeraz2018VehicleDetection}, perhitungan jumlah kendaraan dilakukan dengan mensubtraksi background menggunakan metode \textit{Gaussian Mixture Model} (GMM) sedangkan untuk klasfikasi menggunakan \textit{Contour Comparison} (CC) dan kombinasi antara \textit{Bag of Features}
 (BoF) dengan \textit{Support Vector Machine} (SVM). Hasil penelitian menunjukan bahwa CC memiliki akurasi klasifikasi lebih tinggi daripada BoF \& SVM dengan selisih tidak terlalu jauh. 
-Meskipun demikian, hal ini menunjuka bahwa metode klasifikasi dan perhitungan jumlah kendaraan berbasis algoritma \textit{learning} memiliki prospek yang menjanjikan.
+Meskipun demikian, hal ini menunjukkan bahwa metode klasifikasi dan perhitungan jumlah kendaraan berbasis algoritma \textit{learning} memiliki prospek yang menjanjikan.
 Salah satu penelitian dalam bidang deteksi, \textit{tracking} dan perhitungan jumlah kendaraan yang berbasis \textit{deep learning} adalah penelitian \cite{Chaucan2019CNN}. Pada penelitian ini digunakan model YOLO yang telah dilatih ulang untuk melakukan deteksi dan klasifikasi. Dataset yang digunakan berasal dari data Delhi-NCR. Hasil penelitian ini menunjukan bahwa menggunakan model \textit{deep learning} untuk klasifikasi dan deteksi memberikan akurasi yang tinggi.  
 
 \subsection{Prediksi arus lalu lintas}
@@ -28,7 +28,7 @@ Kedua penelitian \cite{LSTM_1} dan \cite{LSTM_2} memberikan hasil yang menunjukk
 \section{Dasar Teori}
 \subsection{\textit{Deep Learning}}
 Pada \cite{DLConcept} dan \cite{DLwithPython} \textit{deep learning} didefinisikan sebagai proses belajar merepresentasikan suatu fitur. Proses ini memanfaatkan \textit{machine learning} untuk menemukan tidak hanya pemetaan fitur tehadap output namun juga mempelajari proses representasi itu sendiri.
-Untuk dapat mempelajari fitur terbaik yang merepresentasikan suatu data, \textit{deep learning} belajar secara berturut-turut dan berkesinambungan melalui layer-layer yang dimilikinya, dimana semakin dalam suatu layer maka fitur yang direpresentasikan semakin detail dan bermakna.
+Untuk dapat mempelajari fitur terbaik yang merepresentasikan suatu data, \textit{deep learning} belajar secara berturut-turut dan berkesinambungan melalui lapisan-lapisan yang dimilikinya, dimana semakin dalam suatu lapisan maka fitur yang direpresentasikan semakin detail dan bermakna.
 
 \begin{figure}
 	\centering
@@ -37,15 +37,15 @@ Untuk dapat mempelajari fitur terbaik yang merepresentasikan suatu data, \textit
 	\label{Dl_model}
 \end{figure}
 
-Gambar \ref{Dl_model} merupakan ilustrasi dari model deep learning. Sulit bagi komputer untuk memahami arti dari data input sensoris mentah, seperti gambar tersebut yang direpresentasikan
+Gambar \ref{Dl_model} merupakan ilustrasi dari model \textit{deep learning}. Sulit bagi komputer untuk memahami arti dari data input sensoris mentah, seperti gambar tersebut yang direpresentasikan
 sebagai kumpulan nilai piksel. Pemetaan fungsi dari sekumpulan piksel itu ke identitas objek sangat rumit. Mempelajari atau mengevaluasi pemetaan ini kemungkinan tidak dapat diatasi jika
 ditangani secara langsung. Deep learning menyelesaikan masalah ini dengan memecah pemetaan rumit yang diinginkan ke dalam serangkaian pemetaan sederhana yang bersarang, masing-masing
-pemetaan dijelaskan oleh lapisan (layer) model yang berbeda. Input disajikan pada layer yangterlihat (visible layer), dinamakan demikian karena mengandung variabel yang dapat diamati.
-Kemudian serangkaian lapisan tersembunyi (hidden layer) mengekstraksi fitur yang semakin abstrak dari gambar. Lapisan-lapisan ini disebut "tersembunyi" karena nilainya tidak diberikan
-dalam data. Model harus menentukan konsep yang tepat untuk menjelaskan bagaimana hubungan antar data yang sedang diamati. Pada model deep learning, data gambar adalah visualisasi dari 
+pemetaan dijelaskan oleh lapisan (layer) model yang berbeda. Input disajikan pada layer yang terlihat \textit{(visible layer)}, dinamakan demikian karena mengandung variabel yang dapat diamati.
+Kemudian serangkaian lapisan tersembunyi \textit{(hidden layer)} mengekstraksi fitur yang semakin abstrak dari gambar. Lapisan-lapisan ini disebut "tersembunyi" karena nilainya tidak diberikan
+dalam data. Model harus menentukan konsep yang tepat untuk menjelaskan bagaimana hubungan antar data yang sedang diamati. Pada model \textit{deep learning}, data gambar adalah visualisasi dari 
 jenis fitur yang diwakili oleh setiap unit hidden layer. Diberikan sebuah data gambar dalam bentuk sekumpulan piksel, lapisan pertama dapat dengan mudah mengidentifikasi tepi dengan cara
-membandingkan kecerahan piksel-piksel disekelilingnya. Selanjutnya, output dari hidden layer pertama diberikan sebagai input hidden layer kedua. Hidden layer kedua dapat dengan mudah
-mencari sudut dan kontur yang diperpanjang, yang dikenali sebagai koleksi tepi. Mengingat deskripsi hidden layer kedua merupakan informasi dalam sudut dan kontur, hidden layer ketiga
+membandingkan kecerahan piksel-piksel disekelilingnya. Selanjutnya, output dari \textit{hidden layer} pertama diberikan sebagai input \textit{hidden layer} kedua. \textit{Hidden layer} kedua dapat dengan mudah
+mencari sudut dan kontur yang diperpanjang, yang dikenali sebagai koleksi tepi. Mengingat deskripsi \textit{hidden layer} kedua merupakan informasi dalam sudut dan kontur, \textit{hidden layer} ketiga
 dapat mendeteksi seluruh bagian dari objek dengan cara menemukan koleksi kontur dan sudut tertentu. Akhirnya, deskripsi fitur dapat digunakan untuk mengenali objek yang ada dalam gambar
 \cite{DLConcept}.
 
@@ -110,10 +110,10 @@ Berdasarkan persamaan \ref{input_gate}, \ref{forget_gate}, \ref{cell_state}, \re
 $f_{t}$ adalah hasil dari komputasi \textit{forget gate}. Dan $i_{t}$ dihitung sebagai \textit{input gate} yang mewakili seberapa banyak penskalaan untuk setiap perubahan pada actual state. 
 Selanjutnya, nilai kandidat baru $c_t$ akan dihitung dan merepresentasikan informasi apa yang bisa ditambahkan ke state selanjutnya. 
 Sel state selanjutnya akan dihitung sebagai kombinasi informasi apa yang harus dilupakan di hidden state sebelum $c_{t-1}$ dan kandidat skala baru dari $i_{t} \star c_{t}$. 
-Terakhir, hidden state $h_{t}$ dihitung sama dengan RNN dengan menskalakan menurut cell state baru $c_t$.
+Terakhir, \textit{hidden state} $h_{t}$ dihitung sama dengan RNN dengan menskalakan menurut cell state baru $c_t$.
 
 \subsubsection{Strategi prediksi menggunakan LSTM}
-\paragraph{Strategi direct multi-step forecast}
+\paragraph{Strategi \textit{Direct Multi-Step Forecast}}
 
 Metode prediksi secara langsung melibatkan pengembangan model terpisah untuk setiap timestep prediksi seperti yang diilustrasikan persamaan \ref{direct_forcast} \cite{Forecast_Strategy}.
 Sebagai contoh, memprediksi suhu untuk dua hari ke depan. Maka dikembangkan model untuk memprediksi suhu pada hari ke-1 dan model terpisah untuk memprediksi suhu pada hari ke-2.
@@ -127,7 +127,7 @@ Sebagai contoh, memprediksi suhu untuk dua hari ke depan. Maka dikembangkan mode
 Karena terdapat satu model untuk tiap timestep, hal ini akan menambah beban komputasi dan beban maintenance model terutama ketika jumlah timestep yang akan diprediksi meningkat. Selain itu
 karena terdapat model yang terpisah berarti hubungan dependensi antar hasil prediksi tidak dapat dimodelkan.
 
-\paragraph{Strategi recursive multi-step forecast} 
+\paragraph{Strategi \textit{Recursive Multi-Step Forecast}} 
 
 Strategi rekursif melibatkan penggunaan model satu timestep secara berulang beberapa kali. Seperti pada persamaan \ref{recursive_forcast} hasil prediksi timestep sebelumnya akan digunakan sebagai input untuk melakukan prediksi pada timestep selanjutnya \cite{Forecast_Strategy}.
 Dalam hal memprediksi suhu untuk dua hari ke depan, maka dikembangkan model prediksi cukup satu timestep. Model ini kemudian akan digunakan untuk memprediksi hari 1, hasil prediksi hari 1 ini akan digunakan sebagai input pengamatan untuk memprediksi hari 2.
@@ -140,7 +140,7 @@ Dalam hal memprediksi suhu untuk dua hari ke depan, maka dikembangkan model pred
 
 Karena menggunakan prinsip hasil prediksi digunakan sebagai input pengamatan selanjutnya, strategi rekursif memungkinkan kesalahan prediksi terakumulasi sedemikian rupa sehingga kinerja model dapat dengan cepat menurun ketika timestep yang akan diprediksi meningkat.
 
-\paragraph{Strategi direct-recursive hybrid} 
+\paragraph{Strategi \textit{Direct-Recursive Hybrid}}
 
 Strategi langsung dan rekursif dapat digabungkan untuk menawarkan manfaat dari kedua metode.
 Seperti pada persamaan \ref{hybrid_forcast}, model terpisah dapat dibuat untuk tiap timestep yang akan diprediksi, tetapi masing-masing model dapat menggunakan hasil prediksi yang dibuat oleh model lain pada timestep sebelumnya sebagai nilai input \cite{Forecast_Strategy}.
@@ -153,7 +153,7 @@ Seperti pada persamaan \ref{hybrid_forcast}, model terpisah dapat dibuat untuk t
 
 Menggabungkan strategi rekursif dan langsung dapat membantu mengatasi keterbatasan masing-masing metode.
 
-\paragraph{Strategi multi output}
+\paragraph{Strategi \textit{Multi Output}}
 
 Strategi multi-output melibatkan pengembangan satu model yang mampu memprediksi seluruh runtun prediksi yang diinginkan dalam satu langkah \cite{Forecast_Strategy}.
 Dalam hal memprediksi suhu untuk dua hari ke depan, seperti pada persamaan \ref{MIMO_forcast} satu model digunakan untuk memprediksi suhu dua hari berikutnya dalam satu operasi.
@@ -202,8 +202,8 @@ bernilai nol, hal ini dikarenakan saat nilai sebenarnya $y_i$ nol maka penyebut 
 
 \subsection{\textit{Convolutional Neural Network} (CNN)}
 
-\textit{Convolutional Neural Network} (CNN) adalah salah satu jenis neural network yang biasa digunakan pada data gambar. CNN bisa digunakan untuk mendeteksi dan mengenali object pada sebuah gambar.
-CNN tidak jauh berbeda dengan neural network pada umumnya. CNN terdiri dari neuron yang memiliki bobot, bias dan fungsi aktivasi \cite{Wu2017IntroductionTC}.
+\textit{Convolutional Neural Network} (CNN) adalah salah satu jenis neural network yang biasa digunakan pada data gambar. CNN bisa digunakan untuk mendeteksi dan mengenali objek pada sebuah gambar.
+CNN tidak jauh berbeda dengan \textit{neural network} pada umumnya. CNN terdiri dari neuron yang memiliki bobot, bias dan fungsi aktivasi \cite{Wu2017IntroductionTC}.
 
 Seperti pada gambar \ref{arsi_CNN}, arsitektur CNN dibagi menjadi dua yaitu \textit{Feature Extraction Layer} dan \textit{Fully-Connected Layer} (FCN). \textit{Feature Extraction Layer} terdiri dari lapisan konvolusi dan lapisan \textit{pooling}.
 \begin{figure}[htp]
@@ -238,7 +238,7 @@ Semakin kecil stride maka akan semakin detail informasi yang kita dapatkan dari 
 
 Sedangkan Padding atau Zero Padding adalah parameter yang menentukan jumlah pixels (berisi nilai 0) yang akan ditambahkan di setiap sisi dari input seperti pada gambar \ref{padding_CNN}. Hal ini digunakan dengan tujuan untuk memanipulasi dimensi output dari lapisan konvolusi (fitur map) \cite{KarpathyCNN}.
 Dimensi output dari lapisan konvolusi selalu lebih kecil dari inputnya (kecuali penggunaan 1x1 filter dengan stride 1). Output ini akan digunakan kembali sebagai input dari lapisan konvolusi selanjutnya, sehingga tentu saja semakin banyak informasi yang terbuang.
-Dengan menggunakan padding, dimensi output dapat diatur agar tetap sama seperti dimensi input atau setidaknya tidak berkurang secara drastis. Dengan demikian kita bisa menggunakan lapisan konvolusi yang lebih dalam/deep sehingga lebih banyak fitur yang berhasil diekstrak.
+Dengan menggunakan padding, dimensi output dapat diatur agar tetap sama seperti dimensi input atau setidaknya tidak berkurang secara drastis. Dengan demikian kita bisa menggunakan lapisan konvolusi yang lebih dalam/\textit{deep} sehingga lebih banyak fitur yang berhasil diekstrak.
 
 \begin{figure}[htp]
 	\centering
@@ -254,17 +254,17 @@ Persamaan \ref{Fitur_map_dim} menghitung dimensi dari fitur map berdasarkan ukur
 dimana $W$ : dimensi input, $N$ : ukuran filter, $P$ : padding, dan $S$ : stride
 
 
-\subsubsection{Lapisan Pooling}
-Fungsi dari lapisan pooling ini adalah untuk mengurangi dimensi dari fitur map secara spasial (mengurangi jumlah
-parameter) dengan operasi down-sampling \cite{CNNinImageNet}. Proses pooling ditunjukan oleh gambar \ref{pooling_CNN}. Dengan pooling 2 x 2 stride 2, jumlah parameter akan direduksi sebanyak 75\%, sangat berguna untuk mengurangi kebutuhan komputasi. Selain
+\subsubsection{Lapisan \textit{Pooling}}
+Fungsi dari lapisan \textit{pooling} ini adalah untuk mengurangi dimensi dari fitur map secara spasial (mengurangi jumlah
+parameter) dengan operasi \textit{down-sampling} \cite{CNNinImageNet}. Proses \textit{pooling} ditunjukan oleh gambar \ref{pooling_CNN}. Dengan pooling 2 x 2 stride 2, jumlah parameter akan direduksi sebanyak 75\%, sangat berguna untuk mengurangi kebutuhan komputasi. Selain
 mereduksi jumlah parameter, pooling juga berfungsi untuk mencegah \textit{overfitting}.
 
-Umumnya, metode pooling yang digunakan adalah max pooling atau mengambil nilai terbesar dari suatu bagian/daerah. Namun terdapat metode pooling lain yang dapat digunakan seperti \textit{average pooling} atau
+Umumnya, metode \textit{pooling} yang digunakan adalah \textit{max pooling} atau mengambil nilai terbesar dari suatu bagian/daerah. Namun terdapat metode pooling lain yang dapat digunakan seperti \textit{average pooling} atau
 \textit{L2-norm pooling} \cite{CNNinImageNet}.
 \begin{figure}[htp]
 	\centering
 	\includegraphics[scale=0.45]{pooling}
-	\caption{Ilustrasi proses pooling pada CNN}
+	\caption{Ilustrasi proses \textit{pooling} pada CNN}
 	\label{pooling_CNN}
 \end{figure}
 
@@ -275,12 +275,12 @@ Fitur map yang dihasilkan dari \textit{feature extraction layer} masih berbentuk
 
 \subsection{YOLO (\textit{You Only Look Once}) V3}
 
-You Only Look Once (YOLO) merupakan suatu metode pendekatan yang bertujuan untuk deteksi objek. YOLO melihat deteksi objek sebagai suatu masalah regresi dari bounding box dan
-\textit{class probability} yang terpisah secara spasial. YOLO merupakan single neural network yang memprediksi \textit{bounding box} dan \textit{class probability} dari gambar utuh secara langsung dalam satu kali
-evaluasi. Oleh karena deteksi YOLO menggunakan single network, maka optimasi performa deteksi dapat dilakukan langsung secara end-to-end \cite{YoloV1}.
+\textit{You Only Look Once} (YOLO) merupakan suatu metode pendekatan yang bertujuan untuk deteksi objek. YOLO melihat deteksi objek sebagai suatu masalah regresi dari \textit{bounding box} dan
+probabilitas kelas yang terpisah secara spasial. YOLO merupakan \textit{neural network} yang memprediksi \textit{bounding box} dan \textit{class probability} dari gambar utuh secara langsung dalam satu kali
+evaluasi. Oleh karena deteksi YOLO menggunakan \textit{single network}, maka optimasi performa deteksi dapat dilakukan langsung secara end-to-end \cite{YoloV1}.
 
 Secara arsitekturnya, YOLO hanya menggunakan lapisan konvolusi sehingga menjadikannya sebuah jaringan konvolusi penuh (FCN). Pada YOLOV3 terdapat 75 lapisan konvolusi dengan \textit{skip connection} dan lapisan upsampling.
-YOLOv3 menggunakan stride 2 untuk downsample fitur map serta tidak menggunakan lapisan pooling untuk mencegah hilangnya informasi dari fitur tingkat rendah. Pada YOLOV3 setiap \textit{bounding box} memiliki atribut array ukuran \textbf{(5 + C)} dimana array ini mengandung informasi
+YOLOv3 menggunakan stride 2 untuk \textit{downsample} fitur map serta tidak menggunakan lapisan \textit{pooling} untuk mencegah hilangnya informasi dari fitur tingkat rendah. Pada YOLOV3 setiap \textit{bounding box} memiliki atribut array ukuran \textbf{(5 + C)} dimana array ini mengandung informasi
 mengenai koordinat titik tengah, ukuran dimensi, skor objektivitas, dan $C$ skor kelas.
 
 YOLOV3 mendeteksi suatu objek dengan cara membagi gambar input kedalam grid sebanyak ukuran fitur map. Kemudian masing-masing grid akan memprediksi \textit{bounding box} sebanyak 3 buah.
@@ -380,6 +380,9 @@ YOLOV3 menggunakan Darknet-53 sebagai fitur ekstraktor. Darknet-53 memiliki 53 l
 \end{figure}
 Darknet-53 lebih powerful dibandingkan Darknet-19 \cite{YoloV2}, dan lebih efisien daripada ResNet-101 atau ResNet-152 \cite{YoloV3}.
 
+Pengukuran pada tabel \ref{tabel_comp_FE} \cite{YoloV3} pada GPU Titan X dengan ukuran input 256 × 256. Berdasarkan tabel tersebut dapat dilihat bahwa Darknet-53 memiliki performa setara dengan fitur ekstraktor lain tetapi dengan operasi \textit{floating point} lebih sedikit dan kecepatan lebih tinggi. Darknet lebih cepat 1.5 kali daripada ResNet-101 dan 2 kali daripada ResNet-152.
+Darknet-53 juga memiliki nilai operasi \textit{floating point} per detik paling tinggi. Hal ini menunjukan bahwa arsitektur yang dimiliki yang mana didominasi oleh lapisan konvolusi sangat efisien berjalan di GPU, sehingga membuat eksekusi Darknet-19 lebih cepat \cite{YoloV3}.
+
 \begin{table}[htp]
 \centering
 \begin{tabular}{ cccccc } 
@@ -393,8 +396,6 @@ Darknet-53 lebih powerful dibandingkan Darknet-19 \cite{YoloV2}, dan lebih efisi
 \caption{Perbandingan performa berbagai fitur ekstraktor}
 \label{tabel_comp_FE}
 \end{table}
-Pengukuran pada tabel \ref{tabel_comp_FE} [yolov3] dilakukan pada GPU Titan X dengan ukuran input 256 × 256. Berdasarkan tabel tersebut dapat dilihat bahwa Darknet-53 memiliki performa setara dengan fitur ekstraktor lain tetapi dengan operasi \textit{floating point} lebih sedikit dan kecepatan lebih tinggi. Darknet lebih cepat 1.5 kali daripada ResNet-101 dan 2 kali daripada ResNet-152.
-Darknet-53 juga memiliki nilai operasi \textit{floating point} per detik paling tinggi. Hal ini menunjukan bahwa arsitektur yang dimiliki yang mana didominasi oleh lapisan konvolusi sangat efisien berjalan di GPU, sehingga membuat eksekusi Darknet-19 lebih cepat \cite{YoloV3}.
 
 \subsection{Kalman Filter}
 
@@ -489,6 +490,17 @@ kelebihan sebagai berikut:
 	lebih mudah untuk di-debug, dan memungkinkan kemudahan ekstensibilitas.
 \end{enumerate}
 
+\subsubsection{Dash dari Plotly}
+Dash adalah framework berbasis Python untuk membuat aplikasi web. Dash ditulis menggunakan Flask, Plotly.js, dan React.js sehingga sangat cocok untuk membuat aplikasi visualisasi data dengan \textit{user interface} sesuai keinginan dan murni menggunakan Python. 
+Dash dirender di web browser. Developer dapat men-deploy aplikasinya di server kemudian membagikannya melalui URL. Karena Dash ditampilkan pada web browser maka Dash kompatibel untuk lintas platform hingga mobile sekalipun. 
+Dash merupakan library yang \textit{open source}, dirilis dibawah lisensi MIT \cite{Dash}. Contoh aplikasi web yang dibuat menggunakan Dash seperti gambar \ref{Dash}.
+
+\begin{figure}[htp]
+	\centering
+	\includegraphics[scale=0.5]{dash}
+	\caption{Contoh aplikasi web menggunakan Dash}
+	\label{Dash}
+\end{figure}
 
 \subsubsection{ZeroMQ}
 ZeroMQ adalah library untuk \textit{messaging} secara asinkron yang memiliki performa tinggi. ZeroMQ dapat digunakan untuk \textit{multi processing} dan \textit{multi threading}.
@@ -502,17 +514,6 @@ Pola dasar pengiriman pesan pada ZeroMQ:
 	\item \textbf{\textit{Exclusive pair}}: menghubungkan dua soket secara eksklusif.
 \end{enumerate}
 Pada ZeroMQ, protokol pengiriman pesan yang tersedia meliputi TCP, PGM (multicast), komunikasi \textit{inter-process} (IPC) dan komunikasi \textit{inter-thread} (ITC) \cite{ZeroMQ}.
-
-\subsubsection{Dash dari Plotly}
-Dash adalah framework berbasis Python untuk membuat aplikasi web. Dash ditulis menggunakan Flask, Plotly.js, dan React.js sehingga sangat cocok untuk membuat aplikasi visualisasi data dengan \textit{user interface} sesuai keinginan dan murni menggunakan Python. 
-Dash dirender di web browser. Developer dapat men-deploy aplikasinya di server kemudian membagikannya melalui URL. Karena Dash ditampilkan pada web browser maka Dash kompatibel untuk lintas platform hingga mobile sekalipun. 
-Dash merupakan library yang \textit{open source}, dirilis dibawah lisensi MIT \cite{Dash}. Contoh aplikasi web yang dibuat menggunakan Dash seperti gambar \ref{Dash}.
-\begin{figure}[htp]
-	\centering
-	\includegraphics[scale=0.5]{dash}
-	\caption{Contoh aplikasi web menggunakan Dash}
-	\label{Dash}
-\end{figure}
 
 \subsubsection{LabelImg}
 LabelImg adalah alat untuk anotasi dan pelabelan \textit{bounding box} pada gambar. Alat ini ditulis dalam bahasa Python dan menggunakan Qt untuk antarmuka grafisnya. LabelImg mendukung 2 tipe anotasi yaitu PASCAL VOC dan YOLO. 
