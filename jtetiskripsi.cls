@@ -167,6 +167,11 @@
 \renewcommand \thetable
      {\ifnum \c@chapter>\z@ \@arabic\c@chapter.\fi \@arabic\c@table}
 
+% \renewcommand \thefigure
+%      {\ifnum \c@chapter>\z@ \@arabic\c@chapter.\fi \@arabic\c@figure}
+% \renewcommand \thetable
+%      {\ifnum \c@chapter>\z@ \@arabic\c@chapter.\fi \@arabic\c@table}
+
 %------------------------------------------------------------
 %Redefine caption names
 %------------------------------------------------------------
